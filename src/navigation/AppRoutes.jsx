@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom"
-import PasswordRecoveryPage from "../modules/auth/screens/PasswordRecoveryPage"
-import LoginPage from "../modules/auth/screens/LoginPage"
+import PasswordRecoveryPage from "../modules/auth/pages/PasswordRecoveryPage"
+import LoginPage from "../modules/auth/pages/LoginPage"
 
 
 const AppRoutes = () => {
