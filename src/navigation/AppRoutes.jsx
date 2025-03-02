@@ -1,11 +1,12 @@
 import { Routes, Route } from "react-router-dom"
 import PasswordRecoveryPage from "../modules/auth/screens/PasswordRecoveryPage"
+import LoginPage from "../modules/auth/screens/LoginPage"
 
 
 const AppRoutes = () => {
   return (
       <Routes>
-        {/* <Route path="/" element={<LoginPage />} /> */}
+        <Route path="/" element={<LoginPage />} />
         <Route path="/reset-password/:token" element={<PasswordRecoveryPage />} />
         {/* <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<DashboardPage />} />

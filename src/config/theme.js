@@ -1,4 +1,5 @@
 import { createTheme } from "@mui/material/styles";
+import "@fontsource/italianno"
 
 const theme = createTheme({
     palette: {
@@ -29,6 +30,10 @@ const theme = createTheme({
       h2: { fontSize: "2rem", fontWeight: 500 },
       h3: { fontSize: "1.75rem", fontWeight: 500 },
       button: { textTransform: "none", fontWeight: 600 },
+      logo: {
+        fontFamily: "'Italianno', cursive",
+        fontSize: "2.5rem",
+      }
     },
   });
   
