@@ -12,9 +12,9 @@ export const handleLogin = async (email, password, setErrors, setLoading, login,
         }
 
         login({
-            email: decodedToken.email,
+            email: decodedToken.sub,
             role: decodedToken.role,
-            token: decodedToken.token
+            token: response.token
         });
 
         navigate("/dashboard");

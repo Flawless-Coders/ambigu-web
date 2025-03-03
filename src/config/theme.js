@@ -16,6 +16,12 @@ const theme = createTheme({
         dark: "#4842B7",
         contrastText: "#FFFFFF",
       },
+      sidebar: {
+        bg: '#1E1E2D',       
+        text: '#ffffff',      
+        hover: 'rgba(255, 255, 255, 0.08)', 
+        selected: 'rgba(255, 255, 255, 0.16)', 
+      },
       background: {
         default: "#F4F4F4", 
         paper: "#FFFFFF", 

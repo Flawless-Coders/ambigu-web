@@ -8,11 +8,12 @@ export const AuthProvider = ({ children }) => {
     // Cargar la sesión desde localStorage al iniciar la app
   useEffect(() => {
     const token = localStorage.getItem("token");
+    if (!token) return;
     if (token) {
       try {
         const decoded = jwtDecode(token);
         if (decoded.role === "ADMIN") {
-          setUser({ email: decoded.email, role: decoded.role, token });
+          setUser({ email: decoded.sub, role: decoded.role, token });
         } else {
           logout(); // Si el usuario no es ADMIN, cerrar sesión
         }
@@ -23,14 +24,12 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  // Función para iniciar sesión (Guarda en localStorage automáticamente)
   const login = (userData) => {
     setUser(userData);
     localStorage.setItem("token", userData.token);
     localStorage.setItem("email", userData.email);
   };
 
-  // Función para cerrar sesión
   const logout = () => {
     setUser(null);
     localStorage.removeItem("token");
