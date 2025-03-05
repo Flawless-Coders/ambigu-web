@@ -22,4 +22,4 @@ const Layout = ({ onLogout }) => {
     );
   };
 
-export default Layout
+export default Layout;

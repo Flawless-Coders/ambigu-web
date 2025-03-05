@@ -1,6 +1,6 @@
 import { AccountCircle, Category, Fastfood, Home, MenuBook, Palette, People, Receipt, TableBar, DoubleArrow, Logout} from '@mui/icons-material';
-import { useTheme, Drawer, Box, Typography, IconButton, Divider, List, ListItemButton, ListItemIcon, ListItemText, Tooltip, Fab } from '@mui/material';
-import React, { useState } from 'react';
+import { useTheme, Drawer, Box, Typography, IconButton, Divider, List, ListItemButton, ListItemIcon, ListItemText, Tooltip} from '@mui/material';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Sidebar = ({ onLogout }) => {

@@ -1,27 +1,36 @@
 import { createContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
+import { validateToken } from "../modules/auth/services/AuthService";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const[user, setUser] = useState(null);
-    // Cargar la sesión desde localStorage al iniciar la app
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
-    if (token) {
+    const checkAuth = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
       try {
+        const isValid = await validateToken(token);
+        if (!isValid) {
+          logout();
+          return;
+        }
+
         const decoded = jwtDecode(token);
         if (decoded.role === "ADMIN") {
           setUser({ email: decoded.sub, role: decoded.role, token });
         } else {
-          logout(); // Si el usuario no es ADMIN, cerrar sesión
+          logout();
         }
       } catch (error) {
-        console.error("Token inválido:", error);
+        console.error("Error al validar el token:", error);
         logout();
       }
-    }
+    };
+
+    checkAuth(); 
   }, []);
 
   const login = (userData) => {

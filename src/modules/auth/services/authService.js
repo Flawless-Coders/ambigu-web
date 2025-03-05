@@ -9,3 +9,17 @@ export const loginUser = async (email, password) => {
         throw error.response?.data?.message || "Error con el servidor";
     }
 }
+
+export const validateToken = async (token) => {
+    try{
+        const response = await axios.post(`${API_URL}/auth/validate-token`, {}, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response.status === 200;
+    } catch (error) {
+        console.error("Error al validar el token:", error);
+        return false;
+    }
+}

@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Container, Box, TextField, Button, Typography, Grid, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@mui/material";
-import { Formik, Form, Field } from "formik";
+import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import LoadingScreen from "../../../kernel/LoadingScreen";
@@ -47,7 +47,6 @@ const PasswordRecoveryPage = () => {
   };
 
   if(loading) return <LoadingScreen open={true}/>
-
 
   if (!validToken) return null;
 
