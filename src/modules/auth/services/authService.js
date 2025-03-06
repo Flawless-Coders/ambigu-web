@@ -29,6 +29,6 @@ export const forgotPasswordRequest = async (email) => {
     const response = await axios.post(`${API_URL}/auth/forgot-password`, { email });
     return response.data;
     } catch (error) {
-    throw error.response?.data?.message || "Error con el servidor";
+    throw error.response?.data?.message || "Ocurrió un error con el servidor";
     }
 };

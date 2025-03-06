@@ -91,9 +91,15 @@ const Sidebar = ({ onLogout }) => {
         </Tooltip>
 
         {open && (
-          <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.6)", mt: 2, display: "block" }}>
-            © 2025 All Rights Reserved <br /> Made by Flawless Coders
-          </Typography>
+        <Box sx={{textAlign: "center", mt:6}}>
+        <Typography variant="logo" fontSize="1.5rem">
+          Ambigú
+        </Typography>
+        <Typography variant="footer">
+          © 2025 All Rights Reserved<br />
+          Made by Flawless Coders
+        </Typography>
+      </Box>
         )}
       </Box>
       <IconButton 

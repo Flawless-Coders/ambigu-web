@@ -25,12 +25,11 @@ export default function ForgotPasswordPage() {
         initialValues={{ email: "" }}
         validationSchema={forgotPasswordSchema}
         onSubmit={(values, { setSubmitting, setErrors }) => {
-          handleForgotPassword(values.email, setErrors, setSubmitting, () => setOpenDialog(true));
+          handleForgotPassword(values.email, (error) => setErrors({ server: error }), setSubmitting, () => setOpenDialog(true));
         }}
       >
         {({ errors, touched, isSubmitting }) => (
           <Form>
-            {/* Mensaje de error del backend */}
             {errors.server && <Alert severity="error" sx={{ mb: 2 }}>{errors.server}</Alert>}
 
             <Field
@@ -69,7 +68,7 @@ export default function ForgotPasswordPage() {
         <DialogTitle>Correo enviado</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Se ha enviado un correo con instrucciones para recuperar tu contraseña. Por favor revisa tu bandeja de entrada.
+            Si el correo proporcionado es válido, recibirás un mensaje con instrucciones para restablecer tu contraseña. Por favor revisa tu bandeja de entrada.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
