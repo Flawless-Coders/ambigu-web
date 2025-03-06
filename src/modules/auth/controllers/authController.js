@@ -1,5 +1,5 @@
 import { jwtDecode } from "jwt-decode";
-import { loginUser } from "../services/authService";
+import { forgotPasswordRequest, loginUser } from "../services/authService";
 
 export const handleLogin = async (email, password, setErrors, setLoading, login, navigate) => {
     setLoading(true);
@@ -24,3 +24,16 @@ export const handleLogin = async (email, password, setErrors, setLoading, login,
         setLoading(false);
     }
 }
+
+
+export const handleForgotPassword = async (email, setErrors, setLoading, onSuccess) => {
+    setLoading(true);
+    try {
+        await forgotPasswordRequest(email);
+        onSuccess(); 
+    } catch (error) {
+        setErrors(error);
+    } finally {
+        setLoading(false);
+    }
+};

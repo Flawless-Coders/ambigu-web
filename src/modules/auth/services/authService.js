@@ -23,3 +23,12 @@ export const validateToken = async (token) => {
         return false;
     }
 }
+
+export const forgotPasswordRequest = async (email) => {
+  try {
+    const response = await axios.post(`${API_URL}/auth/forgot-password`, { email });
+    return response.data;
+    } catch (error) {
+    throw error.response?.data?.message || "Error con el servidor";
+    }
+};

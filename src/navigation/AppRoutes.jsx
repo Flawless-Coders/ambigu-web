@@ -5,6 +5,7 @@ import { DashboardPage } from "../modules/dashboard/pages/DashboardPage"
 import Layout from "../views/Layout"
 import { useContext } from "react"
 import { AuthContext } from "../context/AuthContext"
+import ForgotPasswordPage from "../modules/auth/pages/ForgotPasswordPage"
 
 // Protected route component
 const ProtectedRoute = ({ children }) => {
@@ -25,6 +26,7 @@ const AppRoutes = () => {
       {/* Rutas públicas */}
       <Route path="/" element={!user ? <LoginPage /> : <Navigate to="/dashboard" />} />
       <Route path="/password-recovery" element={<PasswordRecoveryPage />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       
       {/* Rutas protegidas bajo Layout */}
       <Route element={
