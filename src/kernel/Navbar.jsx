@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { AppBar, Toolbar, IconButton, InputBase, Avatar, Box, Typography, Fade, Divider } from "@mui/material";
+import { Toolbar, InputBase, Avatar, Box, Typography, Divider } from "@mui/material";
 import { Search as SearchIcon } from "@mui/icons-material";
 
 export default function Navbar({ user, onSearch, showSearch = true }) {
@@ -13,42 +13,33 @@ export default function Navbar({ user, onSearch, showSearch = true }) {
   };
 
   return (
-    <AppBar position="fixed" color="default" elevation={1}>
-      <Toolbar sx={{ display: "flex", justifyContent: "space-between", px: 3 }}>
-        {/* Buscador con posibilidad de ocultarlo */}
-        <Fade in={showSearch}>
-          <Box
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",// Ajuste según sidebar
+        height: "60px",
+      }}
+    >
+      {showSearch && (
+        <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1, maxWidth: "800px", border: "1px solid gray", borderRadius: "4px", px: 1, py: 0.5, justifyContent: "space-between" }}>
+          <InputBase
+            placeholder="Buscar..."
+            value={searchQuery}
+            onChange={handleSearchChange}
             sx={{
-              display: "flex",
-              alignItems: "center",
-              bgcolor: "rgba(0,0,0,0.05)",
-              borderRadius: 2,
-              px: 2,
-              py: 0.5,
-              width: { xs: "100%", sm: "50%" },
             }}
-          >
-            <SearchIcon sx={{ color: "gray", mr: 1 }} />
-            <InputBase
-              placeholder="Buscar..."
-              value={searchQuery}
-              onChange={handleSearchChange}
-              sx={{ width: "100%" }}
-            />
-          </Box>
-        </Fade>
-
-        {/* Sección de usuario */}
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <Divider orientation="vertical" flexItem />
-          <Typography variant="body1">
-            Hola, <b>{user?.name || "Invitado"}</b>
-          </Typography>
-          <IconButton>
-            <Avatar src={user?.avatar || "https://via.placeholder.com/40"} alt={user?.name} />
-          </IconButton>
+          />
+          <SearchIcon sx={{ color: "gray", mr: 1 }} />
         </Box>
-      </Toolbar>
-    </AppBar>
+      )}
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+      <Divider orientation="vertical" flexItem />
+        <Typography variant="body2" color="text.secondary">
+          Hola, <b style={{ color: "#000" }}>{user?.name || "Invitado"}</b>
+        </Typography>
+        <Avatar src={user?.avatar || "https://via.placeholder.com/40"} alt={user?.name} />
+      </Box>
+    </Box>
   );
 }

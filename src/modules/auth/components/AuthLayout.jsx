@@ -64,7 +64,7 @@ const AuthLayout = ({ children, imageSrc, imageStyle }) => {
 
         <Box sx={{textAlign: "center", mt:6}}>
           <Typography variant="logo" fontSize="1.5rem">
-            Ambigú
+            Ambigú<br />
           </Typography>
           <Typography variant="footer">
             © 2025 All Rights Reserved<br />

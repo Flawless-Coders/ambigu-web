@@ -92,14 +92,14 @@ const Sidebar = ({ onLogout }) => {
 
         {open && (
         <Box sx={{textAlign: "center", mt:6}}>
-        <Typography variant="logo" fontSize="1.5rem">
-          Ambigú
-        </Typography>
-        <Typography variant="footer">
-          © 2025 All Rights Reserved<br />
-          Made by Flawless Coders
-        </Typography>
-      </Box>
+          <Typography variant="logo" fontSize="1.5rem">
+            Ambigú<br />
+          </Typography>
+          <Typography variant="footer">
+            © 2025 All Rights Reserved<br />
+            Made by Flawless Coders
+          </Typography>
+        </Box>
         )}
       </Box>
       <IconButton 
