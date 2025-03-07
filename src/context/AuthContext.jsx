@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
-import { validateToken } from "../modules/auth/services/AuthService";
+import { getUserDetails, validateToken } from "../modules/auth/services/AuthService";
 
 export const AuthContext = createContext();
 
@@ -20,7 +20,8 @@ export const AuthProvider = ({ children }) => {
 
         const decoded = jwtDecode(token);
         if (decoded.role === "ADMIN") {
-          setUser({ email: decoded.sub, role: decoded.role, token });
+          const userDetails = await getUserDetails(decoded.sub, token);
+          setUser({ email: decoded.sub, role: decoded.role, token, ...userDetails });
         } else {
           logout();
         }
@@ -33,8 +34,9 @@ export const AuthProvider = ({ children }) => {
     checkAuth(); 
   }, []);
 
-  const login = (userData) => {
-    setUser(userData);
+  const login = async (userData) => {
+    const userDetails = await getUserDetails(userData.email, userData.token);
+    setUser({...userData, ...userDetails});
     localStorage.setItem("token", userData.token);
     localStorage.setItem("email", userData.email);
   };

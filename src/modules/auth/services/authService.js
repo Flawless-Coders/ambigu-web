@@ -32,3 +32,16 @@ export const forgotPasswordRequest = async (email) => {
     throw error.response?.data?.message || "Ocurrió un error con el servidor";
     }
 };
+
+export const getUserDetails = async (email, token) => {
+    try {
+        const response = await axios.get(`${API_URL}/admin/${email}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response?.data?.message || "Error con el servidor";
+    }
+};

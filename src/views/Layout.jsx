@@ -2,9 +2,12 @@ import Sidebar from "../kernel/Sidebar";
 import { Outlet } from "react-router-dom"
 import { Box } from "@mui/material"
 import Navbar from "../kernel/Navbar";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 const Layout = ({ onLogout }) => {
-    return (
+  const { user } = useContext(AuthContext); 
+  return (
         <Box sx={{ display: "flex", height: "100vh" }}>
         <Sidebar onLogout={onLogout} />
         <Box
@@ -16,7 +19,7 @@ const Layout = ({ onLogout }) => {
             overflowY: "auto"
           }}
         >
-          <Navbar/>
+          <Navbar user={user}/>
           <Outlet />
         </Box>
       </Box>

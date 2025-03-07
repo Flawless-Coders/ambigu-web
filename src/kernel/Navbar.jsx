@@ -38,7 +38,7 @@ export default function Navbar({ user, onSearch, showSearch = true }) {
         <Typography variant="body2" color="text.secondary">
           Hola, <b style={{ color: "#000" }}>{user?.name || "Invitado"}</b>
         </Typography>
-        <Avatar src={user?.avatar || "https://via.placeholder.com/40"} alt={user?.name} />
+        <Avatar src={user?.avatarBase64 || "https://via.placeholder.com/40"} alt={user?.name} />
       </Box>
     </Box>
   );

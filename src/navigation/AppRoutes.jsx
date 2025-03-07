@@ -6,6 +6,7 @@ import Layout from "../views/Layout"
 import { useContext } from "react"
 import { AuthContext } from "../context/AuthContext"
 import ForgotPasswordPage from "../modules/auth/pages/ForgotPasswordPage"
+import ProfilePage from "../modules/profile/pages/ProfilePage"
 
 // Protected route component
 const ProtectedRoute = ({ children }) => {
@@ -42,7 +43,7 @@ const AppRoutes = () => {
         <Route path="/menu" element={<div>Menú (Coming Soon)</div>} />
         <Route path="/customization" element={<div>Personalización (Coming Soon)</div>} />
         <Route path="/orders" element={<div>Pedidos (Coming Soon)</div>} />
-        <Route path="/profile" element={<div>Perfil (Coming Soon)</div>} />
+        <Route path="/profile" element={<ProfilePage/>} />
       </Route>
       
       {/* Redirección si la ruta no existe */}
