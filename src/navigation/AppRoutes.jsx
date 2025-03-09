@@ -7,6 +7,7 @@ import { useContext } from "react"
 import { AuthContext } from "../context/AuthContext"
 import ForgotPasswordPage from "../modules/auth/pages/ForgotPasswordPage"
 import ProfilePage from "../modules/profile/pages/ProfilePage"
+import LoaderAmbigu from "../kernel/LoaderAmbigu"
 
 // Protected route component
 const ProtectedRoute = ({ children }) => {
@@ -20,7 +21,11 @@ const ProtectedRoute = ({ children }) => {
 };
 
 const AppRoutes = () => {
-  const { user, logout } = useContext(AuthContext);
+  const { user, logout, loading } = useContext(AuthContext);
+
+  if (loading) {
+    return <LoaderAmbigu/>;
+  }
 
   return (
     <Routes>

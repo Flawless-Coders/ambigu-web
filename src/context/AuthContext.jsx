@@ -6,10 +6,15 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const[user, setUser] = useState(null);
+  const[loading, setLoading] = useState(true);
+
   useEffect(() => {
     const checkAuth = async () => {
       const token = localStorage.getItem("token");
-      if (!token) return;
+      if (!token){
+        setLoading(false);
+        return;
+      }
 
       try {
         const isValid = await validateToken(token);
@@ -28,6 +33,8 @@ export const AuthProvider = ({ children }) => {
       } catch (error) {
         console.error("Error al validar el token:", error);
         logout();
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -45,10 +52,11 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     localStorage.removeItem("token");
     localStorage.removeItem("email");
+    setLoading(false);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );
