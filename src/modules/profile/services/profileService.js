@@ -38,3 +38,13 @@ export const updateProfileImage = async ( id, file ) => {
         throw error;
     }
 }
+
+export const updatePassword = async ( data ) => {
+    try {
+        const response = await api.patch(`${API_URL}/admin/password`, data);
+        return response.data;
+    }catch (error){
+        console.error("Error al actualizar la contraseña");
+        throw error;
+    }
+}

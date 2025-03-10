@@ -1,4 +1,4 @@
-import { getProfileInfo, updateProfileInfo, updateProfileImage } from '../services/profileService';
+import { getProfileInfo, updateProfileInfo, updateProfileImage, updatePassword } from '../services/profileService';
 
 export const handleGetUser = async (userEmail, setUser, setErrors, setLoading) => {
     setLoading(true);
@@ -29,6 +29,18 @@ export const handleUpdateAvatar = async (id, file, setErrors, setSuccess, setLoa
     try {
         console.log("Archivo desde controller",file);
         const response = await updateProfileImage(id, file);
+        setSuccess(response);
+    } catch (error) {
+        setErrors(error);
+    } finally {
+        setLoading(false);
+    }
+}
+
+export const handleUpdatePassword = async (id, currentPassword, newPassword, setErrors, setSuccess, setLoading) => {
+    setLoading(true);
+    try {
+        const response = await updatePassword( { id, currentPassword, newPassword });
         setSuccess(response);
     } catch (error) {
         setErrors(error);

@@ -80,7 +80,7 @@ const ProfileCard = ({user, onUpdate, setSuccess, setError}) => {
         </Grid2>
       </CardContent>
 
-      <PasswordDialog open={openPasswordModal} onClose={handleClosePasswordModal} />
+      <PasswordDialog open={openPasswordModal} onClose={handleClosePasswordModal} user={user} onUpdate={onUpdate} setSuccess={setSuccess} setError={setError}/>
       <DataDialog open={openDataModal} onClose={handleCloseDataModal} user={user} onUpdate={onUpdate} setSuccess={setSuccess} setError={setError}/>
     </Card>
   );

@@ -1,8 +1,13 @@
-import {Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button} from "@mui/material";
+import { useState } from "react";
+import {Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, CircularProgress} from "@mui/material";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
+import { handleUpdatePassword } from "../controllers/profileController";
 
-export const PasswordDialog = ({ open, onClose }) => {
+export const PasswordDialog = (props) => {
+    const { open, onClose,user, setSuccess, setError } = props;
+    const [loading, setLoading] = useState(false);
+
     const passwordValidationSchema = Yup.object({
       newPassword: Yup.string()
         .min(8, "Debe tener al menos 8 caracteres")
@@ -20,6 +25,23 @@ export const PasswordDialog = ({ open, onClose }) => {
         "La contraseña actual es obligatoria"
       ),
     });
+
+    const handleSubmit = async (values) => {
+        setLoading(true);
+        setError(null);
+        setSuccess(null);
+
+        try{
+            await handleUpdatePassword(user.id, values.currentPassword, values.newPassword, setError, setSuccess, setLoading);
+            setSuccess("Contraseña actualizada correctamente");
+            onClose();
+        } catch (error) {
+            setError("Error al actualizar la contraseña");
+        } finally {
+            setLoading(false);
+        }
+    };
+
   
     return (
       <Dialog
@@ -31,15 +53,13 @@ export const PasswordDialog = ({ open, onClose }) => {
         <DialogTitle id="dialog-password-title">Modificar contraseña</DialogTitle>
         <Formik
           initialValues={{
+            id: user.id,
             currentPassword: "",
             newPassword: "",
             confirmPassword: "",
           }}
           validationSchema={passwordValidationSchema}
-          onSubmit={(values) => {
-            console.log(values);
-            onClose();
-          }}
+          onSubmit={handleSubmit}
         >
           {({ errors, touched }) => (
             <Form>
@@ -79,9 +99,9 @@ export const PasswordDialog = ({ open, onClose }) => {
                 <Button onClick={onClose} variant="outlined" color="secondary">
                   Cancelar
                 </Button>
-                <Button type="submit" variant="contained" color="primary">
-                  Aceptar
-                </Button>
+                <Button type="submit" variant="contained" color="primary" disabled={loading}>
+                {loading ? <CircularProgress size={24} /> : "Aceptar"}
+              </Button>
               </DialogActions>
             </Form>
           )}
