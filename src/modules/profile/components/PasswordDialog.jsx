@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import { handleUpdatePassword } from "../controllers/profileController";
 
 export const PasswordDialog = (props) => {
-    const { open, onClose,user, setSuccess, setError } = props;
+    const { open, onClose, user, setSuccess, setError } = props;
     const [loading, setLoading] = useState(false);
 
     const passwordValidationSchema = Yup.object({
@@ -27,19 +27,11 @@ export const PasswordDialog = (props) => {
     });
 
     const handleSubmit = async (values) => {
-        setLoading(true);
         setError(null);
         setSuccess(null);
 
-        try{
-            await handleUpdatePassword(user.id, values.currentPassword, values.newPassword, setError, setSuccess, setLoading);
-            setSuccess("Contraseña actualizada correctamente");
-            onClose();
-        } catch (error) {
-            setError("Error al actualizar la contraseña");
-        } finally {
-            setLoading(false);
-        }
+        await handleUpdatePassword(user.id, values.currentPassword, values.newPassword, setError, setSuccess, setLoading);
+        onClose();
     };
 
   

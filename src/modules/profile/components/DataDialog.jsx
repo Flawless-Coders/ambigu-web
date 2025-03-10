@@ -37,19 +37,9 @@ export const DataDialog = ( props ) => {
     setError(null);
     setSuccess(null);
 
-    try {
-      if (values.avatar) {
-        await handleUpdateAvatar(user.id, values.avatar, setLoading, setError, setSuccess);
-      }
-      await handleUpdateAdmin({ ...values, avatar: undefined }, setLoading, setError, setSuccess);
-      setSuccess("Datos actualizados correctamente");
-        onUpdate();
-    } catch (error) {
-      setError("Error al actualizar los datos");
-    } finally {
-      setLoading(false);
-      onClose();
-    }
+    await handleUpdateAvatar(user.id, values.avatar, setError, setSuccess, setLoading);
+    await handleUpdateAdmin({ ...values, avatar: undefined }, setLoading, setError, setSuccess);
+    setLoading(false);
   };
 
   return (
