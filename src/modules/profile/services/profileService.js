@@ -11,3 +11,30 @@ export const getProfileInfo = async ( email ) => {
         throw error;
     }
 };
+
+export const updateProfileInfo = async ( data ) => {
+    try {
+        const response = await api.put(`${API_URL}/admin`, data);
+        return response.data;
+    }catch (error){
+        console.error("Error al actualizar la información del perfil");
+        throw error;
+    }
+};
+
+export const updateProfileImage = async ( id, file ) => {
+    try {
+        console.log("Archivo desde service",file);
+        const formData = new FormData();
+        formData.append("avatar", file);
+        const response = await api.patch(`${API_URL}/admin/avatar/${id}`, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error al actualizar la imagen de perfil");
+        throw error;
+    }
+}

@@ -1,7 +1,20 @@
+import { useState } from "react";
 import { Card, CardContent, Typography, Avatar, Grid2, Button } from "@mui/material";
 import { Person } from "@mui/icons-material";
+import { PasswordDialog } from "./PasswordDialog";
+import { DataDialog } from "./DataDialog";
 
-const ProfileCard = ({user}) => {
+const ProfileCard = ({user, onUpdate, setSuccess, setError}) => {
+  const [openPasswordModal, setOpenPasswordModal] = useState(false);
+  const [openDataModal, setOpenDataModal] = useState(false);
+
+  const handleOpenPasswordModal = () => setOpenPasswordModal(true);
+  const handleClosePasswordModal = () => setOpenPasswordModal(false);
+
+  const handleOpenDataModal = () => setOpenDataModal(true);
+  const handleCloseDataModal = () => setOpenDataModal(false);
+
+
   return (
     <Card sx={{ maxWidth: 1200, margin: "auto", padding: 3, boxShadow: 3 }}>
       <CardContent>
@@ -55,17 +68,20 @@ const ProfileCard = ({user}) => {
 
         <Grid2 container spacing={2} mt={6} mb={2} justifyContent="center">
           <Grid2 item>
-            <Button variant="outlined" color="secondary">
+            <Button variant="outlined" color="secondary" onClick={handleOpenPasswordModal}>
               MODIFICAR CONTRASEÑA
             </Button>
           </Grid2>
           <Grid2 item>
-            <Button variant="contained" color="secondary">
+            <Button variant="contained" color="secondary" onClick={handleOpenDataModal}>
               MODIFICAR DATOS
             </Button>
           </Grid2>
         </Grid2>
       </CardContent>
+
+      <PasswordDialog open={openPasswordModal} onClose={handleClosePasswordModal} />
+      <DataDialog open={openDataModal} onClose={handleCloseDataModal} user={user} onUpdate={onUpdate} setSuccess={setSuccess} setError={setError}/>
     </Card>
   );
 };
