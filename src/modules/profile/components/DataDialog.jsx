@@ -33,13 +33,11 @@ export const DataDialog = ( props ) => {
   };
 
   const handleSubmit = async (values) => {
-    setLoading(true);
     setError(null);
     setSuccess(null);
 
     await handleUpdateAvatar(user.id, values.avatar, setError, setSuccess, setLoading);
     await handleUpdateAdmin({ ...values, avatar: undefined }, setLoading, setError, setSuccess);
-    setLoading(false);
   };
 
   return (
