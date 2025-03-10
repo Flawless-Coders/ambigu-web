@@ -1,14 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Avatar, IconButton, Box, CircularProgress, Grid2 } from "@mui/material";
 import { Formik, Form, Field } from "formik";
 import { PhotoCamera } from "@mui/icons-material";
 import * as Yup from "yup";
-import { handleUpdateAvatar, handleUpdateAdmin } from "../controllers/profileController";
 
-export const DataDialog = ( props ) => {
-  const { open, onClose, user, onUpdate, setSuccess, setError } = props;
-  const [avatar, setAvatar] = useState(user.avatarBase64);
-  const [loading, setLoading] = useState(false);
+//Podría ser el mismo componente que data dialog: TODO para el futuro
+export const RegisterDialog = ( props ) => {
+  const { open, onClose, user, setSuccess, setError, loading } = props;
+const [avatar, setAvatar] = useState("https://avatar.iran.liara.run/public/1");
+
+  useEffect(() => {
+    if (user) {
+      setAvatar(user.avatarBase64 || "https://avatar.iran.liara.run/public/1");
+    } else {
+      setAvatar("https://avatar.iran.liara.run/public/1");
+    }
+  }, [user]);
 
   const dataValidationSchema = Yup.object({
     name: Yup.string().required("El nombre es obligatorio"),
@@ -36,30 +43,32 @@ export const DataDialog = ( props ) => {
     setError(null);
     setSuccess(null);
 
-    await handleUpdateAvatar(user.id, values.avatar, setError, setSuccess, setLoading);
-    await handleUpdateAdmin({ ...values, avatar: undefined }, setLoading, setError, setSuccess);
-    onUpdate();
-    onClose();
+    //Aqui va un handleRegister
+
   };
 
   return (
-    <>
     <Dialog
       open={open}
       onClose={onClose}
       aria-labelledby="dialog-data-title"
       aria-describedby="dialog-data-description"
     >
-      <DialogTitle id="dialog-data-title">Modificar datos</DialogTitle>
+      <DialogTitle id="dialog-data-title">{user ? "Modificar datos de mesero" : "Regisrar mesero" }</DialogTitle>
+      {loading ? (
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px" minWidth="400px">
+          <CircularProgress />
+        </Box>
+      ) : (
       <Formik
         initialValues={{
-          id: user.id,
-          name: user.name,
-          lastname_p: user.lastname_p,
-          lastname_m: user.lastname_m,
-          phone: user.phone,
-          email: user.email,
-          avatar: null,
+            id: user ? user.id : "",
+            name: user ? user.name : "",
+            lastname_p: user ? user.lastname_p : "",
+            lastname_m: user ? user.lastname_m : "",
+            phone: user ? user.phone : "",
+            email: user ? user.email : "",
+            avatar: null,
         }}
         validationSchema={dataValidationSchema}
         onSubmit={handleSubmit}
@@ -158,7 +167,7 @@ export const DataDialog = ( props ) => {
           </Form>
         )}
       </Formik>
+        )}
       </Dialog>
-    </>
   );
 };

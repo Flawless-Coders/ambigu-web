@@ -10,3 +10,13 @@ export const getWaiters = async () => {
         throw error;
     }
 };
+
+export const getWaiterDetails = async (email) => {
+    try{
+        const response = await api.get(`${API_URL}/waiters/email/avatar/${email}`);
+        return response.data;
+    }catch (error){
+        console.error("Error al obtener la información del mesero");
+        throw error;
+    }
+}

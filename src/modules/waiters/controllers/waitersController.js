@@ -1,4 +1,4 @@
-import { getWaiters } from "../services/waitersService";
+import { getWaiterDetails, getWaiters } from "../services/waitersService";
 
 export const handleGetWaiters = async (setRows, setError, setLoading) => {
     setLoading(true);
@@ -13,6 +13,18 @@ export const handleGetWaiters = async (setRows, setError, setLoading) => {
         setRows(formattedData);
     } catch {
         setError("Error al obtener la lista de meseros");
+    } finally {
+        setLoading(false);
+    }
+};
+
+export const handleGetWaiterDetails = async (email, setSelectedUser, setError, setLoading) => {
+    setLoading(true);
+    try {
+        const data = await getWaiterDetails(email);
+        setSelectedUser(data);
+    } catch {
+        setError("Error al obtener detalles del mesero");
     } finally {
         setLoading(false);
     }

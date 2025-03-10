@@ -4,7 +4,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import GroupIcon from "@mui/icons-material/Group";
 
-const columns = [
+const columns = (onEdit) => [
     { field: "id", headerName: "#", flex: 0.5, headerAlign: "center", align: "center" },
     { field: "name", headerName: "NOMBRE COMPLETO", flex: 2, headerAlign: "center", align: "center" },
     { field: "email", headerName: "CORREO", flex: 2, headerAlign: "center", align: "center" },
@@ -17,7 +17,7 @@ const columns = [
       align: "center",
       renderCell: (params) => (
         <Box display="flex" justifyContent="center" width="100%">
-          <Button size="small" color="secondary">
+          <Button size="small" color="secondary" onClick={() => onEdit(params.row)}>
             <EditIcon />
           </Button>
           <Button size="small" color="error">
@@ -31,6 +31,6 @@ const columns = [
     },
   ];
 
-export default function WaitersTable({ rows }) {
-  return <DataGrid rows={rows} columns={columns} pageSizeOptions={[5, 10]} pagination />;
+export default function WaitersTable({ rows, onEdit }) {
+  return <DataGrid rows={rows} columns={columns(onEdit)} pageSizeOptions={[5, 10]} pagination />;
 }
