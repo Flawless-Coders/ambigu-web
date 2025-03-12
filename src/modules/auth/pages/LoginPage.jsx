@@ -18,7 +18,7 @@ const LoginPage = () => {
 
   return (
     <AuthLayout imageSrc="src/assets/ambigu-login.png">
-      <Typography variant="h5" fontWeight="bold" sx={{ mt: 2, mb: 3 }} align="center">
+      <Typography variant="h5" fontWeight="bold" align="center">
         Iniciar Sesión
       </Typography>
 
