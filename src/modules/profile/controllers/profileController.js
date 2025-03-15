@@ -17,7 +17,7 @@ export const handleUpdateAdmin = async (data, setError, setSuccess, setLoading) 
     try {
         const response = await updateProfileInfo(data);
         setSuccess(response);
-    } catch (error) {
+    } catch {
         setError("Error al actualizar los datos");
         setSuccess(null);
     } finally {
@@ -30,7 +30,7 @@ export const handleUpdateAvatar = async (id, file, setError, setSuccess, setLoad
     try {
         const response = await updateProfileImage(id, file);
         setSuccess(response);
-    } catch (error) {
+    } catch{
         setError("Error al actualizar la imagen de perfil");
         setSuccess(null);
     } finally {
@@ -43,7 +43,7 @@ export const handleUpdatePassword = async (id, currentPassword, newPassword, set
     try {
         const response = await updatePassword({ id, currentPassword, newPassword });
         setSuccess(response);
-    } catch (error) {
+    } catch {
         setError("Error al actualizar la contraseña");
         setSuccess(null);
     } finally {

@@ -51,11 +51,13 @@ export const handleRegisterWaiter = async (data, setError, setSuccess, setLoadin
 export const handleUpdateWaiter = async (data, setError, setSuccess, setLoading) => {
     setLoading(true);
     try {
+        console.log(data);
         await updateWaiter(data);
 
         if(data.avatar instanceof File) {
             await uploadWaiterAvatar(data.id, data.avatar);
         }
+
         setSuccess("Mesero actualizado correctamente");
     } catch {
         setError("Error al actualizar mesero");

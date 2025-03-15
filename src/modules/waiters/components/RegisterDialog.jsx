@@ -25,7 +25,7 @@ export const RegisterDialog = ({ open, onClose, user, onSubmit, loading, buttonL
     avatar: Yup.mixed().required("La foto de perfil es obligatoria").test(
       "is-not-placeholder",
       "La foto de perfil es obligatoria",
-      value => value !== placeholderAvatar
+      value => value !== placeholderAvatar || (user && user.avatarBase64)
     )
   });
   return (
