@@ -5,6 +5,7 @@ import LoaderAmbigu from "../../../kernel/LoaderAmbigu";
 import WaitersTable from "../components/WaitersTable";
 import { handleGetWaiterDetails, handleGetWaiters, handleRegisterWaiter, handleUpdateWaiter } from "../controllers/waitersController";
 import { RegisterDialog } from "../components/RegisterDialog";
+import { ChangeStatusDialog } from "../components/ChangeStatusDialog";
 
 export default function WaitersPage() {
   const [rows, setRows] = useState([]);
@@ -13,6 +14,7 @@ export default function WaitersPage() {
   const { setSuccess, setError: setGlobalError } = useOutletContext();
 
   const [openRegisterDialog, setOpenRegisterDialog] = useState(false);
+  const [openChangeStatusDialog, setOpenChangeStatusDialog] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [dialogLoading, setDialogLoading] = useState(false); // Carga solo para el modal
   const [loading, setLoading] = useState(false);
@@ -30,11 +32,21 @@ export default function WaitersPage() {
     await handleGetWaiterDetails(user.email, setSelectedUser, setError, setDialogLoading);
   };
 
+  const handleOpenChangeStatusDialog = (user) => {
+    setSelectedUser(user);
+    setOpenChangeStatusDialog(true);
+  }
+  const handleCloseChangeStatusDialog = () => setOpenChangeStatusDialog(false);
+
   const handleCloseRegisterDialog = () => setOpenRegisterDialog(false);
 
-  useEffect(() => {
+  const fetchData = () => {
     setTableLoading(true);
     handleGetWaiters(setRows, setError, setTableLoading);
+  }
+
+  useEffect(() => {
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -67,7 +79,7 @@ export default function WaitersPage() {
           </Button>
         </Box>
 
-        {tableLoading ? <LoaderAmbigu /> : rows.length > 0 && <WaitersTable rows={rows} onEdit={handleOpenUpdateDialog} />}
+        {tableLoading ? <LoaderAmbigu /> : rows.length > 0 && <WaitersTable rows={rows} onEdit={handleOpenUpdateDialog} onCStatus={handleOpenChangeStatusDialog}/>}
       </Box>
 
       {/* Modal de registro/actualización */}
@@ -80,6 +92,17 @@ export default function WaitersPage() {
         setError={setError}
         loading={dialogLoading} 
         buttonLoading={loading}
+      />
+
+      {/* Dialog de cambio de estado */}
+      <ChangeStatusDialog 
+        open={openChangeStatusDialog}
+        onClose={handleCloseChangeStatusDialog}
+        waiterId={selectedUser?.id}
+        status={selectedUser?.status}
+        setSuccess={setSuccess}
+        setError={setError}
+        onStatusChange={fetchData}
       />
     </>
   );

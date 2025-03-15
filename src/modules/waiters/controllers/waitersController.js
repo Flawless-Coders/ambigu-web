@@ -1,14 +1,16 @@
-import { getWaiterDetails, getWaiters, registerWaiter, updateWaiter, uploadWaiterAvatar } from "../services/waitersService";
+import { changeWaiterStatus, getWaiterDetails, getWaiters, registerWaiter, updateWaiter, uploadWaiterAvatar } from "../services/waitersService";
 
 export const handleGetWaiters = async (setRows, setError, setLoading) => {
     setLoading(true);
     try {
         const data = await getWaiters();
         const formattedData = data.map((item, index) => ({
-            id: index + 1, 
+            id: item.id,
+            numeral: index + 1, 
             name: `${item.name} ${item.lastname_p} ${item.lastname_m}`,
             email: item.email,
             phone: item.phone,
+            status: item.status,
         }));
         setRows(formattedData);
     } catch {
@@ -51,7 +53,6 @@ export const handleRegisterWaiter = async (data, setError, setSuccess, setLoadin
 export const handleUpdateWaiter = async (data, setError, setSuccess, setLoading) => {
     setLoading(true);
     try {
-        console.log(data);
         await updateWaiter(data);
 
         if(data.avatar instanceof File) {
@@ -65,3 +66,16 @@ export const handleUpdateWaiter = async (data, setError, setSuccess, setLoading)
         setLoading(false);
     }
 }
+
+export const handleChangeWaiterStatus = async (id, setError, setSucess, setLoading) => {
+    setLoading(true);
+    try{
+        await changeWaiterStatus(id);
+        setSucess("Estado del mesero actualizado correctamente");
+    }catch{
+        setError("Error al actualizar el estado del mesero");
+    }finally{
+        setLoading(false);
+    }    
+};
+
