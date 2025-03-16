@@ -9,6 +9,7 @@ import ForgotPasswordPage from "../modules/auth/pages/ForgotPasswordPage"
 import ProfilePage from "../modules/profile/pages/ProfilePage"
 import LoaderAmbigu from "../kernel/LoaderAmbigu"
 import WaitersPage from "../modules/waiters/pages/WaitersPage"
+import MenuPage from '../modules/menu/pages/MenuPage'
 import CategoriesPage from "../modules/categories/pages/CategoriesPage"
 import { ThemesPage } from "../modules/theming/pages/ThemesPage"
 
@@ -69,8 +70,9 @@ const AppRoutes = () => {
         <Route path="/categories" element={<CategoriesPage />} />
         <Route path="/dishes" element={<div>Platillos (Coming Soon)</div>} />
         <Route path="/tables" element={<div>Mesas (Coming Soon)</div>} />
-        <Route path="/menu" element={<div>Menú (Coming Soon)</div>} />
         <Route path="/customization" element={<ThemesPage />} />
+        <Route path="/menu" element={<MenuPage/>} />
+        <Route path="/customization" element={<div>Personalización (Coming Soon)</div>} />
         <Route path="/orders" element={<div>Pedidos (Coming Soon)</div>} />
         <Route path="/profile" element={<ProfilePage/>} />
       </Route>
