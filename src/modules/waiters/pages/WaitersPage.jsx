@@ -99,6 +99,7 @@ export default function WaitersPage() {
         open={openChangeStatusDialog}
         onClose={handleCloseChangeStatusDialog}
         waiterId={selectedUser?.id}
+        waiterName={`${selectedUser?.name}`}
         status={selectedUser?.status}
         setSuccess={setSuccess}
         setError={setError}
