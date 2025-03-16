@@ -57,3 +57,21 @@ export const uploadWaiterAvatar = async (id, file) => {
         throw error;
     }
 }
+
+export const changeWaiterStatus = async (id) => {
+    try{
+        await api.patch(`${API_URL}/waiters/status/${id}`);
+    } catch (error){
+        console.error("Error al cambiar el estado del mesero:", error);
+        throw error;
+    }
+}
+
+export const changeWaiterLeader = async (id) => {
+    try{
+        await api.patch(`${API_URL}/waiters/leader/${id}`);
+    } catch (error){
+        console.error("Error al cambiar el líder del mesero:", error);
+        throw error;
+    }
+}
