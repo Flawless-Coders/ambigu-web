@@ -9,6 +9,7 @@ import ForgotPasswordPage from "../modules/auth/pages/ForgotPasswordPage"
 import ProfilePage from "../modules/profile/pages/ProfilePage"
 import LoaderAmbigu from "../kernel/LoaderAmbigu"
 import WaitersPage from "../modules/waiters/pages/WaitersPage"
+import DishesPage from "../modules/dishes/pages/DishesPage"
 
 // Protected route component
 const ProtectedRoute = ({ children }) => {
@@ -65,7 +66,7 @@ const AppRoutes = () => {
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/waiters" element={<WaitersPage />} />
         <Route path="/categories" element={<div>Categorías (Coming Soon)</div>} />
-        <Route path="/dishes" element={<div>Platillos (Coming Soon)</div>} />
+        <Route path="/dishes" element={<DishesPage/>} />
         <Route path="/tables" element={<div>Mesas (Coming Soon)</div>} />
         <Route path="/menu" element={<div>Menú (Coming Soon)</div>} />
         <Route path="/customization" element={<div>Personalización (Coming Soon)</div>} />
