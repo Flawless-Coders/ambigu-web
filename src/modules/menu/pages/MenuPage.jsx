@@ -10,7 +10,6 @@ export default function MenuPage() {
         title={"Banana split"}
         price={"$85.5"}
         description={"Plátano fresco servido con bolas de helado, crema batida, jarabe de chocolate y cerezas. "}
-        buttonTitle={"hola que tal"}
     />
     </>
   );
