@@ -4,7 +4,7 @@ import { Button,Card,CardContent,CardMedia,Typography,CardActionArea,Grid} from 
 export default function CustomCard(props) {
     const { image, title, price, description, buttonTitle } = props;
     return (
-        <Grid container columnSpacing={{ xs: 1, sm: 2, md: 3 }} rowSpacing={3}>
+        
             <Grid item xs={12} sm={6} md={4} lg={3}>
                 <Card>
                         <CardMedia
@@ -59,6 +59,5 @@ export default function CustomCard(props) {
                         </CardContent>
                 </Card>
             </Grid>
-        </Grid>
     );
 }
