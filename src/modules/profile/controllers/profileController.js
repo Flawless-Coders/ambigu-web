@@ -5,7 +5,7 @@ export const handleGetUser = async (userEmail, setUser, setError, setLoading) =>
     try {
         const response = await getProfileInfo(userEmail);
         setUser(response);
-    } catch {;
+    } catch {
         setError("Error al actualizar la contraseña");
     } finally {
         setLoading(false);
