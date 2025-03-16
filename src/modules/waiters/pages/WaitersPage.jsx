@@ -6,6 +6,7 @@ import WaitersTable from "../components/WaitersTable";
 import { handleGetWaiterDetails, handleGetWaiters, handleRegisterWaiter, handleUpdateWaiter } from "../controllers/waitersController";
 import { RegisterDialog } from "../components/RegisterDialog";
 import { ChangeStatusDialog } from "../components/ChangeStatusDialog";
+import { ChangeLeaderStatusDialog } from "../components/ChangeLeaderStatusDialog";
 
 export default function WaitersPage() {
   const [rows, setRows] = useState([]);
@@ -15,6 +16,7 @@ export default function WaitersPage() {
 
   const [openRegisterDialog, setOpenRegisterDialog] = useState(false);
   const [openChangeStatusDialog, setOpenChangeStatusDialog] = useState(false);
+  const [openChangeLeaderDialog, setOpenChangeLeaderDialog] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [dialogLoading, setDialogLoading] = useState(false); // Carga solo para el modal
   const [loading, setLoading] = useState(false);
@@ -36,7 +38,15 @@ export default function WaitersPage() {
     setSelectedUser(user);
     setOpenChangeStatusDialog(true);
   }
+
+  const handleOpenChangeLeaderDialog = (user) => {
+    setSelectedUser(user);
+    setOpenChangeLeaderDialog(true);
+  }
+
   const handleCloseChangeStatusDialog = () => setOpenChangeStatusDialog(false);
+
+  const handleCloseChangeLeaderDialog = () => setOpenChangeLeaderDialog(false);
 
   const handleCloseRegisterDialog = () => setOpenRegisterDialog(false);
 
@@ -74,12 +84,27 @@ export default function WaitersPage() {
       <Box sx={{ p: 3 }}>
         <Typography variant="h4">Meseros</Typography>
         <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
-          <Button variant="contained" color="primary" onClick={handleOpenRegisterDialog}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleOpenRegisterDialog}
+          >
             + AGREGAR MESERO
           </Button>
         </Box>
 
-        {tableLoading ? <LoaderAmbigu /> : rows.length > 0 && <WaitersTable rows={rows} onEdit={handleOpenUpdateDialog} onCStatus={handleOpenChangeStatusDialog}/>}
+        {tableLoading ? (
+          <LoaderAmbigu />
+        ) : (
+          rows.length > 0 && (
+            <WaitersTable
+              rows={rows}
+              onEdit={handleOpenUpdateDialog}
+              onCStatus={handleOpenChangeStatusDialog}
+              onCLeader={handleOpenChangeLeaderDialog}
+            />
+          )
+        )}
       </Box>
 
       {/* Modal de registro/actualización */}
@@ -90,17 +115,28 @@ export default function WaitersPage() {
         onSubmit={handleSubmitDialog}
         setSuccess={setSuccess}
         setError={setError}
-        loading={dialogLoading} 
+        loading={dialogLoading}
         buttonLoading={loading}
       />
 
       {/* Dialog de cambio de estado */}
-      <ChangeStatusDialog 
+      <ChangeStatusDialog
         open={openChangeStatusDialog}
         onClose={handleCloseChangeStatusDialog}
         waiterId={selectedUser?.id}
         waiterName={`${selectedUser?.name}`}
         status={selectedUser?.status}
+        setSuccess={setSuccess}
+        setError={setError}
+        onStatusChange={fetchData}
+      />
+
+      {/* Dialog de cambio de líder */}
+      <ChangeLeaderStatusDialog
+        open={openChangeLeaderDialog}
+        onClose={handleCloseChangeLeaderDialog}
+        waiterId={selectedUser?.id}
+        waiterName={`${selectedUser?.name}`}
         setSuccess={setSuccess}
         setError={setError}
         onStatusChange={fetchData}

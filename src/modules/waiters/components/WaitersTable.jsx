@@ -1,17 +1,24 @@
 import { DataGrid } from "@mui/x-data-grid";
 import { Button, Box } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import GroupIcon from "@mui/icons-material/Group";
 import CheckIcon from "@mui/icons-material/Check";
 
-const columns = (onEdit, onCStatus) => [
-  { field: "numeral", headerName: "#", flex: 0.5, headerAlign: "center", align: "center" },
-  { field: "id", headerName: "ID", hideable: false, width: 0, flex: 0 },
+const useStyles = makeStyles({
+  leaderRow: {
+    backgroundColor: 'rgba(21, 167, 82, 0.29)',
+  }
+});
+
+const columns = (onEdit, onCStatus, onCLeader) => [
+  { field: "id", headerName: "ID", width: 0, flex: 0 },
   { field: "name", headerName: "NOMBRE COMPLETO", flex: 2, headerAlign: "center", align: "center" },
   { field: "email", headerName: "CORREO", flex: 2, headerAlign: "center", align: "center" },
   { field: "phone", headerName: "TELÉFONO", flex: 1, headerAlign: "center", align: "center" },
   { field: "status", headerName: "ESTADO", flex: 1, headerAlign: "center", align: "center" },
+  { field: "leader", headerName: "LÍDER", flex: 1, headerAlign: "center", align: "center" },
   {
     field: "actions",
     headerName: "ACCIONES",
@@ -26,7 +33,7 @@ const columns = (onEdit, onCStatus) => [
       <Button size="small" color={params.row.status ? "error" : "success"} onClick={() => onCStatus(params.row)}>
       {params.row.status ? <DeleteIcon /> : <CheckIcon />}
       </Button>
-      <Button size="small" color="warning">
+      <Button size="small" color="warning" onClick={() => onCLeader(params.row)}>
       <GroupIcon />
       </Button>
     </Box>
@@ -34,21 +41,32 @@ const columns = (onEdit, onCStatus) => [
   },
   ];
 
-export default function WaitersTable({ rows, onEdit, onCStatus }) {
-  const columns1 = columns(onEdit, onCStatus);
-  return <DataGrid 
-          initialState={{
-            pageSize: 5,
-            rowsPerPageOptions: [5, 10],
-            pagination: true,
-            columns: {
-              columnVisibilityModel: {
-                id: false,
-                status: false,
-              }
-            }
-          }}
-          rows={rows} 
-          columns={columns1} 
-           />;
+export default function WaitersTable({ rows, onEdit, onCStatus, onCLeader }) {
+  const classes = useStyles();
+  const columnsConfig = columns(onEdit, onCStatus, onCLeader);
+
+  return (
+    <DataGrid
+      rows={rows}
+      columns={columnsConfig}
+      pageSizeOptions={[5, 10, 15, 20]} // Opciones de tamaño de página en incrementos de 5
+      pagination
+      initialState={{
+        pagination: {
+          paginationModel: { pageSize: 10 }, // Tamaño de página inicial de 10
+        },
+        columns: {
+          columnVisibilityModel: {
+            id: false,
+            status: false,
+            leader: false,
+          },
+        },
+        sorting:{
+          sortModel: [{ field: 'leader', sort: 'desc' }]  
+        }
+      }}
+      getRowClassName={(params) => (params.row.leader ? classes.leaderRow : '')}
+    />
+  );
 }

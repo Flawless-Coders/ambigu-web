@@ -6,7 +6,7 @@ import { handleChangeWaiterStatus } from '../controllers/waitersController';
 
 export const ChangeStatusDialog = ({ open, onClose, waiterId, waiterName, status, setSuccess, setError, onStatusChange}) => {
   const [loading, setLoading] = useState(false);
-  console.log(status);
+
   const newStatus = status ? "deshabilitar" : "habilitar";
   const confirmationText = `El mesero será ${status ? "deshabilitado" : "habilitado"}. ¿Estás seguro?`;
 

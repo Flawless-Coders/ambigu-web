@@ -66,3 +66,12 @@ export const changeWaiterStatus = async (id) => {
         throw error;
     }
 }
+
+export const changeWaiterLeader = async (id) => {
+    try{
+        await api.patch(`${API_URL}/waiters/leader/${id}`);
+    } catch (error){
+        console.error("Error al cambiar el líder del mesero:", error);
+        throw error;
+    }
+}

@@ -1,4 +1,4 @@
-import { changeWaiterStatus, getWaiterDetails, getWaiters, registerWaiter, updateWaiter, uploadWaiterAvatar } from "../services/waitersService";
+import { changeWaiterLeader, changeWaiterStatus, getWaiterDetails, getWaiters, registerWaiter, updateWaiter, uploadWaiterAvatar } from "../services/waitersService";
 
 export const handleGetWaiters = async (setRows, setError, setLoading) => {
     setLoading(true);
@@ -11,6 +11,7 @@ export const handleGetWaiters = async (setRows, setError, setLoading) => {
             email: item.email,
             phone: item.phone,
             status: item.status,
+            leader: item.leader,
         }));
         setRows(formattedData);
     } catch {
@@ -78,4 +79,16 @@ export const handleChangeWaiterStatus = async (id, setError, setSucess, setLoadi
         setLoading(false);
     }    
 };
+
+export const handleChangeLeaderStatus = async (id, setError, setSucess, setLoading) => {
+    setLoading(true);
+    try{
+        await changeWaiterLeader(id);
+        setSucess("Líder de meseros actualizado correctamente");
+    }catch{
+        setError("Error al actualizar el líder de meseros");
+    }finally{
+        setLoading(false);
+    }    
+}
 
