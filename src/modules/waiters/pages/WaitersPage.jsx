@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
-import { Button, Typography, Box } from "@mui/material";
+import { Button, Typography, Box, Tabs, Tab } from "@mui/material";
 import LoaderAmbigu from "../../../kernel/LoaderAmbigu";
 import WaitersTable from "../components/WaitersTable";
 import { handleGetWaiterDetails, handleGetWaiters, handleRegisterWaiter, handleUpdateWaiter } from "../controllers/waitersController";
@@ -20,6 +20,7 @@ export default function WaitersPage() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [dialogLoading, setDialogLoading] = useState(false); // Carga solo para el modal
   const [loading, setLoading] = useState(false);
+  const [tabIndex, setTabIndex] = useState(0);
 
   // Abrir modal para registrar un nuevo mesero
   const handleOpenRegisterDialog = () => {
@@ -79,15 +80,26 @@ export default function WaitersPage() {
     handleGetWaiters(setRows, setError, setTableLoading);
   };
 
+  const handleTabChange = (event, newValue) => {
+    setTabIndex(newValue);
+  }
+
+  const filteredRows = rows.filter(row => tabIndex === 0 ? row.status : !row.status);
+
   return (
     <>
-      <Box sx={{ p: 3 }}>
+      <Box sx={{ p: 1 }}>
         <Typography variant="h4">Meseros</Typography>
-        <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
+        <Box sx={{ display: "flex", justifyContent: "space-between"}}>
+          <Tabs value={tabIndex} onChange={handleTabChange} sx={{mb: 1}}>
+            <Tab label="Habilitados" />
+            <Tab label="Deshabilitados" />
+          </Tabs>
           <Button
             variant="contained"
             color="primary"
             onClick={handleOpenRegisterDialog}
+            sx={{mb: 1}}
           >
             + AGREGAR MESERO
           </Button>
@@ -98,7 +110,7 @@ export default function WaitersPage() {
         ) : (
           rows.length > 0 && (
             <WaitersTable
-              rows={rows}
+              rows={filteredRows}
               onEdit={handleOpenUpdateDialog}
               onCStatus={handleOpenChangeStatusDialog}
               onCLeader={handleOpenChangeLeaderDialog}

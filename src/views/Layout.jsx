@@ -9,6 +9,7 @@ const Layout = ({ onLogout }) => {
   const { user } = useContext(AuthContext); 
   const [success, setSuccess] = useState(null);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleCloseSnackbar = () => {
     setSuccess(null);
@@ -27,8 +28,8 @@ const Layout = ({ onLogout }) => {
             overflowY: "auto"
           }}
         >
-          <Navbar user={user}/>
-          <Outlet context={{setSuccess, setError}}/>
+          <Navbar user={user} onSearch={setSearchTerm}/>
+          <Outlet context={{setSuccess, setError, searchTerm}}/>
         </Box>
         <Snackbar open={Boolean(success)} autoHideDuration={6000} onClose={handleCloseSnackbar} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
         <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
