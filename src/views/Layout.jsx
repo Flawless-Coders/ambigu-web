@@ -1,14 +1,25 @@
 import Sidebar from "../kernel/Sidebar";
-import { Outlet } from "react-router-dom"
+import { Outlet, useLocation } from "react-router-dom"
 import { Box, Snackbar, Alert } from "@mui/material"
 import Navbar from "../kernel/Navbar";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 
 const Layout = ({ onLogout }) => {
   const { user } = useContext(AuthContext); 
   const [success, setSuccess] = useState(null);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showSearch, setShowSearch] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname === "/dashboard" || location.pathname === "/profile" || location.pathname === "/customization") {
+      setShowSearch(false);
+    } else {
+      setShowSearch(true);
+    }
+  }, [location]);
 
   const handleCloseSnackbar = () => {
     setSuccess(null);
@@ -27,8 +38,8 @@ const Layout = ({ onLogout }) => {
             overflowY: "auto"
           }}
         >
-          <Navbar user={user}/>
-          <Outlet context={{setSuccess, setError}}/>
+          <Navbar user={user} onSearch={setSearchTerm} showSearch={showSearch}/>
+          <Outlet context={{setSuccess, setError, searchTerm}}/>
         </Box>
         <Snackbar open={Boolean(success)} autoHideDuration={6000} onClose={handleCloseSnackbar} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
         <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
