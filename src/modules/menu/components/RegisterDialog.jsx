@@ -1,10 +1,11 @@
-import { useState, useEffect} from "react";
-import {Dialog,DialogTitle,DialogContent,DialogActions,TextField,Button,CircularProgress,Box} from "@mui/material";
+import { useState, useEffect } from "react";
+import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, CircularProgress, Box } from "@mui/material";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
+import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 
-export const RegisterDialog = ({open,onClose,menu,photo,onSubmit,loading,buttonLoading}) => {
-    const placeholderMenu = "https://placehold.co/300x200";
+export const RegisterDialog = ({ open, onClose, menu, photo, onSubmit, loading, buttonLoading }) => {
+    const placeholderMenu = "https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png";
     const [preview, setPreview] = useState(photo || placeholderMenu);
 
     useEffect(() => {
@@ -44,45 +45,12 @@ export const RegisterDialog = ({open,onClose,menu,photo,onSubmit,loading,buttonL
                     {({ errors, touched, setFieldValue }) => (
                         <Form>
                             <DialogContent>
-                                {/* Vista previa de la imagen */}
-                                <Box display="flex" flexDirection="column" alignItems="center">
-                                    <img
-                                        src={preview}
-                                        alt="Vista previa"
-                                        style={{
-                                            width: "100%",
-                                            maxWidth: "300px",
-                                            borderRadius: "8px",
-                                            marginBottom: "10px",
-                                        }}
-                                    />
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={(event) => {
-                                            const file = event.target.files[0];
-                                            if (file) {
-                                                const reader = new FileReader();
-                                                reader.onloadend = () => {
-                                                    setPreview(reader.result); // Muestra la vista previa
-                                                    setFieldValue("photo", file); // Guarda el archivo en Formik
-                                                };
-                                                reader.readAsDataURL(file);
-                                            }
-                                        }}
-                                    />
-                                    {touched.photo && errors.photo && (
-                                        <div style={{ color: "red" }}>{errors.photo}</div>
-                                    )}
-                                </Box>
-
                                 {/* Campo para el nombre del menú */}
                                 <Field
                                     as={TextField}
                                     label="Nombre del menú"
                                     name="name"
                                     fullWidth
-                                    margin="normal"
                                     error={Boolean(touched.name && errors.name)}
                                     helperText={touched.name && errors.name}
                                 />
@@ -97,6 +65,50 @@ export const RegisterDialog = ({open,onClose,menu,photo,onSubmit,loading,buttonL
                                     error={Boolean(touched.description && errors.description)}
                                     helperText={touched.description && errors.description}
                                 />
+
+                                {/* Vista previa de la imagen */}
+                                <Box display="flex" flexDirection="column" alignItems="center">
+                                    <img
+                                        src={preview}
+                                        alt="Vista previa"
+                                        style={{
+                                            width: "100%",
+                                            maxWidth: "300px",
+                                            borderRadius: "8px",
+                                            marginBottom: "10px",
+                                        }}
+                                    />
+                                    <input
+                                        id="file-upload"
+                                        type="file"
+                                        accept="image/*"
+                                        style={{ display: "none" }}
+                                        onChange={(event) => {
+                                            const file = event.target.files[0];
+                                            if (file) {
+                                                const reader = new FileReader();
+                                                reader.onloadend = () => {
+                                                    setPreview(reader.result); // Muestra la vista previa
+                                                    setFieldValue("photo", file); // Guarda el archivo en Formik
+                                                };
+                                                reader.readAsDataURL(file);
+                                            }
+                                        }}
+                                    />
+                                    <label htmlFor="file-upload">
+                                        <Button
+                                            variant="contained"
+                                            component="span"
+                                            color="primary"
+                                            startIcon={<CloudUploadOutlinedIcon />}
+                                        >
+                                            {menu ? ("Actualizar imagen") : ("Subir imagen")}
+                                        </Button>
+                                    </label>
+                                    {touched.photo && errors.photo && (
+                                        <div style={{ color: "red" }}>{errors.photo}</div>
+                                    )}
+                                </Box>
                             </DialogContent>
 
                             {/* Acciones del diálogo (Cancelar y Guardar) */}

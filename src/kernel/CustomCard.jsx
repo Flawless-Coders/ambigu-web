@@ -15,7 +15,7 @@ export default function CustomCard(props) {
                             component="img"
                             image={image}
                             alt={title}
-                            sx={{ maxHeight: 200 }}
+                            sx={{ maxHeight: 150 }}
                         />
                     </Box>  
                         <CardContent>

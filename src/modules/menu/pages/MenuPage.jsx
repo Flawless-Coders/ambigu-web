@@ -90,9 +90,7 @@ export default function MenuPage() {
                                 />
                             ))}
                         </Grid>
-                        <FloatingAddButton />
-                        <Button onClick={handleOpenRegisterDialog}>Hola</Button>
-                        <Button onClick={()=>{handleOpenUpdateDialog("67bd2c6d630ee505b3f4519c")}}>Actualizar</Button>
+                        <FloatingAddButton action={handleOpenRegisterDialog}/>
                     </>
                 ): <LoaderAmbigu />}
             </Box>
