@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Toolbar, InputBase, Avatar, Box, Typography, Divider } from "@mui/material";
+import { useState } from "react";
+import { InputBase, Avatar, Box, Typography, Divider } from "@mui/material";
 import { Search as SearchIcon } from "@mui/icons-material";
 
 export default function Navbar({ user, onSearch, showSearch = true }) {
@@ -27,8 +27,7 @@ export default function Navbar({ user, onSearch, showSearch = true }) {
             placeholder="Buscar..."
             value={searchQuery}
             onChange={handleSearchChange}
-            sx={{
-            }}
+            sx={{ flexGrow: 1 }}
           />
           <SearchIcon sx={{ color: "gray", mr: 1 }} />
         </Box>

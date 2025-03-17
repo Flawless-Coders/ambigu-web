@@ -10,6 +10,7 @@ import ProfilePage from "../modules/profile/pages/ProfilePage"
 import LoaderAmbigu from "../kernel/LoaderAmbigu"
 import WaitersPage from "../modules/waiters/pages/WaitersPage"
 import TablePage from "../modules/tables/pages/TablePage"
+import MenuPage from '../modules/menu/pages/MenuPage'
 import CategoriesPage from "../modules/categories/pages/CategoriesPage"
 
 // Protected route component
@@ -69,7 +70,7 @@ const AppRoutes = () => {
         <Route path="/categories" element={<CategoriesPage />} />
         <Route path="/dishes" element={<div>Platillos (Coming Soon)</div>} />
         <Route path="/tables" element={<TablePage />} />
-        <Route path="/menu" element={<div>Menú (Coming Soon)</div>} />
+        <Route path="/menu" element={<MenuPage/>} />
         <Route path="/customization" element={<div>Personalización (Coming Soon)</div>} />
         <Route path="/orders" element={<div>Pedidos (Coming Soon)</div>} />
         <Route path="/profile" element={<ProfilePage/>} />
