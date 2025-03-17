@@ -1,4 +1,4 @@
-import { getWaiterDetails, getWaiters } from "../services/waitersService";
+import { getWaiterDetails, getWaiters, registerWaiter, updateWaiter, uploadWaiterAvatar } from "../services/waitersService";
 
 export const handleGetWaiters = async (setRows, setError, setLoading) => {
     setLoading(true);
@@ -29,3 +29,39 @@ export const handleGetWaiterDetails = async (email, setSelectedUser, setError, s
         setLoading(false);
     }
 };
+
+export const handleRegisterWaiter = async (data, setError, setSuccess, setLoading) => {
+    setLoading(true);
+    try {
+        const response = await registerWaiter(data);
+        const waiterId = response.id;
+
+        if(data.avatar instanceof File) {
+            await uploadWaiterAvatar(waiterId, data.avatar);
+
+        }
+        setSuccess("Mesero registrado correctamente");
+    } catch {
+        setError("Error al registrar mesero");
+    } finally {
+        setLoading(false);
+    }
+}
+
+export const handleUpdateWaiter = async (data, setError, setSuccess, setLoading) => {
+    setLoading(true);
+    try {
+        console.log(data);
+        await updateWaiter(data);
+
+        if(data.avatar instanceof File) {
+            await uploadWaiterAvatar(data.id, data.avatar);
+        }
+
+        setSuccess("Mesero actualizado correctamente");
+    } catch {
+        setError("Error al actualizar mesero");
+    } finally {
+        setLoading(false);
+    }
+}

@@ -1,173 +1,92 @@
 import { useState, useEffect } from "react";
-import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Avatar, IconButton, Box, CircularProgress, Grid2 } from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, CircularProgress, Box, Grid } from "@mui/material";
 import { Formik, Form, Field } from "formik";
-import { PhotoCamera } from "@mui/icons-material";
 import * as Yup from "yup";
+import AvatarUploader from "./AvatarUploader"; // Componente separado para manejar la imagen
 
-//Podría ser el mismo componente que data dialog: TODO para el futuro
-export const RegisterDialog = ( props ) => {
-  const { open, onClose, user, setSuccess, setError, loading } = props;
-const [avatar, setAvatar] = useState("https://avatar.iran.liara.run/public/1");
+export const RegisterDialog = ({ open, onClose, user, onSubmit, loading, buttonLoading }) => {
+  const [avatar, setAvatar] = useState(null);
+  const placeholderAvatar = "https://avatar.iran.liara.run/public/1";
 
   useEffect(() => {
-    if (user) {
-      setAvatar(user.avatarBase64 || "https://avatar.iran.liara.run/public/1");
+    if (user && user.avatarBase64) {
+      setAvatar(user.avatarBase64);
     } else {
-      setAvatar("https://avatar.iran.liara.run/public/1");
+      setAvatar(null);
     }
   }, [user]);
 
-  const dataValidationSchema = Yup.object({
+  const validationSchema = Yup.object({
     name: Yup.string().required("El nombre es obligatorio"),
     lastname_p: Yup.string().required("El apellido paterno es obligatorio"),
     lastname_m: Yup.string().required("El apellido materno es obligatorio"),
-    phone: Yup.string()
-      .matches(/^[0-9]{10}$/, "El teléfono debe tener 10 dígitos")
-      .required("El teléfono es obligatorio"),
+    phone: Yup.string().matches(/^[0-9]{10}$/, "El teléfono debe tener 10 dígitos").required("El teléfono es obligatorio"),
     email: Yup.string().email("Correo electrónico inválido").required("El correo electrónico es obligatorio"),
+    avatar: Yup.mixed().required("La foto de perfil es obligatoria").test(
+      "is-not-placeholder",
+      "La foto de perfil es obligatoria",
+      value => value !== placeholderAvatar || (user && user.avatarBase64)
+    )
   });
-
-  const handleAvatarChange = (event, setFieldValue) => {
-    const file = event.currentTarget.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setAvatar(reader.result);
-      };
-      reader.readAsDataURL(file);
-      setFieldValue("avatar", file);
-    }
-  };
-
-  const handleSubmit = async (values) => {
-    setError(null);
-    setSuccess(null);
-
-    //Aqui va un handleRegister
-
-  };
-
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      aria-labelledby="dialog-data-title"
-      aria-describedby="dialog-data-description"
-    >
-      <DialogTitle id="dialog-data-title">{user ? "Modificar datos de mesero" : "Regisrar mesero" }</DialogTitle>
+    <Dialog open={open} onClose={onClose} aria-labelledby="register-dialog-title">
+      <DialogTitle>{user ? "Modificar mesero" : "Registrar mesero"}</DialogTitle>
       {loading ? (
         <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px" minWidth="400px">
           <CircularProgress />
         </Box>
       ) : (
-      <Formik
-        initialValues={{
-            id: user ? user.id : "",
-            name: user ? user.name : "",
-            lastname_p: user ? user.lastname_p : "",
-            lastname_m: user ? user.lastname_m : "",
-            phone: user ? user.phone : "",
-            email: user ? user.email : "",
-            avatar: null,
-        }}
-        validationSchema={dataValidationSchema}
-        onSubmit={handleSubmit}
-      >
-        {({ errors, touched, setFieldValue }) => (
-          <Form>
-            <DialogContent>
-              <Grid2 container justifyContent="center" alignItems="center" direction="column">
-                <Box sx={{ position: "relative", display: "inline-block" }}>
-                  <Avatar
-                    src={avatar || "https://via.placeholder.com/150"}
-                    alt="Foto de perfil"
-                    sx={{ width: 120, height: 120 }}
-                  />
-                  <IconButton
-                    color="primary"
-                    component="label"
-                    sx={{
-                      position: "absolute",
-                      bottom: 5,
-                      right: 5,
-                      backgroundColor: "background.paper",
-                      boxShadow: 2,
-                    }}
-                  >
-                    <input
-                      hidden
-                      accept="image/*"
-                      type="file"
-                      onChange={(event) => handleAvatarChange(event, setFieldValue)}
-                    />
-                    <PhotoCamera />
-                  </IconButton>
-                </Box>
-              </Grid2>
-              <Field
-                as={TextField}
-                label="Nombre(s)"
-                name="name"
-                fullWidth
-                margin="normal"
-                error={Boolean(touched.name && errors.name)}
-                helperText={touched.name && errors.name}
-              />
-              <Grid2 container spacing={2}>
-                <Grid2 item xs={6}>
-                  <Field
-                    as={TextField}
-                    label="Apellido paterno"
-                    name="lastname_p"
-                    fullWidth
-                    margin="normal"
-                    error={Boolean(touched.lastname_p && errors.lastname_p)}
-                    helperText={touched.lastname_p && errors.lastname_p}
-                  />
-                </Grid2>
-                <Grid2 item xs={6}>
-                  <Field
-                    as={TextField}
-                    label="Apellido materno"
-                    name="lastname_m"
-                    fullWidth
-                    margin="normal"
-                    error={Boolean(touched.lastname_m && errors.lastname_m)}
-                    helperText={touched.lastname_m && errors.lastname_m}
-                  />
-                </Grid2>
-              </Grid2>
-              <Field
-                as={TextField}
-                label="Teléfono"
-                name="phone"
-                fullWidth
-                margin="normal"
-                error={Boolean(touched.phone && errors.phone)}
-                helperText={touched.phone && errors.phone}
-              />
-              <Field
-                as={TextField}
-                label="Correo electrónico"
-                name="email"
-                fullWidth
-                margin="normal"
-                error={Boolean(touched.email && errors.email)}
-                helperText={touched.email && errors.email}
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={onClose} variant="outlined" color="secondary">
-                Cancelar
-              </Button>
-              <Button type="submit" variant="contained" color="primary" disabled={loading}>
-                {loading ? <CircularProgress size={24} /> : "Aceptar"}
-              </Button>
-            </DialogActions>
-          </Form>
-        )}
-      </Formik>
-        )}
-      </Dialog>
+        <Formik
+          initialValues={{
+            id: user?.id || null,
+            name: user?.name || "",
+            lastname_p: user?.lastname_p || "",
+            lastname_m: user?.lastname_m || "",
+            phone: user?.phone || "",
+            email: user?.email || "",
+            avatar: avatar || placeholderAvatar,
+          }}
+          validationSchema={validationSchema}
+          onSubmit={onSubmit}
+        >
+          {({ errors, touched, setFieldValue }) => (
+            <Form>
+              <DialogContent>
+                <Grid container justifyContent="center" alignItems="center" direction="column">
+                  <AvatarUploader avatar={avatar || placeholderAvatar} setAvatar={setAvatar} setFieldValue={setFieldValue} />
+                  {errors.avatar && touched.avatar && (
+                    <Box color="error.main" mt={1}>
+                      {errors.avatar}
+                    </Box>
+                  )}
+                </Grid>
+                <Field as={TextField} label="Nombre(s)" name="name" fullWidth margin="normal"
+                  error={Boolean(touched.name && errors.name)} helperText={touched.name && errors.name} />
+                <Grid container spacing={2}>
+                  <Grid item xs={6}>
+                    <Field as={TextField} label="Apellido paterno" name="lastname_p" fullWidth margin="normal"
+                      error={Boolean(touched.lastname_p && errors.lastname_p)} helperText={touched.lastname_p && errors.lastname_p} />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Field as={TextField} label="Apellido materno" name="lastname_m" fullWidth margin="normal"
+                      error={Boolean(touched.lastname_m && errors.lastname_m)} helperText={touched.lastname_m && errors.lastname_m} />
+                  </Grid>
+                </Grid>
+                <Field as={TextField} label="Teléfono" name="phone" fullWidth margin="normal"
+                  error={Boolean(touched.phone && errors.phone)} helperText={touched.phone && errors.phone} />
+                <Field as={TextField} label="Correo electrónico" name="email" fullWidth margin="normal"
+                  error={Boolean(touched.email && errors.email)} helperText={touched.email && errors.email} />
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={onClose} variant="outlined" color="secondary" disabled={buttonLoading}>Cancelar</Button>
+                <Button type="submit" variant="contained" color="primary" disabled={buttonLoading}>
+                  {buttonLoading ? <CircularProgress size={24} /> : user ? "Actualizar" : "Registrar"}
+                </Button>
+              </DialogActions>
+            </Form>
+          )}
+        </Formik>
+      )}
+    </Dialog>
   );
 };

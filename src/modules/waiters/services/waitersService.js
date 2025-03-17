@@ -20,3 +20,40 @@ export const getWaiterDetails = async (email) => {
         throw error;
     }
 }
+
+export const registerWaiter = async (data) => {
+    try {
+        const response = await api.post(`${API_URL}/waiters`, data);
+        return response.data;
+    }catch (error){
+        console.error("Error al registrar mesero:", error);
+        throw error;
+    }
+}
+
+export const updateWaiter = async (data) => {
+    try{
+        const response = await api.put(`${API_URL}/waiters`, data);
+        return response.data;
+    }catch (error){
+        console.error("Error al actualizar mesero:", error);
+        throw error;
+    }
+}
+
+export const uploadWaiterAvatar = async (id, file) => {
+    try {
+        const formData = new FormData();
+        formData.append("avatar", file);
+
+        const response = await api.patch(`${API_URL}/waiters/avatar/${id}`, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
+        return response.data;
+    }catch (error){
+        console.error("Error al actualizar la imagen del mesero:", error);
+        throw error;
+    }
+}

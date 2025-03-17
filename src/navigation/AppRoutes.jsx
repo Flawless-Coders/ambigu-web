@@ -1,15 +1,16 @@
-import { Routes, Route, Navigate } from "react-router-dom"
+import { Routes, Route, Navigate, useLocation } from "react-router-dom"
 import PasswordRecoveryPage from "../modules/auth/pages/PasswordRecoveryPage"
 import LoginPage from "../modules/auth/pages/LoginPage"
 import { DashboardPage } from "../modules/dashboard/pages/DashboardPage"
 import Layout from "../views/Layout"
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
 import { AuthContext } from "../context/AuthContext"
 import ForgotPasswordPage from "../modules/auth/pages/ForgotPasswordPage"
 import ProfilePage from "../modules/profile/pages/ProfilePage"
 import LoaderAmbigu from "../kernel/LoaderAmbigu"
 import WaitersPage from "../modules/waiters/pages/WaitersPage"
 import TablePage from "../modules/tables/pages/TablePage"
+import CategoriesPage from "../modules/categories/pages/CategoriesPage"
 
 // Protected route component
 const ProtectedRoute = ({ children }) => {
@@ -24,6 +25,27 @@ const ProtectedRoute = ({ children }) => {
 
 const AppRoutes = () => {
   const { user, logout, loading } = useContext(AuthContext);
+  const location = useLocation();
+
+  useEffect(() => {
+    const routeTitles = {
+      "/": "Inicio",
+      "/password-recovery": "Recuperar Contraseña",
+      "/forgot-password": "Olvidé mi Contraseña",
+      "/dashboard": "Dashboard",
+      "/waiters": "Meseros",
+      "/categories": "Categorías",
+      "/dishes": "Platillos",
+      "/tables": "Mesas",
+      "/menu": "Menú",
+      "/customization": "Personalización",
+      "/orders": "Pedidos",
+      "/profile": "Perfil",
+    };
+
+    const title = routeTitles[location.pathname] || "Mi Proyecto";
+    document.title = `Ambigú | ${title}`;
+  }, [location]); 
 
   if (loading) {
     return <LoaderAmbigu/>;
@@ -44,7 +66,7 @@ const AppRoutes = () => {
       }>
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/waiters" element={<WaitersPage />} />
-        <Route path="/categories" element={<div>Categorías (Coming Soon)</div>} />
+        <Route path="/categories" element={<CategoriesPage />} />
         <Route path="/dishes" element={<div>Platillos (Coming Soon)</div>} />
         <Route path="/tables" element={<TablePage />} />
         <Route path="/menu" element={<div>Menú (Coming Soon)</div>} />

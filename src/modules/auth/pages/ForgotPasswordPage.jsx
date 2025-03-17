@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { TextField, Button, Typography, Box, Link, CircularProgress, Alert, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import { ArrowForward } from "@mui/icons-material";
 import AuthLayout from '../components/AuthLayout'
@@ -46,8 +46,8 @@ export default function ForgotPasswordPage() {
             <Button
               fullWidth
               variant="contained"
-              color="primary"
-              sx={{ mt: 3, py: 1.5, fontSize: "1rem", fontWeight: "bold" }}
+              color="success"
+              sx={{ mt: 3, py: 1.5 }}
               type="submit"
               disabled={isSubmitting}
             >
