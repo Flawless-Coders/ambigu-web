@@ -17,7 +17,7 @@ export default function Navbar({ user, onSearch, showSearch = true }) {
       sx={{
         display: "flex",
         alignItems: "center",
-        justifyContent: "space-between",// Ajuste según sidebar
+        justifyContent: showSearch ? 'space-between' : 'flex-end',// Ajuste según sidebar
         height: "60px",
       }}
     >
