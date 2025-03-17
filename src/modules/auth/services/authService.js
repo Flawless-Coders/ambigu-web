@@ -45,3 +45,17 @@ export const getUserDetails = async (email, token) => {
         throw error.response?.data?.message || "Error con el servidor";
     }
 };
+
+export const fetchTheme = async (token) => {
+    try {
+        const response = await axios.get(`${API_URL}/theming`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error al obtener el tema:", error);
+        return null;
+    }
+};
