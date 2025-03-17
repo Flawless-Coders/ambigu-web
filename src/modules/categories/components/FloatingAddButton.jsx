@@ -1,7 +1,7 @@
 import { Fab } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 
-const FloatingAddButton = () => {
+const FloatingAddButton = ({action}) => {
   return (
     <Fab 
       color="info" 
@@ -11,6 +11,7 @@ const FloatingAddButton = () => {
         bottom: 24, 
         boxShadow: 3
       }}
+      onClick={action}
     >
       <AddIcon />
     </Fab>
