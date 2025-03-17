@@ -2,81 +2,109 @@ import { useEffect, useState } from "react";
 import { Tabs, Tab, Typography, Box } from "@mui/material";
 import { CheckCircle, RemoveCircle } from "@mui/icons-material";
 import CategoriesCard from "../components/CategoriesCard";
-import { getCategories } from "../services/categoriesService";
+import { getCategories, changeCategoryStatus } from "../services/categoriesService";
 import FloatingAddButton from "../components/FloatingAddButton";
+import RegisterDialog from "../components/RegisterDialog";
+import ChangeStatusDialog from "../components/ChangeStatusDialog";
+import LoaderAmbigu from "../../../kernel/LoaderAmbigu";
 
 const CategoriesPage = () => {
   const [categories, setCategories] = useState([]);
-  const [showEnabled, setShowEnabled] = useState(true);
+  const [tabIndex, setTabIndex] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [openChangeStatusDialog, setOpenChangeStatusDialog] = useState(false);
 
   useEffect(() => {
     fetchCategories();
-  }, [showEnabled]);
+  }, []);
 
   const fetchCategories = async () => {
-    const data = await getCategories(showEnabled);
-    setCategories(data);
+    setLoading(true);
+    try {
+      const data = await getCategories();
+      setCategories(data);
+    } catch (error) {
+      console.error("Error al obtener categorías:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleDelete = (id) => {
-    console.log("Eliminar categoría con ID:", id);
+  const handleOpenChangeStatusDialog = (category) => {
+    setSelectedCategory(category);
+    setOpenChangeStatusDialog(true);
   };
 
-  const handleEdit = (category) => {
-    console.log("Editar categoría:", category);
+  const handleCloseChangeStatusDialog = () => {
+    setOpenChangeStatusDialog(false);
+    setSelectedCategory(null);
   };
 
-  const handleChange = (event, newValue) => {
-    setShowEnabled(newValue);
+  const handleStatusChange = async () => {
+    await fetchCategories();
+    handleCloseChangeStatusDialog();
   };
+
+  const handleOpenEditDialog = (category) => {
+    setSelectedCategory(category);
+    setOpenModal(true);
+  };
+
+  const filteredCategories = categories.filter((category) =>
+    tabIndex === 0 ? category.status === true : category.status === false
+  );
 
   return (
     <Box sx={{ position: "relative", minHeight: "100vh", paddingBottom: "80px" }}>
-      <Typography variant="h5" fontWeight="bold" mb={2}>Categoría</Typography>
-      
-      {/* Selector de Habilitadas/Deshabilitadas */}
-      <Tabs
-        value={showEnabled}
-        onChange={handleChange}
-        sx={{
-          "& .MuiTabs-indicator": {
-            backgroundColor: "#1976D2",
-            transition: "left 0.3s ease-in-out",
-          },
-        }}
-      >
+      <Typography variant="h5" fontWeight="bold" mb={2}>
+        Categorías
+      </Typography>
+
+      {/* Tabs Habilitados/Deshabilitados */}
+      <Tabs value={tabIndex} onChange={(event, newValue) => setTabIndex(newValue)} sx={{ mb: 1 }}>
         <Tab
-          icon={<CheckCircle sx={{ color: showEnabled ? "#1976D2" : "gray" }} />}
+          icon={<CheckCircle sx={{ color: tabIndex === 0 ? "green" : "gray" }} />}
           iconPosition="start"
-          label="HABILITADAS"
-          value={true}
-          sx={{
-            color: showEnabled ? "#1976D2" : "gray",
-            fontWeight: "bold",
-            textTransform: "none",
-          }}
+          label="Habilitados"
+          value={0}
+          sx={{ color: tabIndex === 0 ? "green" : "gray", fontWeight: "bold", textTransform: "none" }}
         />
         <Tab
-          icon={<RemoveCircle sx={{ color: !showEnabled ? "#1976D2" : "gray" }} />}
+          icon={<RemoveCircle sx={{ color: tabIndex === 1 ? "green" : "gray" }} />}
           iconPosition="start"
-          label="DESHABILITADAS"
-          value={false}
-          sx={{
-            color: !showEnabled ? "#1976D2" : "gray",
-            fontWeight: "bold",
-            textTransform: "none",
-          }}
+          label="Deshabilitados"
+          value={1}
+          sx={{ color: tabIndex === 1 ? "green" : "gray", fontWeight: "bold", textTransform: "none" }}
         />
       </Tabs>
-      
-      {/* Lista de categorías */}
-      <Box display="flex" flexWrap="wrap" gap={2} mt={3}>
-        {categories.map((category) => (
-          <CategoriesCard key={category.id} category={category} onDelete={handleDelete} onEdit={handleEdit} />
-        ))}
-      </Box>
-      
-      <FloatingAddButton />
+
+      {loading ? (
+        <LoaderAmbigu />
+      ) : (
+        <Box display="flex" flexWrap="wrap" gap={2} mt={3}>
+          {filteredCategories.map((category) => (
+            <CategoriesCard
+              key={category.id}
+              category={category}
+              onChangeStatus={handleOpenChangeStatusDialog}
+              onEdit={handleOpenEditDialog}
+            />
+          ))}
+        </Box>
+      )}
+
+      <FloatingAddButton onClick={() => setOpenModal(true)} />
+      <RegisterDialog open={openModal} handleClose={() => setOpenModal(false)} onSuccess={fetchCategories} category={selectedCategory} />
+
+      {/* Dialogo de habilitar/deshabilitar */}
+      <ChangeStatusDialog
+        open={openChangeStatusDialog}
+        onClose={handleCloseChangeStatusDialog}
+        category={selectedCategory}
+        onStatusChange={handleStatusChange}
+      />
     </Box>
   );
 };
