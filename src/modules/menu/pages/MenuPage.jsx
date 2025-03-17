@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import CustomCard from "../../../kernel/CustomCard";
 import { Box, Typography, Grid, Alert, Button} from '@mui/material';
 import FloatingAddButton from "../../categories/components/FloatingAddButton";
-import { handleGetMenu, handleGetMenuPhotos,handleGetMenuById,handleCreateMenu} from "../controllers/MenuController";
+import { handleGetMenu, handleGetMenuPhotos,handleGetMenuById,handleCreateMenu, handleUpdateMenu} from "../controllers/MenuController";
 import { useOutletContext } from "react-router-dom";
 import LoaderAmbigu from '../../../kernel/LoaderAmbigu';
 import { RegisterDialog } from '../components/RegisterDialog';
@@ -39,7 +39,7 @@ export default function MenuPage() {
         setSuccess(null);
     
         if (values.id) { //Si tiene id se actualiza, sino se crea
-          await handleUpdateWaiter(values, setError, setSuccess, setLoading); //Mandar a traer mi actualizar menú
+          await handleUpdateMenu(values, setError, setSuccess, setLoading); //Mandar a traer mi actualizar menú
         } else {
           await handleCreateMenu(values, setError, setSuccess, setLoading); //Mandar a traer mi registrar menú
         }
@@ -87,6 +87,10 @@ export default function MenuPage() {
                                     description={menu.description}
                                     chipTitle={menu.status? "Menú actual" : "Menú inactivo"}
                                     chipColor={menu.status? "success" : "error"}
+                                    update={()=>{handleOpenUpdateDialog(menu.id)}}
+                                    menuStatus = {menu.status}
+                                    isMenu={true}
+                                    isEnable={true}
                                 />
                             ))}
                         </Grid>

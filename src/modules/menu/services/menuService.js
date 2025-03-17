@@ -48,3 +48,29 @@ export const createMenu = async (formData) => {
         throw error;
     }
 };
+
+
+export const updateMenu = async (id,formData) => {
+    try {
+        const response = await api.put(`${API_URL}/menu/${id}`, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data", // Especifica el tipo de contenido
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error al actualizar el menú:", error);
+        throw error;
+    }
+};
+
+
+export const inactivateMenu = async (menuId) => {
+    try {
+        const response = await api.put(`${API_URL}/menu/inactivateMenu/${menuId}`)
+        return response.data;
+    } catch (error) {
+        console.error("Error al inactivar el menú: ", error);
+        throw error;
+    }
+};

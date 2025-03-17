@@ -1,12 +1,18 @@
-import { useState, useEffect } from "react";
+import React,{ useState, useEffect } from "react";
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, CircularProgress, Box } from "@mui/material";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
+import Backdrop from "@mui/material/Backdrop";
 
 export const RegisterDialog = ({ open, onClose, menu, photo, onSubmit, loading, buttonLoading }) => {
-    const placeholderMenu = "https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png";
+    const placeholderMenu = "https://ralfvanveen.com/wp-content/uploads/2021/06/Placeholder-_-Glossary.svg";
     const [preview, setPreview] = useState(photo || placeholderMenu);
+    const fileInputRef = React.useRef(null);
+
+    const handleClick = () => {
+        fileInputRef.current.click(); // Simula un clic en el input oculto
+      };
 
     useEffect(() => {
         setPreview(photo || placeholderMenu);
@@ -25,7 +31,18 @@ export const RegisterDialog = ({ open, onClose, menu, photo, onSubmit, loading, 
     });
 
     return (
-        <Dialog open={open} onClose={onClose} aria-labelledby="register-dialog-title">
+        <Dialog open={open} onClose={onClose} aria-labelledby="register-dialog-title" slots={{ backdrop: Backdrop }} sx={{"& .MuiDialog-paper": { 
+            width: "400px"
+        }}}
+        slotProps={{
+          backdrop: {
+            timeout: 500,
+            sx: {
+              backdropFilter: 'blur(8px)', // Desenfoque del fondo
+              backgroundColor: 'rgba(0, 0, 0, 0.4)', // Color semitransparente
+            },
+          },
+        }}>
             <DialogTitle>{menu ? "Modificar menú" : "Registrar menú"}</DialogTitle>
             {loading ? (
                 <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px" minWidth="400px">
@@ -71,17 +88,18 @@ export const RegisterDialog = ({ open, onClose, menu, photo, onSubmit, loading, 
                                     <img
                                         src={preview}
                                         alt="Vista previa"
+                                        onClick={handleClick}
                                         style={{
                                             width: "100%",
-                                            maxWidth: "300px",
-                                            borderRadius: "8px",
                                             marginBottom: "10px",
+                                            maxHeight:"200px"
                                         }}
                                     />
                                     <input
                                         id="file-upload"
                                         type="file"
                                         accept="image/*"
+                                        ref={fileInputRef}
                                         style={{ display: "none" }}
                                         onChange={(event) => {
                                             const file = event.target.files[0];
@@ -95,16 +113,17 @@ export const RegisterDialog = ({ open, onClose, menu, photo, onSubmit, loading, 
                                             }
                                         }}
                                     />
-                                    <label htmlFor="file-upload">
+                                    
                                         <Button
                                             variant="contained"
                                             component="span"
+                                            onClick={handleClick}
                                             color="primary"
                                             startIcon={<CloudUploadOutlinedIcon />}
                                         >
                                             {menu ? ("Actualizar imagen") : ("Subir imagen")}
                                         </Button>
-                                    </label>
+                                    
                                     {touched.photo && errors.photo && (
                                         <div style={{ color: "red" }}>{errors.photo}</div>
                                     )}
