@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Card, CardMedia, CardContent, Typography, IconButton, Box } from "@mui/material";
+import { Card, CardMedia, CardContent, Typography, IconButton, Box, Grid } from "@mui/material";
 import { RemoveCircle, Edit, CheckCircle } from "@mui/icons-material";
 
 const CategoriesCard = ({ category, onChangeStatus, onEdit }) => {
@@ -10,6 +10,7 @@ const CategoriesCard = ({ category, onChangeStatus, onEdit }) => {
     : "https://via.placeholder.com/250";
 
   return (
+    <Grid item xs={12} sm={6} md={4} lg={3}>
     <Card
       sx={{
         width: 250,
@@ -109,6 +110,7 @@ const CategoriesCard = ({ category, onChangeStatus, onEdit }) => {
         )}
       </CardContent>
     </Card>
+    </Grid>
   );
 };
 

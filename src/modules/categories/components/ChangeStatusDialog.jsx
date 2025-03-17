@@ -2,11 +2,13 @@ import { useState } from "react";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Typography, Button, CircularProgress } from "@mui/material";
 import { Warning, CheckCircle } from "@mui/icons-material";
 import { motion } from "framer-motion";
-import { changeCategoryStatus } from "../services/categoriesService";
+import { handleChangeCategoryStatus } from "../controllers/categoriesController";
+import { useOutletContext } from "react-router-dom";
 import Backdrop from "@mui/material/Backdrop";
 
 const ChangeStatusDialog = ({ open, onClose, category, onStatusChange }) => {
   const [loading, setLoading] = useState(false);
+  const { setSuccess, setError } = useOutletContext();
 
   if (!category) return null;
 
@@ -16,27 +18,28 @@ const ChangeStatusDialog = ({ open, onClose, category, onStatusChange }) => {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      await changeCategoryStatus(category.id);
-      await onStatusChange();
+      await handleChangeCategoryStatus(category.id, setSuccess, setError, setLoading, onStatusChange);
     } catch (error) {
       console.error("Error al cambiar el estado de la categoría:", error);
-    } finally {
-      setLoading(false);
-      onClose();
     }
   };
 
   return (
-    <Dialog open={open} onClose={!loading ? onClose : null} aria-labelledby="change-status-dialog-title" slots={{ backdrop: Backdrop }}
-    slotProps={{
-      backdrop: {
-        timeout: 500,
-        sx: {
-          backdropFilter: 'blur(8px)', // Desenfoque del fondo
-          backgroundColor: 'rgba(0, 0, 0, 0.4)', // Color semitransparente
+    <Dialog 
+      open={open} 
+      onClose={!loading ? onClose : null} 
+      aria-labelledby="change-status-dialog-title" 
+      slots={{ backdrop: Backdrop }}
+      slotProps={{
+        backdrop: {
+          timeout: 500,
+          sx: {
+            backdropFilter: "blur(8px)",
+            backgroundColor: "rgba(0, 0, 0, 0.4)",
+          },
         },
-      },
-    }}>
+      }}
+    >
       <DialogTitle sx={{ textAlign: "center", color: category.status ? "red" : "green" }}>
         <motion.div
           initial={{ scale: 0 }}
@@ -55,7 +58,13 @@ const ChangeStatusDialog = ({ open, onClose, category, onStatusChange }) => {
         <Typography variant="h6" sx={{ marginTop: 2, fontWeight: "bold" }}>{category.name}</Typography>
       </DialogContent>
       <DialogActions sx={{ justifyContent: "center" }}>
-        <Button onClick={onClose} color="error" variant="outlined" sx={{ marginRight: 2 }} disabled={loading}>
+        <Button 
+          onClick={onClose} 
+          color="error" 
+          variant="outlined" 
+          sx={{ marginRight: 2 }} 
+          disabled={loading}
+        >
           Cancelar
         </Button>
         <Button

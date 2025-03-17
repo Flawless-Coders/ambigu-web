@@ -3,13 +3,15 @@ import { Modal, Box, TextField, Button, Typography, CircularProgress, Grid } fro
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { updateCategory, createCategory, updateCategoryImage } from "../services/categoriesService";
+import { useOutletContext } from "react-router-dom";
 import Backdrop from "@mui/material/Backdrop";
+import { handleCreateCategory, handleUpdateCategory } from "../controllers/categoriesController";
 
 const RegisterDialog = ({ open, handleClose, category, onSuccess }) => {
   const [previewImage, setPreviewImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [buttonLoading, setButtonLoading] = useState(false);
+  const { setSuccess, setError } = useOutletContext();
 
   useEffect(() => {
     if (category) {
@@ -26,17 +28,20 @@ const RegisterDialog = ({ open, handleClose, category, onSuccess }) => {
   });
 
   return (
-    <Modal open={open} onClose={!buttonLoading ? handleClose : null} slots={{ backdrop: Backdrop }}
-    slotProps={{
-      backdrop: {
-        timeout: 500,
-        sx: {
-          backdropFilter: 'blur(8px)', // Desenfoque del fondo
-          backgroundColor: 'rgba(0, 0, 0, 0.4)', // Color semitransparente
+    <Modal 
+      open={open} 
+      onClose={!buttonLoading ? handleClose : null} 
+      slots={{ backdrop: Backdrop }}
+      slotProps={{
+        backdrop: {
+          timeout: 500,
+          sx: {
+            backdropFilter: "blur(8px)",
+            backgroundColor: "rgba(0, 0, 0, 0.4)",
+          },
         },
-      },
-    }}>
-      
+      }}
+    >
       <Box
         sx={{
           position: "absolute",
@@ -55,34 +60,45 @@ const RegisterDialog = ({ open, handleClose, category, onSuccess }) => {
         </Typography>
 
         <Formik
-  initialValues={{
-    name: category?.name || "",
-    imageBase64: category?.imageBase64 || "",
-    status: category?.status || true,
-  }}
-  validationSchema={validationSchema}
-  onSubmit={async (values, { setSubmitting }) => {
-    setButtonLoading(true);
-    try {
-      if (category) {
-        await updateCategory(category.id, values.name, values.imageBase64, values.status);
-        if (imageFile) {
-          await updateCategoryImage(category.id, imageFile);
-        }
-      } else {
-        await createCategory(values.name, imageFile);
-      }
-
-      onSuccess();
-      handleClose();
-    } catch (error) {
-      console.error("Error al guardar la categoría:", error);
-    } finally {
-      setButtonLoading(false);
-      setSubmitting(false);
-    }
-  }}
->
+          initialValues={{
+            name: category?.name || "",
+            imageBase64: category?.imageBase64 || "",
+            status: category?.status ?? true,
+          }}
+          validationSchema={validationSchema}
+          onSubmit={async (values, { setSubmitting, resetForm }) => {
+            setButtonLoading(true);
+            setError(null);
+            setSuccess(null);
+          
+            try {
+              if (category) {
+                await handleUpdateCategory(
+                  category.id, values.name, values.imageBase64, values.status, imageFile, 
+                  setSuccess, setError, setButtonLoading, onSuccess
+                );
+              } else {
+                await handleCreateCategory(
+                  values.name, imageFile, setSuccess, setError, setButtonLoading, onSuccess
+                );
+              }
+          
+              resetForm();
+              setImageFile(null);
+              setPreviewImage(null);
+          
+              setTimeout(() => {
+                handleClose();
+              }, 300);
+            } catch (error) {
+              console.error("Error en la operación:", error);
+            } finally {
+              setButtonLoading(false);
+              setSubmitting(false);
+            }
+          }}
+          
+        >
           {({ setFieldValue, errors, touched }) => (
             <Form>
               <Field
@@ -138,10 +154,27 @@ const RegisterDialog = ({ open, handleClose, category, onSuccess }) => {
               </Button>
 
               <Grid container justifyContent="space-between">
-                <Button variant="outlined" onClick={handleClose} sx={{ width: "48%" }} disabled={buttonLoading}>
+                <Button 
+                  variant="outlined" 
+                  onClick={handleClose} 
+                  sx={{ width: "48%" }} 
+                  disabled={buttonLoading}
+                >
                   CANCELAR
                 </Button>
-                <Button type="submit" variant="contained" color="primary" sx={{ width: "48%" }} disabled={buttonLoading}>
+                <Button 
+                  type="submit" 
+                  variant="contained" 
+                  sx={{
+                    width: "48%",
+                    backgroundColor: category ? "purple" : "info.main",
+                    color: "white",
+                    "&:hover": {
+                      backgroundColor: category ? "#6a0dad" : "info.dark",
+                    },
+                  }}
+                  disabled={buttonLoading}
+                >
                   {buttonLoading ? <CircularProgress size={24} color="inherit" /> : category ? "ACTUALIZAR" : "AGREGAR"}
                 </Button>
               </Grid>

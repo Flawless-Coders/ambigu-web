@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { Tabs, Tab, Typography, Box } from "@mui/material";
 import { CheckCircle, RemoveCircle } from "@mui/icons-material";
 import CategoriesCard from "../components/CategoriesCard";
-import { getCategories, changeCategoryStatus } from "../services/categoriesService";
+import { handleGetCategories } from "../controllers/categoriesController";
 import FloatingAddButton from "../components/FloatingAddButton";
 import RegisterDialog from "../components/RegisterDialog";
 import ChangeStatusDialog from "../components/ChangeStatusDialog";
 import LoaderAmbigu from "../../../kernel/LoaderAmbigu";
+import { useOutletContext } from "react-router-dom";
 
 const CategoriesPage = () => {
   const [categories, setCategories] = useState([]);
@@ -16,21 +17,11 @@ const CategoriesPage = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [openChangeStatusDialog, setOpenChangeStatusDialog] = useState(false);
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
+  const { setSuccess, setError } = useOutletContext();
 
-  const fetchCategories = async () => {
-    setLoading(true);
-    try {
-      const data = await getCategories();
-      setCategories(data);
-    } catch (error) {
-      console.error("Error al obtener categorías:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  useEffect(() => {
+    handleGetCategories(setCategories, setLoading, setError);
+  }, []);
 
   const handleOpenChangeStatusDialog = (category) => {
     setSelectedCategory(category);
@@ -43,7 +34,7 @@ const CategoriesPage = () => {
   };
 
   const handleStatusChange = async () => {
-    await fetchCategories();
+    await handleGetCategories(setCategories, setLoading, setError);
     handleCloseChangeStatusDialog();
   };
 
@@ -58,9 +49,7 @@ const CategoriesPage = () => {
 
   return (
     <Box sx={{ position: "relative", minHeight: "100vh", paddingBottom: "80px" }}>
-      <Typography variant="h5" fontWeight="bold" mb={2}>
-        Categorías
-      </Typography>
+      <Typography variant="h4">Categorías</Typography>
 
       {/* Tabs Habilitados/Deshabilitados */}
       <Tabs value={tabIndex} onChange={(event, newValue) => setTabIndex(newValue)} sx={{ mb: 1 }}>
@@ -96,7 +85,12 @@ const CategoriesPage = () => {
       )}
 
       <FloatingAddButton onClick={() => setOpenModal(true)} />
-      <RegisterDialog open={openModal} handleClose={() => setOpenModal(false)} onSuccess={fetchCategories} category={selectedCategory} />
+      <RegisterDialog 
+        open={openModal} 
+        handleClose={() => setOpenModal(false)} 
+        onSuccess={() => handleGetCategories(setCategories, setLoading, setError)} 
+        category={selectedCategory} 
+      />
 
       {/* Dialogo de habilitar/deshabilitar */}
       <ChangeStatusDialog
