@@ -1,18 +1,40 @@
-import { useEffect } from "react";
+import { useState } from "react";
 import { Typography, Box, Card, CardContent, Grid } from "@mui/material";
 import LoadingScreen from "../../../kernel/LoadingScreen";
+import HoverActions from "./HoverActions";
 
 export default function TableCard({ data, loading, status }) {
-   
+    const [hoveredCard, setHoveredCard] = useState(null);
+
     return (
         <Box sx={{ mt: 2 }}>
             {loading ? (
                 <LoadingScreen />
             ) : data && data.length > 0 ? (
-                <Grid container spacing={2}>
+                <Grid container spacing={4}>
                     {data.map((table) => (
                         <Grid item xs={12} sm={4} md={2} key={table.id}>
-                            <Card sx={{ width: "100%" }}>
+                            <Card
+                                sx={{
+                                    width: "100%",
+                                    position: "relative",
+                                    transition: "transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
+                                    "&:hover": {
+                                        transform: "translateY(-5px)", // Elevar la tarjeta
+                                        boxShadow: 6, // Sombra más pronunciada
+                                    },
+                                }}
+                                onMouseEnter={() => setHoveredCard(table.id)}
+                                onMouseLeave={() => setHoveredCard(null)}
+                            >
+                                <HoverActions 
+                                    isEnabled={table.enabled} 
+                                    update={() => console.log("Editar")}
+                                    disabled={() => console.log("Deshabilitar")}
+                                    enabled={() => console.log("Habilitar")}
+                                    status={status}
+                                    showFab={hoveredCard === table.id} 
+                                />
                                 <Box sx={{ paddingX: 2 }}>
                                     <CardContent>
                                         <svg
@@ -33,12 +55,11 @@ export default function TableCard({ data, loading, status }) {
                         </Grid>
                     ))}
                 </Grid>
-           ) : (
-              <Typography sx={{ textAlign: "center" }}>
-                  {status === "habilitados" ? "No hay mesas habilitadas" : "No hay mesas deshabilitadas"}
-              </Typography>
-          )}
-        
+            ) : (
+                <Typography sx={{ textAlign: "center" }}>
+                    {status === "habilitados" ? "No hay mesas habilitadas" : "No hay mesas deshabilitadas"}
+                </Typography>
+            )}
         </Box>
     );
 }
