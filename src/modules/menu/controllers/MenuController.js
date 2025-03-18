@@ -1,4 +1,4 @@
-import { getMenu, getMenuPhoto, getMenuById,createMenu } from "../services/menuService";
+import { getMenu, getMenuPhoto, getMenuById,createMenu, updateMenu, inactivateMenu } from "../services/menuService";
 
 export const handleGetMenu = async(setError, setLoading, setMenuData) =>{
     setLoading(true);
@@ -64,6 +64,41 @@ export const handleCreateMenu = async (menu, setError, setSuccess, setLoading) =
         return response;
     } catch (error) {
         setError("Error al registrar el menú");
+        throw error;
+    } finally {
+        setLoading(false);
+    }
+};
+
+
+export const handleUpdateMenu = async (menu, setError, setSuccess, setLoading) => {
+    setLoading(true);
+    try {
+        const formData = new FormData();
+        formData.append("name", menu.name);
+        formData.append("description", menu.description);
+        formData.append("photo", menu.photo); // Aquí esperamos un objeto File
+
+        const response = await updateMenu(menu.id,formData);
+        setSuccess("Menú actualizado correctamente");
+        return response;
+    } catch (error) {
+        setError("Error al actualizar el menú");
+        throw error;
+    } finally {
+        setLoading(false);
+    }
+};
+
+
+export const handleInactivateMenu = async (id, setError, setSuccess, setLoading) => {
+    setLoading(true);
+    try {
+        const response = await inactivateMenu(id);
+        setSuccess("Menú actualizado correctamente");
+        return response;
+    } catch (error) {
+        setError("Error al actualizar el menú");
         throw error;
     } finally {
         setLoading(false);
