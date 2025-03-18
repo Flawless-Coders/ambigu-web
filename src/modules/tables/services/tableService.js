@@ -30,3 +30,23 @@ export const saveTable = async (table) => {
         throw error
     }
 }
+
+export const updateTable = async (table) => {
+    try {
+        const response = await api.put(`${API_URL}/tables/${table.id}`, table);
+        return response.data        
+    } catch (error) {
+        console.error("Error al actualizar la mesa: ", error);
+        throw error
+    }
+}
+
+export const changeStatusTable = async (id) => {
+    try {
+        const response = await api.put(`${API_URL}/tables/${id}/tableIsEnable`);
+        return response.data        
+    } catch (error) {
+        console.error("Error al cambiar estado a la mesa: ", error);
+        throw error
+    }
+}

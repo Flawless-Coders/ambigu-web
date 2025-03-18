@@ -15,6 +15,7 @@ export default function TablePage() {
     
     const [open, setOpen] = useState(false); // Estado para el modal
     const [tableIdentifier, setTableIdentifier] = useState('');
+    const [inputError, setInputError] = useState(false); // Estado para manejar errores de validación
 
     useEffect(() => {
         if (error) {
@@ -22,7 +23,6 @@ export default function TablePage() {
         }
     }, [error, setGlobalError]);
 
-    // Función para obtener las mesas según la pestaña activa
     const fetchTables = () => {
         if (tabIndex === 0) {
             handleGetEnabledTables(setError, setLoading, setDataTable);
@@ -31,23 +31,25 @@ export default function TablePage() {
         }
     };
 
-    // Ejecutar fetchTables cuando cambia la pestaña
     useEffect(() => {
         fetchTables();
     }, [tabIndex]);
 
-    // Funciones para abrir y cerrar el modal
     const handleOpen = () => setOpen(true);
     const handleClose = () => {
         setOpen(false);
         setTableIdentifier(""); // Limpiar input al cerrar el modal
+        setInputError(false); // Limpiar el estado de error
     };
 
-    // Guardar la mesa cuando el usuario haga clic en "Aceptar"
     const handleSave = async () => {
+        if (tableIdentifier.length < 1 || tableIdentifier.length > 5) {
+            setInputError(true); // Mostrar error si no cumple con las reglas
+            return;
+        }
         await handleSaveTable(setError, setLoading, setSuccess, tableIdentifier);
-        fetchTables(); // Volver a cargar las mesas
-        handleClose(); // Cerrar modal
+        fetchTables(); 
+        handleClose(); 
     };
 
     return (
@@ -61,23 +63,21 @@ export default function TablePage() {
             </Box>
 
             {tabIndex === 0 ? (
-                <TableCard status="habilitados" data={dataTable} loading={loading} />
+                <TableCard status="habilitados" data={dataTable} loading={loading} fetchTables={fetchTables} setSuccess={setSuccess} />
             ) : (
-                <TableCard status="deshabilitados" data={dataTable} loading={loading} />
+                <TableCard status="deshabilitados" data={dataTable} loading={loading} fetchTables={fetchTables} setSuccess={setSuccess} />
             )}
 
-            {/* Botón flotante para agregar mesa */}
             {tabIndex === 0 && <FloatingAddButton action={handleOpen} />}
 
-            {/* Modal para agregar una nueva mesa */}
             <Dialog
                 open={open}
                 onClose={handleClose}
                 aria-labelledby="dialog-title"
-                fullWidth // Hace que use todo el ancho disponible en pantallas pequeñas
-                maxWidth="md" // Controla el ancho máximo en pantallas grandes
+                fullWidth
+                maxWidth="md"
                 sx={{
-                    "& .MuiDialog-paper": { width: "90%", maxWidth: "600px" } // Ajusta el tamaño del modal
+                    "& .MuiDialog-paper": { width: "90%", maxWidth: "600px" }
                 }}
             >
                 <DialogTitle id="dialog-title">Agregar mesa</DialogTitle>
@@ -87,21 +87,38 @@ export default function TablePage() {
                         value={tableIdentifier}
                         onInputChange={(event, newInputValue) => {
                             setTableIdentifier(newInputValue);
+                            // Validar la longitud del input
+                            if (newInputValue.length > 5) {
+                                setInputError(true); // Mostrar error si supera los 5 caracteres
+                            } else {
+                                setInputError(false); // Limpiar el error si es válido
+                            }
                         }}
                         id="table-identifier-input"
-                        options={[]} // No hay opciones
+                        options={[]}
                         sx={{ width: '100%', mt: 2 }}
-                        renderInput={(params) => <TextField {...params} label="Identificador de mesa" />}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                label="Identificador de mesa"
+                                error={inputError} // Mostrar error visual
+                                helperText={inputError ? "Máximo 5 caracteres" : ""} // Mensaje de error
+                            />
+                        )}
                     />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} color="secondary">Cancelar</Button>
-                    <Button onClick={handleSave} color="primary" autoFocus>Aceptar</Button>
+                    <Button 
+                        onClick={handleSave} 
+                        color="primary" 
+                        autoFocus
+                        disabled={tableIdentifier.length < 1 || tableIdentifier.length > 5} // Deshabilitar si no cumple las reglas
+                    >
+                        Aceptar
+                    </Button>
                 </DialogActions>
             </Dialog>
-
-
-           
         </Box>
     );
 }
