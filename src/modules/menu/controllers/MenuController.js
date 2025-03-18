@@ -1,4 +1,4 @@
-import { getMenu, getMenuPhoto, getMenuById,createMenu, updateMenu, inactivateMenu } from "../services/menuService";
+import { getMenu, getMenuPhoto, getMenuById,createMenu, updateMenu, inactivateMenu, assignAsCurrent, isCurrentMenu} from "../services/menuService";
 
 export const handleGetMenu = async(setError, setLoading, setMenuData) =>{
     setLoading(true);
@@ -104,3 +104,28 @@ export const handleInactivateMenu = async (id, setError, setSuccess, setLoading)
         setLoading(false);
     }
 };
+
+
+export const handleAssignAsCurrent = async (id, setError, setSuccess, setLoading) => {
+    setLoading(true);
+    console.log(id);
+    try {
+        const response = await assignAsCurrent(id);
+        response?setSuccess("Menú actualizado correctamente"): setError("Sólo puede haber un menú actual");
+        return response;
+    } catch (error) {
+        setError("Error al asignar como actual al menú");
+        throw error;
+    } finally {
+        setLoading(false);
+    }
+};
+
+export const handleGetCurrenMenu = async(setIsCurrentMenu) =>{
+    try{
+        const response = await isCurrentMenu();
+        setIsCurrentMenu(response);
+    }catch{
+        setError("Error al obtener la información");
+    }
+}

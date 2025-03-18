@@ -38,9 +38,10 @@ const AppRoutes = () => {
       "/dishes": "Platillos",
       "/tables": "Mesas",
       "/menu": "Menú",
+      "/watch-menu" : "Ver menú",
       "/customization": "Personalización",
       "/orders": "Pedidos",
-      "/profile": "Perfil",
+      "/profile": "Perfil"
     };
 
     const title = routeTitles[location.pathname] || "Mi Proyecto";

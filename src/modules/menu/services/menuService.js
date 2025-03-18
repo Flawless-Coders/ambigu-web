@@ -74,3 +74,23 @@ export const inactivateMenu = async (menuId) => {
         throw error;
     }
 };
+
+export const assignAsCurrent = async (menuId) => {
+    try {
+        const response = await api.put(`${API_URL}/menu/assignAsCurrent/${menuId}`)
+        return response.data;
+    } catch (error) {
+        console.error("Error al asignar como menú actual: ", error);
+        throw error;
+    }
+};
+
+export const isCurrentMenu = async () => {
+    try {
+        const response = await api.get(`${API_URL}/isCurrentMenu`)
+        return response.data;
+    } catch (error) {
+        console.error("Error obteniendo la información: ", error);
+        throw error;
+    }
+};

@@ -133,9 +133,9 @@ export default function CustomCard(props) {
                     )}
 
 
-                    {!isEnable ? (
-                        <Box
-                            sx={{
+                {!isMenu && !isEnable ? (
+                    <Box
+                    sx={{
                                 position: 'absolute',
                                 bottom: '0%',
                                 left: '90%',
@@ -146,18 +146,18 @@ export default function CustomCard(props) {
                                 width: '100%',
                             }}
                         >
-                            <Fab
-                                size="small"
-                                color={"primary"}
-                                aria-label={"enable"}
-                                onClick={enable}
-                            >
-                                {<TaskAltOutlinedIcon />}
-                            </Fab>
-                        </Box>
-                    ) : ""}
-
-
+                    <Fab
+                        size="small"
+                        color={"primary"}
+                        aria-label={"enable"}
+                        onClick={enable}
+                    >
+                        {<TaskAltOutlinedIcon />}
+                    </Fab>
+                    </Box>
+                ):""}
+                
+                    
                 </CardContent>
             </Card>
         </Grid>
