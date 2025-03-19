@@ -1,10 +1,14 @@
 import { useState, useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
-import { Typography, Box, Tabs, Tab, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Grid } from "@mui/material";
+import { Typography, Box, Tabs, Tab, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
+import { Formik, Form, Field } from "formik";
+import Backdrop from "@mui/material/Backdrop";
+import * as Yup from "yup";
 import Autocomplete from '@mui/material/Autocomplete';
 import TableCard from "../components/TableCard";
 import { handleGetDisabledTables, handleGetEnabledTables, handleSaveTable } from "../controllers/tableController";
 import FloatingAddButton from "../components/FloatingAddButton";
+import LoaderAmbigu from "../../../kernel/LoaderAmbigu";
 
 export default function TablePage() {
     const [error, setError] = useState(null);
@@ -42,15 +46,22 @@ export default function TablePage() {
         setInputError(false); // Limpiar el estado de error
     };
 
-    const handleSave = async () => {
-        if (tableIdentifier.length < 1 || tableIdentifier.length > 5) {
-            setInputError(true); // Mostrar error si no cumple con las reglas
-            return;
+    const handleSave = async (values) => {
+        try {
+            await handleSaveTable(setError, setLoading, setSuccess, values.tableIdentifier);
+            fetchTables(); 
+            handleClose(); // Cerrar el modal inmediatamente después de guardar
+        } catch (err) {
+            setError(err.message);
         }
-        await handleSaveTable(setError, setLoading, setSuccess, tableIdentifier);
-        fetchTables(); 
-        handleClose(); 
     };
+
+    const validationSchema = Yup.object({
+        tableIdentifier: Yup.string()
+            .required("El identificador de la mesa es obligatorio")
+            .max(5, "El identificador de la mesa no puede tener más de 5 caracteres")
+            .min(1, "El identificador de la mesa debe tener al menos 1 carácter")
+    });
 
     return (
         <Box sx={{ p: 3 }}>
@@ -62,13 +73,18 @@ export default function TablePage() {
                 </Tabs>
             </Box>
 
-            {tabIndex === 0 ? (
-                <TableCard status="habilitados" data={dataTable} loading={loading} fetchTables={fetchTables} setSuccess={setSuccess} />
+            {loading ? (
+                <LoaderAmbigu />
             ) : (
-                <TableCard status="deshabilitados" data={dataTable} loading={loading} fetchTables={fetchTables} setSuccess={setSuccess} />
+                <>
+                    {tabIndex === 0 ? (
+                        <TableCard status="habilitados" data={dataTable} loading={loading} fetchTables={fetchTables} setSuccess={setSuccess} />
+                    ) : (
+                        <TableCard status="deshabilitados" data={dataTable} loading={loading} fetchTables={fetchTables} setSuccess={setSuccess} />
+                    )}
+                    {tabIndex === 0 && <FloatingAddButton action={handleOpen} />}
+                </>
             )}
-
-            {tabIndex === 0 && <FloatingAddButton action={handleOpen} />}
 
             <Dialog
                 open={open}
@@ -79,45 +95,68 @@ export default function TablePage() {
                 sx={{
                     "& .MuiDialog-paper": { width: "90%", maxWidth: "600px" }
                 }}
+                slots={{ backdrop: Backdrop }}
+                slotProps={{
+                    backdrop: {
+                        timeout: 500,
+                        sx: {
+                            backdropFilter: "blur(8px)",
+                            backgroundColor: "rgba(0, 0, 0, 0.4)",
+                        },
+                    },
+                }}
             >
                 <DialogTitle id="dialog-title">Agregar mesa</DialogTitle>
                 <DialogContent>
-                    <Autocomplete
-                        freeSolo
-                        value={tableIdentifier}
-                        onInputChange={(event, newInputValue) => {
-                            setTableIdentifier(newInputValue);
-                            // Validar la longitud del input
-                            if (newInputValue.length > 5) {
-                                setInputError(true); // Mostrar error si supera los 5 caracteres
-                            } else {
-                                setInputError(false); // Limpiar el error si es válido
-                            }
+                    <Formik
+                        initialValues={{
+                            tableIdentifier: tableIdentifier
                         }}
-                        id="table-identifier-input"
-                        options={[]}
-                        sx={{ width: '100%', mt: 2 }}
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                label="Identificador de mesa"
-                                error={inputError} // Mostrar error visual
-                                helperText={inputError ? "Máximo 5 caracteres" : ""} // Mensaje de error
-                            />
-                        )}
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose} color="secondary">Cancelar</Button>
-                    <Button 
-                        onClick={handleSave} 
-                        color="primary" 
-                        autoFocus
-                        disabled={tableIdentifier.length < 1 || tableIdentifier.length > 5} // Deshabilitar si no cumple las reglas
+                        validationSchema={validationSchema}
+                        onSubmit={handleSave}
                     >
-                        Aceptar
-                    </Button>
-                </DialogActions>
+                        {({ errors, touched, setFieldValue, isValid }) => (
+                            <Form>
+                                <Field name="tableIdentifier">
+                                    {({ field, meta }) => (
+                                        <Autocomplete
+                                            {...field}
+                                            freeSolo
+                                            value={tableIdentifier}
+                                            onInputChange={(event, newInputValue) => {
+                                                setFieldValue('tableIdentifier', newInputValue);
+                                                setTableIdentifier(newInputValue);
+                                            }}
+                                            id="table-identifier-input"
+                                            options={[]}
+                                            sx={{ width: '100%', mt: 2 }}
+                                            renderInput={(params) => (
+                                                <TextField
+                                                    {...params}
+                                                    label="Identificador de mesa"
+                                                    error={meta.touched && Boolean(meta.error)} // Mostrar error visual
+                                                    helperText={meta.touched && meta.error} // Mostrar mensaje de error
+                                                />
+                                            )}
+                                        />
+                                    )}
+                                </Field>
+                                <DialogActions>
+                                    <Button onClick={handleClose} color="secondary" variant="outlined">Cancelar</Button>
+                                    <Button 
+                                        type="submit" 
+                                        color="primary" 
+                                        variant="contained"
+                                        autoFocus
+                                        disabled={!isValid || loading} // Deshabilitar el botón si el formulario no es válido o está cargando
+                                    >
+                                        Aceptar
+                                    </Button>
+                                </DialogActions>
+                            </Form>
+                        )}
+                    </Formik>
+                </DialogContent>
             </Dialog>
         </Box>
     );

@@ -73,6 +73,7 @@ const AppRoutes = () => {
         <Route path="/tables" element={<TablePage />} />
         <Route path="/menu" element={<MenuPage/>} />
         <Route path="/customization" element={<ThemesPage />} />
+        <Route path="/menu" element={<MenuPage/>} />
         <Route path="/orders" element={<div>Pedidos (Coming Soon)</div>} />
         <Route path="/profile" element={<ProfilePage/>} />
       </Route>

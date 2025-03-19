@@ -45,7 +45,7 @@ export default function TableCard({ data, loading, status, fetchTables, setSucce
                               <Box sx={{ paddingX: 2 }}>
                                 {table.tableClientStatus === 'OCCUPIED' || !table.enabled ? (
                                     <Chip
-                                        color={table.tableClientStatus === 'OCCUPIED' ? 'success' :  'warning' }
+                                        color={table.tableClientStatus === 'OCCUPIED' ? 'success' :  'error' }
                                         label={table.tableClientStatus === 'OCCUPIED' ? "En servicio" :  "Deshabilitada" }
                                         size="small"
                                         sx={{ position:'absolute', marginTop:2, marginLeft:-1 }} // Ajusta la posición

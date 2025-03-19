@@ -1,43 +1,44 @@
 import React, { useState } from "react";
-import { Box, Fab, Dialog, DialogTitle, DialogContent, DialogActions, Button, Autocomplete, TextField, Chip } from "@mui/material";
+import { Box, Fab, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, CircularProgress, Typography } from "@mui/material";
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import TaskAltOutlinedIcon from '@mui/icons-material/TaskAltOutlined';
 import { handleChangeStatusTable, handleUpdateTable } from "../controllers/tableController";
+import { Formik, Form, Field } from "formik";
+import * as Yup from "yup";
+import { motion } from "framer-motion";
+import { Warning, CheckCircle } from "@mui/icons-material";
+import Backdrop from "@mui/material/Backdrop";
 
 export default function HoverActions({ isEnabled, showFab, fetchTables, id, tableIdentifier, setSuccess, tableClientStatus }) {
     const [openDialog, setOpenDialog] = useState(false);
     const [actionType, setActionType] = useState('');
-    const [updatedTableIdentifier, setUpdatedTableIdentifier] = useState('');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [inputError, setInputError] = useState(false)
+
+    const validationSchema = Yup.object({
+        updatedTableIdentifier: Yup.string()
+            .required("El identificador es obligatorio")
+            .max(5, "Máximo 5 caracteres")
+            .min(1, "Mínimo 1 carácter"),
+    });
 
     const handleOpenDialog = (action) => {
         setActionType(action);
         setOpenDialog(true);
-        if (action === 'editar') {
-            setUpdatedTableIdentifier(tableIdentifier); // Inicializa con el valor actual
-        }
     };
 
     const handleCloseDialog = () => {
         setOpenDialog(false);
-        setUpdatedTableIdentifier('');
-        setInputError(false); // Limpiar el estado de error al cerrar el diálogo
     };
 
-    const handleConfirmAction = async () => {
+    const handleConfirmAction = async (values) => {
         try {
             setLoading(true);
             if (actionType === 'editar') {
-                if (updatedTableIdentifier.length < 1 || updatedTableIdentifier.length > 5) {
-                    setInputError(true); 
-                    return;
-                }
                 const tableData = {
                     id: id,
-                    tableIdentifier: updatedTableIdentifier,
+                    tableIdentifier: values.updatedTableIdentifier,
                 };
                 await handleUpdateTable(setError, setLoading, setSuccess, tableData);
             } else if (actionType === 'deshabilitar') {
@@ -97,60 +98,101 @@ export default function HoverActions({ isEnabled, showFab, fetchTables, id, tabl
                 </Box>
             )}
 
-            <Dialog open={openDialog} onClose={handleCloseDialog}>
-                <DialogTitle>Confirmar Acción</DialogTitle>
-                <DialogContent>
+            <Dialog 
+                open={openDialog} 
+                onClose={!loading ? handleCloseDialog : null} 
+                slots={{ backdrop: Backdrop }}
+                slotProps={{
+                    backdrop: {
+                        timeout: 500,
+                        sx: {
+                            backdropFilter: "blur(8px)",
+                            backgroundColor: "rgba(0, 0, 0, 0.4)",
+                        },
+                    },
+                }}
+            >
+                <DialogTitle sx={{ textAlign: "center", color: actionType === 'deshabilitar' ? "red" : "green" }}>
+                    {actionType !== 'editar' && (
+                        <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ rotate: 360, scale: 1 }}
+                            transition={{
+                                type: "spring",
+                                stiffness: 260,
+                                damping: 20,
+                            }}
+                        >
+                            {actionType === 'deshabilitar' ? <Warning sx={{ fontSize: 50 }} color="error" /> : <CheckCircle sx={{ fontSize: 50 }} color="success" />}
+                        </motion.div>
+                    )}
+                </DialogTitle>
+                <DialogContent sx={{ textAlign: "center" }}>
                     ¿Estás seguro de que quieres {
                         actionType === 'deshabilitar' ? "deshabilitar" :
                         actionType === 'habilitar' ? "habilitar" :
                         actionType === 'editar' ? "actualizar" : ""
                     } esta mesa?
-
+                    {actionType === 'deshabilitar' || actionType === 'habilitar' ? 
+                        (<Typography variant="h6" sx={{ marginTop: 2, fontWeight: "bold" }}>{tableIdentifier}</Typography>)
+                    : ("")}
+                    
                     {actionType === 'editar' && (
-                        <Autocomplete
-                            freeSolo
-                            value={updatedTableIdentifier}
-                            onChange={(event, newValue) => {
-                                setUpdatedTableIdentifier(newValue); // Captura el valor seleccionado
-                            }}
-                            onInputChange={(event, newInputValue) => {
-                                setUpdatedTableIdentifier(newInputValue || ""); // Asegura que nunca sea null
-                                // Validar la longitud del input
-                                if (newInputValue && newInputValue.length > 5) {
-                                    setInputError(true); // Mostrar error si supera los 5 caracteres
-                                } else {
-                                    setInputError(false); 
-                                }
-                            }}
-                            
-                            id="edit-table-identifier-input"
-                            options={[]} // Opciones vacías ya que es freeSolo
-                            sx={{ width: "100%", mt: 2 }}
-                            renderInput={(params) => (
-                                <TextField
-                                    {...params}
-                                    label="Nuevo identificador"
-                                    error={inputError} // Mostrar error visual
-                                    helperText={inputError ? "Máximo 5 caracteres" : ""} // Mensaje de error
-                                />
+                        <Formik
+                            initialValues={{ updatedTableIdentifier: tableIdentifier }}
+                            validationSchema={validationSchema}
+                            onSubmit={handleConfirmAction}
+                        >
+                            {({ errors, touched }) => (
+                                <Form>
+                                    <Field
+                                        as={TextField}
+                                        name="updatedTableIdentifier"
+                                        label="Nuevo identificador"
+                                        fullWidth
+                                        margin="normal"
+                                        error={Boolean(touched.updatedTableIdentifier && errors.updatedTableIdentifier)}
+                                        helperText={touched.updatedTableIdentifier && errors.updatedTableIdentifier}
+                                    />
+                                    <DialogActions>
+                                        <Button onClick={handleCloseDialog} color="secondary" variant="outlined">Cancelar</Button>
+                                        <Button
+                                            type="submit"
+                                            color="primary"
+                                            autoFocus
+                                            variant="contained"
+                                            disabled={loading}
+                                        >
+                                            {loading ? <CircularProgress size={24} color="inherit" /> : "Confirmar"}
+                                        </Button>
+                                    </DialogActions>
+                                </Form>
                             )}
-                        />
+                        </Formik>
                     )}
                 </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCloseDialog} color="secondary">Cancelar</Button>
-                    <Button
-                        onClick={handleConfirmAction}
-                        color="primary"
-                        autoFocus
-                        disabled={
-                            actionType === 'editar' &&
-                            (updatedTableIdentifier.length < 1 || updatedTableIdentifier.length > 5)
-                        } 
-                    >
-                        Confirmar
-                    </Button>
-                </DialogActions>
+                {actionType !== 'editar' && (
+                    <DialogActions sx={{ justifyContent: "center" }}>
+                        <Button 
+                            onClick={handleCloseDialog} 
+                            color="error" 
+                            variant="outlined" 
+                            sx={{ marginRight: 2 }} 
+                            disabled={loading}
+                        >
+                            Cancelar
+                        </Button>
+                        <Button
+                            onClick={() => handleConfirmAction({})}
+                            color={actionType === 'deshabilitar' ? "error" : "success"}
+                            variant="contained"
+                            disabled={loading}
+                            sx={{ backgroundColor: actionType === 'deshabilitar' ? "red" : "green" }}
+                        >
+                            {loading ? <CircularProgress size={24} color="inherit" /> : actionType === 'deshabilitar' ? "Deshabilitar" : "Habilitar"}
+                        </Button>
+                    </DialogActions>
+                )}
             </Dialog>
         </Box>
     );
