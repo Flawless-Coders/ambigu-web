@@ -2,9 +2,10 @@ import { Image } from '@mui/icons-material';
 import { Box, Button, Card, CardContent, Grid2, Typography } from '@mui/material';
 import useLogos from '../hooks/useLogos';
 import { useState } from 'react';
+import LoaderAmbigu from '../../../kernel/LoaderAmbigu';
 
 const LogoImageSection = () => {
-  const { logos, updateLogos } = useLogos();
+  const { logos, updateLogos, loading } = useLogos();
   const [logo, setLogo] = useState(null);
   const [logoSmall, setLogoSmall] = useState(null);
   const [logoPreview, setLogoPreview] = useState(null);
@@ -21,6 +22,10 @@ const LogoImageSection = () => {
   const handleUpload = () => {
     updateLogos(logo, logoSmall);
   };
+
+  if(loading){
+    return <LoaderAmbigu />;
+  }
 
   return (
     <Grid2 container spacing={3} sx={{ mt: 3 }}>

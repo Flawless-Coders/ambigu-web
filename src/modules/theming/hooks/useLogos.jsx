@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import api from "../../auth/services/api";
 
 const useLogos = () => {
+  const [loading, setLoading] = useState(true);
   const [logos, setLogos] = useState({
     logo: "",
     logoSmall: "",
@@ -17,6 +18,8 @@ const useLogos = () => {
         });
       } catch (error) {
         console.error("Error al obtener logos:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -44,7 +47,7 @@ const useLogos = () => {
     }
   };
 
-  return { logos, updateLogos };
+  return { logos, updateLogos, loading };
 };
 
 export default useLogos;

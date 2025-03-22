@@ -8,6 +8,8 @@ const useColors = () => {
     backgroundColor: "",
   });
 
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const fetchColors = async () => {
       try {
@@ -19,7 +21,8 @@ const useColors = () => {
         });
       } catch (error) {
         console.error("Error al obtener colores:", error);
-      }
+      } finally {
+        setLoading(false);}
     };
 
     fetchColors();
@@ -35,7 +38,7 @@ const useColors = () => {
     }
   };
 
-  return { colors, updateColor };
+  return { colors, updateColor, loading };
 };
 
 export default useColors;

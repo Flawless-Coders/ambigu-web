@@ -1,9 +1,10 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Grid, Card, CardContent, Typography, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import useGoogleFonts from "../hooks/useGoogleFonts";
+import LoaderAmbigu from "../../../kernel/LoaderAmbigu";
 
 const TypographySection = () => {
-  const { fonts, selectedFonts, updateFont, fetchFonts, isLoading, loadFontInDOM } = useGoogleFonts();
+  const { fonts, selectedFonts, updateFont, fetchFonts, isLoading, loadFontInDOM, loading } = useGoogleFonts();
 
   // Estados independientes para cada Select
   const [isHeaderSelectOpen, setIsHeaderSelectOpen] = useState(false);
@@ -12,7 +13,7 @@ const TypographySection = () => {
 
   const selectRef = useRef(null); // Referencia al contenedor del Select
 
-  // Manejar el scroll en la lista
+  // Manejar el scroll en la listaß
   const handleScroll = (event) => {
     const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
 
@@ -26,6 +27,10 @@ const TypographySection = () => {
   const handleMenuItemHover = (font) => {
     loadFontInDOM(font);
   };
+
+  if(loading) {
+    return <LoaderAmbigu />;
+  }
 
   return (
     <Grid container spacing={3} sx={{ marginTop: 2 }}>

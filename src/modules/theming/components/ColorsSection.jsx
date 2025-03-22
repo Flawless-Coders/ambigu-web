@@ -3,9 +3,10 @@ import { TwitterPicker, SwatchesPicker } from "react-color";
 import { Grid2, Popover } from "@mui/material";
 import ColorCard from "./ColorCard";
 import useColors from "../hooks/useColors";
+import LoaderAmbigu from "../../../kernel/LoaderAmbigu";
 
 const ColorsSection = () => {
-  const { colors, updateColor } = useColors();
+  const { colors, updateColor, loading } = useColors();
   const [popoverState, setPopoverState] = useState({
     anchorEl: null,
     colorType: "",
@@ -29,6 +30,11 @@ const ColorsSection = () => {
     updateColor(popoverState.colorType, color.hex);
     handleClose();
   };
+
+  if (loading) {
+    return <LoaderAmbigu />;
+  }
+  
 
   return (
     <Grid2 container spacing={2} sx={{ marginTop: 2, display: "flex", flexWrap: "wrap" }}>
