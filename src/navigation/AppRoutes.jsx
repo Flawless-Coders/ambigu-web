@@ -14,7 +14,7 @@ import MenuPage from '../modules/menu/pages/MenuPage'
 import CategoriesPage from "../modules/categories/pages/CategoriesPage"
 import { ThemesPage } from "../modules/theming/pages/ThemesPage"
 import OrderPublicPage from "../modules/public-order/pages/OrderPublicPage"
-import ScoreService from "../modules/public-order/pages/ScoreService"
+import ScoreServicePage from "../modules/public-order/pages/ScoreServicePage"
 
 // Protected route component
 const ProtectedRoute = ({ children }) => {
@@ -63,7 +63,7 @@ const AppRoutes = () => {
       <Route path="/password-recovery" element={<PasswordRecoveryPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/order-client/:orderNumber" element={<OrderPublicPage />} />
-      <Route path="/score-service/:orderNumber" element={<ScoreService />} />
+      <Route path="/score-service/:orderNumber" element={<ScoreServicePage />} />
       
       {/* Rutas protegidas bajo Layout */}
       <Route element={
