@@ -5,6 +5,7 @@ import CreditScoreIcon from '@mui/icons-material/CreditScore';
 import { useNavigate, useParams } from 'react-router-dom'; 
 import axios from 'axios';
 import LoaderAmbigu from '../../../kernel/LoaderAmbigu.jsx';
+import HeaderPublic from '../../../kernel/HeaderPublic.jsx';
 
 export default function OrderPublicPage() {
   const navigate = useNavigate();
@@ -27,6 +28,8 @@ export default function OrderPublicPage() {
   console.log("datos de orden: ", order);
   
   return (
+    <>
+    <HeaderPublic section="Cuenta" />
     <Box sx={{ p: 3 }}>
       <Grid container spacing={3}>
         <Grid item xs={12} md={9} sm={6} lg={8} sx={{ display: 'flex', justifyContent:{xs: 'center', md:'flex-start', sm:'flex-start'} }}>
@@ -50,5 +53,6 @@ export default function OrderPublicPage() {
         </Grid>
       </Grid>
     </Box>
+    </>
   );
 }
