@@ -30,7 +30,7 @@ const LogoImageSection = () => {
   return (
     <Grid2 container spacing={3} sx={{ mt: 3 }}>
       <Grid2 item xs={12} md={6}>
-        <Card>
+        <Card sx={{width: 350}}>
           <CardContent>
             <Box sx={{ height: 200, display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#f0f0f0' }}>
               {logoPreview ? (

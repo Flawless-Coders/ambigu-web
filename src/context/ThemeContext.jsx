@@ -16,6 +16,22 @@ const loadFontInDOM = (font) => {
 
 
 const normalizeTheme = (themeData) => {
+  const darkenColor = (color, amount) => {
+    let usePound = false;
+    if (color[0] === "#") {
+      color = color.slice(1);
+      usePound = true;
+    }
+    const num = parseInt(color, 16);
+    let r = (num >> 16) - amount;
+    let b = ((num >> 8) & 0x00FF) - amount;
+    let g = (num & 0x0000FF) - amount;
+    r = r < 0 ? 0 : r;
+    b = b < 0 ? 0 : b;
+    g = g < 0 ? 0 : g;
+    return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16);
+  };
+
   return createTheme({
     ...baseTheme,
     palette: {
@@ -29,10 +45,10 @@ const normalizeTheme = (themeData) => {
         default: themeData?.backgroundColor || baseTheme.palette.background.default,
       },
       sidebar: {
-        bg: themeData?.sidebarBg || baseTheme.palette.sidebar.bg,
+        bg: themeData?.secondaryColor || baseTheme.palette.sidebar.bg,
         text: baseTheme.palette.sidebar.text,
         hover: themeData?.sidebarHover || baseTheme.palette.sidebar.hover,
-        selected: themeData?.sidebarSelected || baseTheme.palette.sidebar.selected,
+        selected: themeData?.secondaryColor,
       },
       text: {
         primary: themeData?.textPrimary || baseTheme.palette.text.primary,
@@ -58,11 +74,15 @@ const normalizeTheme = (themeData) => {
       },
       logo: {
         fontFamily: themeData?.logoFont || baseTheme.typography.logo.fontFamily,
+        fontSize: baseTheme.typography.logo.fontSize,
       },
       footer: {
         fontFamily: themeData?.footerFont || baseTheme.typography.footer.fontFamily,
+        fontSize: baseTheme.typography.footer.fontSize,
       }
     },
+    logo: themeData?.logo,
+    logoSmall: themeData?.logoSmall
   });
 };
 

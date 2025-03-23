@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { TwitterPicker, SwatchesPicker } from "react-color";
+import { SwatchesPicker, ChromePicker } from "react-color";
 import { Grid2, Popover } from "@mui/material";
 import ColorCard from "./ColorCard";
 import useColors from "../hooks/useColors";
@@ -10,12 +10,14 @@ const ColorsSection = () => {
   const [popoverState, setPopoverState] = useState({
     anchorEl: null,
     colorType: "",
+    currentColor: "#fff",
   });
 
   const handleOpen = (event, type) => {
     setPopoverState({
       anchorEl: event.currentTarget,
       colorType: type,
+      currentColor: getCurrentColor(type),
     });
   };
 
@@ -23,10 +25,18 @@ const ColorsSection = () => {
     setPopoverState({
       anchorEl: null,
       colorType: "",
+      currentColor: "#fff",
     });
   };
 
   const handleColorChange = (color) => {
+    setPopoverState((prevState) => ({
+      ...prevState,
+      currentColor: color.hex,
+    }));
+  };
+
+  const handleColorChangeComplete = (color) => {
     updateColor(popoverState.colorType, color.hex);
     handleClose();
   };
@@ -34,7 +44,19 @@ const ColorsSection = () => {
   if (loading) {
     return <LoaderAmbigu />;
   }
-  
+
+  const getCurrentColor = (type) => {
+    switch (type) {
+      case "primaryColor":
+        return colors.primaryColor;
+      case "secondaryColor":
+        return colors.secondaryColor;
+      case "backgroundColor":
+        return colors.backgroundColor;
+      default:
+        return "#fff";
+    }
+  };
 
   return (
     <Grid2 container spacing={2} sx={{ marginTop: 2, display: "flex", flexWrap: "wrap" }}>
@@ -77,9 +99,20 @@ const ColorsSection = () => {
         }}
       >
         {popoverState.colorType === "backgroundColor" ? (
-          <SwatchesPicker onChangeComplete={handleColorChange} width={300} />
+          <SwatchesPicker
+            color={popoverState.currentColor}
+            onChange={handleColorChange}
+            onChangeComplete={handleColorChangeComplete}
+            width={300}
+          />
         ) : (
-          <TwitterPicker onChangeComplete={handleColorChange} triangle="hide" width={300} />
+          <ChromePicker
+            color={popoverState.currentColor}
+            onChange={handleColorChange}
+            onChangeComplete={handleColorChangeComplete}
+            triangle="hide"
+            width={300}
+          />
         )}
       </Popover>
     </Grid2>

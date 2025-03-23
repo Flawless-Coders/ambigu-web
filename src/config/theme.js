@@ -40,6 +40,7 @@ const baseTheme = createTheme({
       logo: {
         fontFamily: "'Italianno', cursive",
         fontSize: "2.5rem",
+        color: "#15A752"
       },
       footer: {
         fontFamily: "'Barlow', sans-serif",
