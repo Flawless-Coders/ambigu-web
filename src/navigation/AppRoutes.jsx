@@ -13,6 +13,8 @@ import TablePage from "../modules/tables/pages/TablePage"
 import MenuPage from '../modules/menu/pages/MenuPage'
 import CategoriesPage from "../modules/categories/pages/CategoriesPage"
 import { ThemesPage } from "../modules/theming/pages/ThemesPage"
+import OrderPublicPage from "../modules/public-order/pages/OrderPublicPage"
+import ScoreService from "../modules/public-order/pages/ScoreService"
 
 // Protected route component
 const ProtectedRoute = ({ children }) => {
@@ -34,6 +36,7 @@ const AppRoutes = () => {
       "/": "Inicio",
       "/password-recovery": "Recuperar Contraseña",
       "/forgot-password": "Olvidé mi Contraseña",
+      "/order/public/:orderNumber": "Cuenta",
       "/dashboard": "Dashboard",
       "/waiters": "Meseros",
       "/categories": "Categorías",
@@ -59,6 +62,8 @@ const AppRoutes = () => {
       <Route path="/" element={!user ? <LoginPage /> : <Navigate to="/dashboard" />} />
       <Route path="/password-recovery" element={<PasswordRecoveryPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/order-client/:orderNumber" element={<OrderPublicPage />} />
+      <Route path="/score-service/:orderNumber" element={<ScoreService />} />
       
       {/* Rutas protegidas bajo Layout */}
       <Route element={
