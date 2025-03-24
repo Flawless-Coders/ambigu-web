@@ -3,6 +3,7 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, C
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import AvatarUploader from "./AvatarUploader"; // Componente separado para manejar la imagen
+import Backdrop from "@mui/material/Backdrop";
 
 export const RegisterDialog = ({ open, onClose, user, onSubmit, loading, buttonLoading }) => {
   const [avatar, setAvatar] = useState(null);
@@ -29,7 +30,16 @@ export const RegisterDialog = ({ open, onClose, user, onSubmit, loading, buttonL
     )
   });
   return (
-    <Dialog open={open} onClose={onClose} aria-labelledby="register-dialog-title">
+    <Dialog open={open} onClose={onClose} aria-labelledby="register-dialog-title" slots={{ backdrop: Backdrop }}
+    slotProps={{
+      backdrop: {
+        timeout: 500,
+        sx: {
+          backdropFilter: 'blur(8px)', // Desenfoque del fondo
+          backgroundColor: 'rgba(0, 0, 0, 0.4)', // Color semitransparente
+        },
+      },
+    }}>
       <DialogTitle>{user ? "Modificar mesero" : "Registrar mesero"}</DialogTitle>
       {loading ? (
         <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px" minWidth="400px">
