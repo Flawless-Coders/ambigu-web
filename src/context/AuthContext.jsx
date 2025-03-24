@@ -31,9 +31,7 @@ export const AuthProvider = ({ children }) => {
         const decoded = jwtDecode(token);
         if (decoded.role === "ADMIN") {
           const userDetails = await getUserDetails(decoded.sub, token);
-          const theme = await fetchTheme(token);
           setUser({ email: decoded.sub, role: decoded.role, token, ...userDetails });
-          setThemeData(theme);
         } else {
           logout();
         }
