@@ -12,6 +12,7 @@ import WaitersPage from "../modules/waiters/pages/WaitersPage"
 import TablePage from "../modules/tables/pages/TablePage"
 import MenuPage from '../modules/menu/pages/MenuPage'
 import CategoriesPage from "../modules/categories/pages/CategoriesPage"
+import DishesPage from "../modules/dishes/pages/DishesPage"
 import { ThemesPage } from "../modules/theming/pages/ThemesPage"
 import OrderPublicPage from "../modules/public-order/pages/OrderPublicPage"
 import ScoreServicePage from "../modules/public-order/pages/ScoreServicePage"
@@ -74,7 +75,7 @@ const AppRoutes = () => {
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/waiters" element={<WaitersPage />} />
         <Route path="/categories" element={<CategoriesPage />} />
-        <Route path="/dishes" element={<div>Platillos (Coming Soon)</div>} />
+        <Route path="/dishes" element={<DishesPage/>} />
         <Route path="/tables" element={<TablePage />} />
         <Route path="/menu" element={<MenuPage/>} />
         <Route path="/customization" element={<ThemesPage />} />

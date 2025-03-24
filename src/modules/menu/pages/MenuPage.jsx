@@ -56,7 +56,7 @@ export default function MenuPage() {
         if (error) {
           setGlobalError(error);
         }
-      }, [error, setGlobalError]);
+    }, [error, setGlobalError]);
 
     useEffect(() => {
         if (menuData) {
