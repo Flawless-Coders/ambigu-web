@@ -1,40 +1,30 @@
 import { useRef, useState } from "react";
 import { Grid, Card, CardContent, Typography, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
-import useGoogleFonts from "../hooks/useGoogleFonts";
 import LoaderAmbigu from "../../../kernel/LoaderAmbigu";
 
-const TypographySection = () => {
-  const { fonts, selectedFonts, updateFont, fetchFonts, isLoading, loadFontInDOM, loading } = useGoogleFonts();
-
-  // Estados independientes para cada Select
+const TypographySection = ({ draftFonts, setDraftFont, loading, fonts = [], fetchFonts, isLoading, loadFontInDOM }) => {
   const [isHeaderSelectOpen, setIsHeaderSelectOpen] = useState(false);
   const [isBodySelectOpen, setIsBodySelectOpen] = useState(false);
   const [isParagraphSelectOpen, setIsParagraphSelectOpen] = useState(false);
+  const selectRef = useRef(null);
 
-  const selectRef = useRef(null); // Referencia al contenedor del Select
-
-  // Manejar el scroll en la listaß
   const handleScroll = (event) => {
     const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
-
-    // Verificar si el usuario llegó al final de la lista
     if (scrollTop + clientHeight >= scrollHeight - 10 && !isLoading) {
-      fetchFonts(); // Cargar más fuentes
+      fetchFonts();
     }
   };
 
-  // Cargar la fuente cuando se muestra en el menú
   const handleMenuItemHover = (font) => {
     loadFontInDOM(font);
   };
 
-  if(loading) {
+  if (loading || fonts.length === 0) {
     return <LoaderAmbigu />;
   }
 
   return (
     <Grid container spacing={3} sx={{ marginTop: 2 }}>
-      {/* Selector para Encabezados */}
       <Grid item xs={12} md={4}>
         <Card>
           <CardContent>
@@ -46,16 +36,16 @@ const TypographySection = () => {
               <InputLabel id="headers-select">Seleccionar tipografía</InputLabel>
               <Select
                 labelId="headers-select"
-                value={selectedFonts.headerFont}
-                onChange={(e) => updateFont("headerFont", e.target.value)}
+                value={draftFonts.headerFont}
+                onChange={(e) => setDraftFont("headerFont", e.target.value)}
                 onOpen={() => setIsHeaderSelectOpen(true)}
                 onClose={() => setIsHeaderSelectOpen(false)}
                 open={isHeaderSelectOpen}
                 MenuProps={{
                   PaperProps: {
-                    onScroll: handleScroll, // Escuchar el evento de scroll
-                    ref: selectRef, // Referencia al contenedor del Select
-                    style: { maxHeight: 300 }, // Altura máxima del menú
+                    onScroll: handleScroll,
+                    ref: selectRef,
+                    style: { maxHeight: 300 },
                   },
                 }}
                 renderValue={(selected) => (
@@ -67,23 +57,18 @@ const TypographySection = () => {
                     key={font}
                     value={font}
                     sx={{ fontFamily: font }}
-                    onMouseEnter={() => handleMenuItemHover(font)} // Cargar la fuente al hacer hover
+                    onMouseEnter={() => handleMenuItemHover(font)}
                   >
                     {font}
                   </MenuItem>
                 ))}
-                {isLoading && (
-                  <MenuItem disabled>
-                    Cargando más fuentes...
-                  </MenuItem>
-                )}
+                {isLoading && <MenuItem disabled>Cargando más fuentes...</MenuItem>}
               </Select>
             </FormControl>
           </CardContent>
         </Card>
       </Grid>
 
-      {/* Selector para Texto Principal */}
       <Grid item xs={12} md={4}>
         <Card>
           <CardContent>
@@ -94,16 +79,16 @@ const TypographySection = () => {
             <FormControl fullWidth sx={{ marginTop: 2 }}>
               <InputLabel>Seleccionar tipografía</InputLabel>
               <Select
-                value={selectedFonts.bodyFont}
-                onChange={(e) => updateFont("bodyFont", e.target.value)}
+                value={draftFonts.bodyFont}
+                onChange={(e) => setDraftFont("bodyFont", e.target.value)}
                 onOpen={() => setIsBodySelectOpen(true)}
                 onClose={() => setIsBodySelectOpen(false)}
                 open={isBodySelectOpen}
                 MenuProps={{
                   PaperProps: {
-                    onScroll: handleScroll, // Escuchar el evento de scroll
-                    ref: selectRef, // Referencia al contenedor del Select
-                    style: { maxHeight: 300 }, // Altura máxima del menú
+                    onScroll: handleScroll,
+                    ref: selectRef,
+                    style: { maxHeight: 300 },
                   },
                 }}
                 renderValue={(selected) => (
@@ -115,23 +100,18 @@ const TypographySection = () => {
                     key={font}
                     value={font}
                     sx={{ fontFamily: font }}
-                    onMouseEnter={() => handleMenuItemHover(font)} // Cargar la fuente al hacer hover
+                    onMouseEnter={() => handleMenuItemHover(font)}
                   >
                     {font}
                   </MenuItem>
                 ))}
-                {isLoading && (
-                  <MenuItem disabled>
-                    Cargando más fuentes...
-                  </MenuItem>
-                )}
+                {isLoading && <MenuItem disabled>Cargando más fuentes...</MenuItem>}
               </Select>
             </FormControl>
           </CardContent>
         </Card>
       </Grid>
 
-      {/* Selector para Texto de Párrafo */}
       <Grid item xs={12} md={4}>
         <Card>
           <CardContent>
@@ -142,16 +122,16 @@ const TypographySection = () => {
             <FormControl fullWidth sx={{ marginTop: 2 }}>
               <InputLabel>Seleccionar tipografía</InputLabel>
               <Select
-                value={selectedFonts.paragraphFont}
-                onChange={(e) => updateFont("paragraphFont", e.target.value)}
+                value={draftFonts.paragraphFont}
+                onChange={(e) => setDraftFont("paragraphFont", e.target.value)}
                 onOpen={() => setIsParagraphSelectOpen(true)}
                 onClose={() => setIsParagraphSelectOpen(false)}
                 open={isParagraphSelectOpen}
                 MenuProps={{
                   PaperProps: {
-                    onScroll: handleScroll, // Escuchar el evento de scroll
-                    ref: selectRef, // Referencia al contenedor del Select
-                    style: { maxHeight: 300 }, // Altura máxima del menú
+                    onScroll: handleScroll,
+                    ref: selectRef,
+                    style: { maxHeight: 300 },
                   },
                 }}
                 renderValue={(selected) => (
@@ -163,16 +143,12 @@ const TypographySection = () => {
                     key={font}
                     value={font}
                     sx={{ fontFamily: font }}
-                    onMouseEnter={() => handleMenuItemHover(font)} // Cargar la fuente al hacer hover
+                    onMouseEnter={() => handleMenuItemHover(font)}
                   >
                     {font}
                   </MenuItem>
                 ))}
-                {isLoading && (
-                  <MenuItem disabled>
-                    Cargando más fuentes...
-                  </MenuItem>
-                )}
+                {isLoading && <MenuItem disabled>Cargando más fuentes...</MenuItem>}
               </Select>
             </FormControl>
           </CardContent>
