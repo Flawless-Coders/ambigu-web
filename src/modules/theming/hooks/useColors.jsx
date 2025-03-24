@@ -15,16 +15,15 @@ const useColors = () => {
   });
 
   const [loading, setLoading] = useState(true);
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false); // Cambios no guardados
-  const [hasAppliedChanges, setHasAppliedChanges] = useState(false); // Cambios aplicados
+  const [hasChanges, setHasChanges] = useState(false);
 
-  // Efecto para calcular hasUnsavedChanges
+  // Efecto para calcular hasChanges
   useEffect(() => {
     const changesExist =
       draftColors.primaryColor !== savedColors.primaryColor ||
       draftColors.secondaryColor !== savedColors.secondaryColor ||
       draftColors.backgroundColor !== savedColors.backgroundColor;
-    setHasUnsavedChanges(changesExist);
+    setHasChanges(changesExist);
   }, [draftColors, savedColors]);
 
   // Obtener colores iniciales
@@ -59,20 +58,9 @@ const useColors = () => {
     try {
       await api.patch("http://localhost:8080/api/theming/colors", draftColors);
       setSavedColors(draftColors); // Actualiza los colores guardados
-      setHasUnsavedChanges(false); // Ya no hay cambios sin guardar
-      setHasAppliedChanges(false); // Los cambios aún no se han aplicado
     } catch (error) {
       console.error("Error al guardar colores:", error);
-    }
-  };
-
-  // Función para aplicar cambios (POST /apply)
-  const applyChanges = async () => {
-    try {
-      await api.post("http://localhost:8080/api/theming/apply");
-      setHasAppliedChanges(true); // Los cambios se han aplicado
-    } catch (error) {
-      console.error("Error al aplicar cambios:", error);
+      throw error;
     }
   };
 
@@ -80,9 +68,7 @@ const useColors = () => {
     draftColors,
     setDraftColor,
     saveChanges,
-    applyChanges,
-    hasUnsavedChanges,
-    hasAppliedChanges,
+    hasChanges,
     loading,
   };
 };
