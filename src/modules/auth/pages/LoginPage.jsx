@@ -1,4 +1,4 @@
-import { TextField, Button, Typography, Box, Link, CircularProgress, Alert } from "@mui/material";
+import { TextField, Button, Typography, Box, Link, CircularProgress, Alert, ThemeProvider } from "@mui/material";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../context/AuthContext";
@@ -6,6 +6,7 @@ import { handleLogin } from "../controllers/AuthController";
 import * as Yup from "yup";
 import { Formik, Form, Field } from "formik";
 import AuthLayout from "../components/AuthLayout";
+import theme from "../../../config/theme";
 
 const loginValidationSchema = Yup.object().shape({
   email: Yup.string().email("Ingresa un correo válido").required("El correo es obligatorio"),
@@ -17,6 +18,7 @@ const LoginPage = () => {
   const { login } = useContext(AuthContext);
 
   return (
+    <ThemeProvider theme={theme}>
     <AuthLayout imageSrc="src/assets/ambigu-login.png">
       <Typography variant="h5" fontWeight="bold" align="center">
         Iniciar Sesión
@@ -75,6 +77,7 @@ const LoginPage = () => {
         </Link>
       </Box>
     </AuthLayout>
+  </ThemeProvider>
   );
 };
 
