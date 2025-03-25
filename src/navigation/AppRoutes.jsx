@@ -12,7 +12,10 @@ import WaitersPage from "../modules/waiters/pages/WaitersPage"
 import TablePage from "../modules/tables/pages/TablePage"
 import MenuPage from '../modules/menu/pages/MenuPage'
 import CategoriesPage from "../modules/categories/pages/CategoriesPage"
+import DishesPage from "../modules/dishes/pages/DishesPage"
 import { ThemesPage } from "../modules/theming/pages/ThemesPage"
+import OrderPublicPage from "../modules/public-order/pages/OrderPublicPage"
+import ScoreServicePage from "../modules/public-order/pages/ScoreServicePage"
 
 // Protected route component
 const ProtectedRoute = ({ children }) => {
@@ -34,6 +37,7 @@ const AppRoutes = () => {
       "/": "Inicio",
       "/password-recovery": "Recuperar Contraseña",
       "/forgot-password": "Olvidé mi Contraseña",
+      "/order/public/:orderNumber": "Cuenta",
       "/dashboard": "Dashboard",
       "/waiters": "Meseros",
       "/categories": "Categorías",
@@ -59,6 +63,8 @@ const AppRoutes = () => {
       <Route path="/" element={!user ? <LoginPage /> : <Navigate to="/dashboard" />} />
       <Route path="/password-recovery" element={<PasswordRecoveryPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/order-client/:orderNumber" element={<OrderPublicPage />} />
+      <Route path="/score-service/:orderNumber" element={<ScoreServicePage />} />
       
       {/* Rutas protegidas bajo Layout */}
       <Route element={
@@ -69,7 +75,7 @@ const AppRoutes = () => {
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/waiters" element={<WaitersPage />} />
         <Route path="/categories" element={<CategoriesPage />} />
-        <Route path="/dishes" element={<div>Platillos (Coming Soon)</div>} />
+        <Route path="/dishes" element={<DishesPage/>} />
         <Route path="/tables" element={<TablePage />} />
         <Route path="/menu" element={<MenuPage/>} />
         <Route path="/customization" element={<ThemesPage />} />

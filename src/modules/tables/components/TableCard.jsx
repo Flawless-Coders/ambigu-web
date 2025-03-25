@@ -11,7 +11,7 @@ export default function TableCard({ data, loading, status, fetchTables, setSucce
           {loading ? (
               <LoadingScreen />
           ) : data && data.length > 0 ? (
-              <Grid container spacing={2}>
+              <Grid container spacing={4}>
                   {data.map((table) => (
                       <Grid item xs={12} sm={4} md={3} lg={2} key={table.id}>
                           <Card
