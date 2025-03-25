@@ -7,7 +7,6 @@ import Backdrop from "@mui/material/Backdrop";
 export const AddDishDialog = ({ open, onClose, onSubmit, loading, buttonLoading, menuId, categories, handleGetDishesByCategory }) => {
     const [dishes, setDishes] = useState([]);
 
-    // Esquema de validación
     const validationSchema = Yup.object({
         category: Yup.string().required("La categoría es obligatoria"),
         dishId: Yup.string().required("El platillo es obligatorio")
@@ -88,7 +87,6 @@ export const AddDishDialog = ({ open, onClose, onSubmit, loading, buttonLoading,
                                 </Box>
                             </DialogContent>
 
-                            {/* Acciones del diálogo (Cancelar y Guardar) */}
                             <DialogActions>
                                 <Button
                                     onClick={onClose}
@@ -101,7 +99,7 @@ export const AddDishDialog = ({ open, onClose, onSubmit, loading, buttonLoading,
                                 <Button
                                     type="submit"
                                     variant="contained"
-                                    color="primary"
+                                    color="success"
                                     disabled={buttonLoading}
                                 >
                                     {buttonLoading ? (

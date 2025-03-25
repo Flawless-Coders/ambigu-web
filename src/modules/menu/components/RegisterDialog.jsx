@@ -120,7 +120,7 @@ export const RegisterDialog = ({ open, onClose, menu, photo, onSubmit, loading, 
                                         variant="contained"
                                         component="span"
                                         onClick={handleClick}
-                                        color="primary"
+                                        color="success"
                                         startIcon={<CloudUploadOutlinedIcon />}
                                     >
                                         {menu ? ("Actualizar imagen") : ("Subir imagen")}
@@ -145,7 +145,7 @@ export const RegisterDialog = ({ open, onClose, menu, photo, onSubmit, loading, 
                                 <Button
                                     type="submit"
                                     variant="contained"
-                                    color="primary"
+                                    color="success"
                                     disabled={buttonLoading}
                                 >
                                     {buttonLoading ? (

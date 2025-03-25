@@ -44,7 +44,7 @@ export default function CustomCard(props) {
                         <Box
                             sx={styles.buttonContainer}
                         >
-                            <Fab size="small" color="secondary" aria-label="update" onClick={update}>
+                            <Fab size="small" sx={{backgroundColor: "#673ab7", color: "white", "&:hover": { backgroundColor: "#651fff" },}} aria-label="update" onClick={update}>
                                 <ModeEditIcon />
                             </Fab>
 
@@ -92,7 +92,7 @@ export default function CustomCard(props) {
                         )}
                     </Grid>
 
-                    <Typography variant="body2" sx={{ color: "text.secondary", display: { xs: "none", sm: "block" } }}>
+                    <Typography variant="body2" sx={{ color: "text.#3f51b5", display: { xs: "none", sm: "block" } }}>
                         {description}
                     </Typography>
 
@@ -115,7 +115,7 @@ export default function CustomCard(props) {
                                 width: '100%',
                             }}
                         >
-                            <Fab size="small" color="primary" aria-label="enable" onClick={enable}>
+                            <Fab size="small" color="success" aria-label="enable" onClick={enable}>
                                 <TaskAltOutlinedIcon />
                             </Fab>
                         </Box>

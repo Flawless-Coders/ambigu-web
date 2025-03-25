@@ -135,7 +135,7 @@ export default function MenuDetails() {
       <Typography variant="h5">{name}</Typography>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         {loadingCategories ? <LoaderAmbigu /> : (
-          <Tabs value={value} onChange={handleChange} aria-label="menu tabs">
+          <Tabs value={value} onChange={handleChange} aria-label="menu tabs" variant="scrollable">
             {categories.map((category) => (
               <Tab key={category.id} label={category.name} {...a11yProps(category.id)} />
             ))}
@@ -178,7 +178,7 @@ export default function MenuDetails() {
         buttonLoading={loading}
         menuId={id}
         categories={dialogCategories}
-        handleGetDishesByCategory={handleGetDishesByCategory} // Pasar la función como prop
+        handleGetDishesByCategory={handleGetDishesByCategory} 
       />
 
       <RemoveDishDialog
