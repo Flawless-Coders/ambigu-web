@@ -1,9 +1,4 @@
-import React from 'react';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Chip from '@mui/material/Chip';
-import Typography from '@mui/material/Typography';
-import Stack from '@mui/material/Stack';
+import { Card, CardContent, Chip, Typography, Stack } from '@mui/material';
 import { LineChart } from '@mui/x-charts/LineChart';
 
 function AreaGradient({ color, id }) {
@@ -24,7 +19,7 @@ function getDaysInMonth(month, year) {
   return days;
 }
 
-export default function PedidosChart() {
+export default function OrdersChart() {
   const data = getDaysInMonth(4, 2024);
 
   return (

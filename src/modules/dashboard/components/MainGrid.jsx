@@ -1,14 +1,14 @@
-import React from 'react';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
-import ComidasPopularesChart from './ComidasPopularesChart'; // antes ChartUserByCountry
-import CategoriasChart from './CategoriasChart'; // antes PageViewsBarChart
-import PedidosChart from './PedidosChart'; // antes SessionsChart
-import StatCard from './StatCard';
-import VentasPorCategoriaChart from './VentasPorCategoriaChart';
+import { Grid, Box, Stack, Typography } from '@mui/material';
+
 import EvaluationDayCard from './EvaluationDayCard';
+import CategoriasChart from './charts/CategoriesChart';
+import TotalOrdersChart from './charts/TotalOrdersChart';
+import CancellationsChart from './charts/CancellationsChart';
+import OrdersChart from './charts/OrdersChart';
+import PopularFoodsChart from './charts/PopularFoodsChart';
+import CategorySalesChart from './charts/CategorySalesChart';
+import CustomersChart from './charts/CustomersChart';
+import BestWaitersChart from './charts/BestWaitersChart';
 
 const data = [
   {
@@ -46,21 +46,21 @@ const data = [
 export default function MainGrid() {
   return (
     <Box sx={{ width: '100%', maxWidth: '1700px' }}>
-      {/* cards */}
       <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
         Resumen general
       </Typography>
       <Grid container spacing={2}>
-        {data.map((card, index) => (
-          <Grid key={index} item xs={12} sm={6} lg={3}>
-            <StatCard {...card} />
-          </Grid>
-        ))}
+        <Grid item xs={12} sm={6} lg={3}>
+          <TotalOrdersChart />
+        </Grid>
+        <Grid item xs={12} sm={6} lg={6}>
+          <BestWaitersChart />
+        </Grid>
        <Grid item xs={12} sm={6} lg={3}>
           <EvaluationDayCard />
        </Grid>
         <Grid item xs={12} md={12} sm={12} lg={6}>
-          <PedidosChart />
+          <OrdersChart/>
         </Grid>
         <Grid item xs={12} md={12} sm={12} lg={6}>
           <CategoriasChart />
@@ -73,13 +73,12 @@ export default function MainGrid() {
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6} lg={6} md={6}>
           <Stack gap={2} direction={{ xs: 'column', sm: 'row', lg: 'column' }}>
-            <ComidasPopularesChart />
+            <PopularFoodsChart />
           </Stack>
         </Grid>
         <Grid item xs={12} sm={6} md={6} lg={6}>
-          <VentasPorCategoriaChart />
+          <CategorySalesChart />
         </Grid>
-
       </Grid>
     </Box>
   );
