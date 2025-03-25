@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Dialog, DialogActions, DialogTitle, DialogContent, Typography, CircularProgress, Button } from '@mui/material'
-import { CheckCircle } from '@mui/icons-material'
+import { Warning } from '@mui/icons-material'
 import { motion } from 'framer-motion'
 import { handleInactivateMenu } from '../controllers/MenuController'
 
@@ -25,7 +25,7 @@ export const InactivateMenuDialog = ({ open, onClose, menuId, menuName, setSucce
             damping: 20
           }}
         >
-          {<CheckCircle sx={{ fontSize: 50 }} color="error" />}
+          {<Warning sx={{ fontSize: 50 }} color="error" />}
         </motion.div>
       </DialogTitle>
       <DialogContent sx={{ textAlign: "center" }}>
