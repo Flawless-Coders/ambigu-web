@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import CustomCard from "../../../kernel/CustomCard";
 import { Box, Typography, Grid, Alert, Button } from '@mui/material';
-import FloatingAddButton from "../../categories/components/FloatingAddButton";
+import FloatingAddButton from "../../../kernel/FloatingAddButton";
 import { handleGetMenu, handleGetMenuPhotos, handleGetMenuById, handleCreateMenu, handleUpdateMenu } from "../controllers/MenuController";
 import { useOutletContext } from "react-router-dom";
 import LoaderAmbigu from '../../../kernel/LoaderAmbigu';
 import { RegisterDialog } from '../components/RegisterDialog';
 import { AssignAsCurrentDialog } from '../components/AssignAsCurrentDialog';
 import { InactivateMenuDialog } from '../components/InactivateMenuDialog';
+import { useNavigate } from 'react-router-dom';
 
 export default function MenuPage() {
+    const navigate = useNavigate();
     const [menuData, setMenuData] = useState(null);
     const [photos, setPhotos] = useState({});
     const [loading, setLoading] = useState(false);
@@ -20,7 +22,13 @@ export default function MenuPage() {
     const [dialogLoading, setDialogLoading] = useState(false); // Carga solo para el modal
     const [openAssignAsCurrentDialog, setOpenAssignAsCurrentDialog] = useState(false);
     const [openInactivateMenuDialog, setOpenInactivateMenuDialog] = useState(false);
+    const [isCurrentMenu, setIsCurrentMenu] = useState(false);
 
+    const handleGetMenuDetails =(menu)=>{
+        navigate('/menu-details',{
+            state:{id: menu.id, name: menu.name, dishes: menu.dishes}
+        })
+    }
 
     const handleAssignAsCurrentDialog = () => setOpenAssignAsCurrentDialog(false);
     
@@ -78,6 +86,12 @@ export default function MenuPage() {
        fetchData();
     }, []);
 
+    useEffect(()=>{
+        if(menuData){
+            setIsCurrentMenu(menuData.some(menuData=>menuData.status));
+        }
+    },[menuData])
+
     useEffect(() => {
         if (error) {
             setGlobalError(error);
@@ -119,6 +133,8 @@ export default function MenuPage() {
                                     isEnable={true}
                                     enable={()=>{handleOpenAssignAsCurrentDialog(menu)}}
                                     disable={()=>{handleOpenInactivateMenu(menu)}}
+                                    isCurrentMenu ={isCurrentMenu}
+                                    viewDishes ={()=>{handleGetMenuDetails(menu)}}
                                 />
                             ))}
                         </Grid>

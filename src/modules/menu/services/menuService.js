@@ -85,12 +85,67 @@ export const assignAsCurrent = async (menuId) => {
     }
 };
 
-export const isCurrentMenu = async () => {
+export const getCategoriesByMenu = async (menuId) => {
     try {
-        const response = await api.get(`${API_URL}/isCurrentMenu`)
+        const response = await api.get(`${API_URL}/menu/getCategoriesByMenu/${menuId}`)
         return response.data;
     } catch (error) {
-        console.error("Error obteniendo la información: ", error);
+        console.error("Error obteniendo las categorias: ", error);
         throw error;
     }
 };
+
+
+export const getDishesByMenu= async (menuId, categoryId) => {
+    try {
+        const response = await api.get(`${API_URL}/menu/getDishes/${menuId}/${categoryId}`)
+        return response.data;
+    } catch (error) {
+        console.error("Error obteniendo los platillos: ", error);
+        throw error;
+    }
+};
+
+
+export const getAllCategories = async () => {
+    try {
+      const response = await api.get(`${API_URL}/categories/getByStatus/${true}`);
+      return response.data;
+    } catch (error) {
+      console.error("Error al obtener categorías:", error);
+      throw error;
+    }
+  };
+
+  export const addDish = async (dishId, menuId)=>{
+    try{
+        const response = await api.put(`${API_URL}/menu/addDish/${dishId}/${menuId}`);
+        return response.data;
+    }catch(error){
+        console.log("Error al agregar el platillo", error);
+        throw error;
+    }
+  }
+
+  export const getDishByCategory = async (categoryId)=>{
+    try{
+        const response = await api.get(`${API_URL}/dishes/byCategory/${categoryId}`, {
+            params: { available: true},
+          })
+        return response.data;
+    }catch(error){
+        console.log("Error al obtener los platillos");
+        throw error;
+    }
+  }
+
+
+  export const removeDish = async (dishId, menuId)=>{
+    try{
+        const response = await api.put(`${API_URL}/menu/removeDish/${dishId}/${menuId}`);
+        return response.data;
+    }catch(error){
+        console.log("Error al retirar el platillo", error);
+        throw error;
+    }
+  }

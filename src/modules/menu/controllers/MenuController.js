@@ -1,4 +1,6 @@
-import { getMenu, getMenuPhoto, getMenuById,createMenu, updateMenu, inactivateMenu, assignAsCurrent, isCurrentMenu} from "../services/menuService";
+import { getMenu, getMenuPhoto, getMenuById,createMenu, updateMenu, inactivateMenu, 
+    assignAsCurrent, getCategoriesByMenu, getDishesByMenu, getAllCategories, addDish, 
+    getDishByCategory, removeDish} from "../services/menuService";
 
 export const handleGetMenu = async(setError, setLoading, setMenuData) =>{
     setLoading(true);
@@ -108,10 +110,9 @@ export const handleInactivateMenu = async (id, setError, setSuccess, setLoading)
 
 export const handleAssignAsCurrent = async (id, setError, setSuccess, setLoading) => {
     setLoading(true);
-    console.log(id);
     try {
         const response = await assignAsCurrent(id);
-        response?setSuccess("Menú actualizado correctamente"): setError("Sólo puede haber un menú actual");
+        response ? setSuccess("Menú actualizado correctamente"): setError("Sólo puede haber un menú actual");
         return response;
     } catch (error) {
         setError("Error al asignar como actual al menú");
@@ -121,11 +122,77 @@ export const handleAssignAsCurrent = async (id, setError, setSuccess, setLoading
     }
 };
 
-export const handleGetCurrenMenu = async(setIsCurrentMenu) =>{
+export const handleGetCategories= async(setError, setLoading,setCategories, menuId) =>{
+    setLoading(true);
     try{
-        const response = await isCurrentMenu();
-        setIsCurrentMenu(response);
+        const response = await getCategoriesByMenu(menuId);
+        setCategories(response);
     }catch{
-        setError("Error al obtener la información");
+        setError("Error obteniendo la información")
+    }finally{
+        setLoading(false);
     }
 }
+
+export const handleGetDishes = async(setError, setLoading, setDishes, menuId, categoryId)=>{
+    setLoading(true);
+    try{
+        const response = await getDishesByMenu(menuId, categoryId);
+        setDishes(response);
+        
+    }catch{
+        setError("Error obteniendo los platillos")
+    }finally{
+        setLoading(false);
+    }
+}
+
+export const handleGetAllCategories=async(setError, setDialogLoading, setDialogCategories)=>{
+    setDialogLoading(true);
+    try{
+        const response = await getAllCategories();
+        setDialogCategories(response);
+    }catch{
+        setError("Error obteniendo las categorías")
+    }finally{
+        setDialogLoading(false);
+    }
+}
+
+export const handleAddDish = async (menuId, dishId, setError, setSuccess, setLoading) => {
+    setLoading(true);
+    try {
+        const response = await addDish(dishId, menuId);
+        setSuccess("Platillo agregado al menú")
+        return response;
+    } catch (error) {
+        setError("Error al agregar sel platillo al menú");
+        throw error;
+    } finally {
+        setLoading(false);
+    }
+};
+
+export const handleGetDishesByCategory = async(setDialogDishes, categoryId) =>{
+    try{
+        const response = await getDishByCategory(categoryId);
+        setDialogDishes(response);
+    }catch{
+        console.log ("Error al obtener los menus");
+    }
+}
+
+
+export const handleRemoveDish = async (menuId, dishId, setError, setSuccess, setLoading) => {
+    setLoading(true);
+    try {
+        const response = await removeDish(dishId, menuId);
+        setSuccess("Platillo removido del menú")
+        return response;
+    } catch (error) {
+        setError("Error al remover platillo del menú");
+        throw error;
+    } finally {
+        setLoading(false);
+    }
+};

@@ -1,4 +1,4 @@
-import React,{ useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, CircularProgress, Box } from "@mui/material";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
@@ -12,7 +12,7 @@ export const RegisterDialog = ({ open, onClose, menu, photo, onSubmit, loading, 
 
     const handleClick = () => {
         fileInputRef.current.click(); // Simula un clic en el input oculto
-      };
+    };
 
     useEffect(() => {
         setPreview(photo || placeholderMenu);
@@ -23,11 +23,11 @@ export const RegisterDialog = ({ open, onClose, menu, photo, onSubmit, loading, 
         name: Yup.string().required("El nombre es obligatorio"),
         description: Yup.string().required("La descripción es obligatoria"),
         photo: Yup.mixed()
-            .required("La foto es obligatoria")
             .test("fileType", "Formato de archivo no soportado. Usa JPEG o PNG.", (value) => {
-                if (!value) return false; // Si no hay archivo, es inválido
+                if (!value) return true; // Si no hay archivo, no se valida
                 return ["image/jpeg", "image/png", "image/jpg"].includes(value.type);
-            }),
+            })
+            .nullable(), // Permite que el campo sea null
     });
 
     return (
@@ -54,12 +54,12 @@ export const RegisterDialog = ({ open, onClose, menu, photo, onSubmit, loading, 
                         id: menu?.id || null,
                         name: menu?.name || "",
                         description: menu?.description || "",
-                        photo: photo || null
+                        photo: null // Inicializa como null
                     }}
                     validationSchema={validationSchema}
                     onSubmit={onSubmit}
                 >
-                    {({ errors, touched, setFieldValue }) => (
+                    {({ errors, touched, setFieldValue, values }) => (
                         <Form>
                             <DialogContent>
                                 {/* Campo para el nombre del menú */}
@@ -110,19 +110,21 @@ export const RegisterDialog = ({ open, onClose, menu, photo, onSubmit, loading, 
                                                     setFieldValue("photo", file); // Guarda el archivo en Formik
                                                 };
                                                 reader.readAsDataURL(file);
+                                            } else {
+                                                setFieldValue("photo", null); // Si no hay archivo, establece el valor como null
                                             }
                                         }}
                                     />
                                     
-                                        <Button
-                                            variant="contained"
-                                            component="span"
-                                            onClick={handleClick}
-                                            color="primary"
-                                            startIcon={<CloudUploadOutlinedIcon />}
-                                        >
-                                            {menu ? ("Actualizar imagen") : ("Subir imagen")}
-                                        </Button>
+                                    <Button
+                                        variant="contained"
+                                        component="span"
+                                        onClick={handleClick}
+                                        color="primary"
+                                        startIcon={<CloudUploadOutlinedIcon />}
+                                    >
+                                        {menu ? ("Actualizar imagen") : ("Subir imagen")}
+                                    </Button>
                                     
                                     {touched.photo && errors.photo && (
                                         <div style={{ color: "red" }}>{errors.photo}</div>

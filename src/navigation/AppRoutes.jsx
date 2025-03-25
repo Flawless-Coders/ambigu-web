@@ -11,6 +11,7 @@ import LoaderAmbigu from "../kernel/LoaderAmbigu"
 import WaitersPage from "../modules/waiters/pages/WaitersPage"
 import MenuPage from '../modules/menu/pages/MenuPage'
 import CategoriesPage from "../modules/categories/pages/CategoriesPage"
+import MenuDetails from "../modules/menu/pages/MenuDetails"
 
 // Protected route component
 const ProtectedRoute = ({ children }) => {
@@ -38,7 +39,7 @@ const AppRoutes = () => {
       "/dishes": "Platillos",
       "/tables": "Mesas",
       "/menu": "Menú",
-      "/watch-menu" : "Ver menú",
+      "/menu-details" : "Detalles de Menú",
       "/customization": "Personalización",
       "/orders": "Pedidos",
       "/profile": "Perfil"
@@ -71,6 +72,7 @@ const AppRoutes = () => {
         <Route path="/dishes" element={<div>Platillos (Coming Soon)</div>} />
         <Route path="/tables" element={<div>Mesas (Coming Soon)</div>} />
         <Route path="/menu" element={<MenuPage/>} />
+        <Route path="menu-details" element={<MenuDetails/>}/>
         <Route path="/customization" element={<div>Personalización (Coming Soon)</div>} />
         <Route path="/orders" element={<div>Pedidos (Coming Soon)</div>} />
         <Route path="/profile" element={<ProfilePage/>} />
