@@ -2,7 +2,7 @@ import { createTheme } from "@mui/material/styles";
 import "@fontsource/italianno"
 import "typeface-barlow"
 
-const theme = createTheme({
+const baseTheme = createTheme({
     palette: {
       primary: {
         main: "#15A752",
@@ -40,6 +40,7 @@ const theme = createTheme({
       logo: {
         fontFamily: "'Italianno', cursive",
         fontSize: "2.5rem",
+        color: "#15A752"
       },
       footer: {
         fontFamily: "'Barlow', sans-serif",
@@ -51,4 +52,4 @@ const theme = createTheme({
     }
   });
   
-  export default theme;
+  export default baseTheme;
