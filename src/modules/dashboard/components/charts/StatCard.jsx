@@ -10,13 +10,15 @@ import {
   CircularProgress,
 } from '@mui/material';
 import { LineChart } from '@mui/x-charts/LineChart';
+import api from '../../../auth/services/api';
 
-export default function StatCard({ title, value, interval, trend }) {
+export default function StatCard({ title, trend }) {
   const [timeFrame, setTimeFrame] = useState('month');
   const [chartData, setChartData] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [currentInterval, setCurrentInterval] = useState(interval);
+  const [currentInterval, setCurrentInterval] = useState('');
   const [loading, setLoading] = useState(false);
+  const [totalOrders, setTotalOrders] = useState(0);
 
   const trendColor = {
     up: 'success',
@@ -31,62 +33,48 @@ export default function StatCard({ title, value, interval, trend }) {
   };
 
   useEffect(() => {
-    // Simulación de fetch desde backend
-    const simulateFetch = () => {
+    const fetchData = async () => {
       setLoading(true);
-      setTimeout(() => {
-        const now = new Date();
-        let simulatedData = [];
+      try {
+        const response = await api.get(`/dashboard/orders-number/${timeFrame}`);
+        const data = response.data;
 
-        if (timeFrame === 'day') {
-          // 24 puntos por hora
-          simulatedData = Array.from({ length: 24 }, (_, i) => {
-            const date = new Date(now);
-            date.setHours(i, 0, 0, 0);
-            return { fecha: date.toISOString(), pedidos: Math.floor(100 + Math.random() * 300) };
-          });
-        } else if (timeFrame === 'week') {
-          simulatedData = Array.from({ length: 7 }, (_, i) => {
-            const date = new Date(now);
-            date.setDate(now.getDate() - (6 - i));
-            return { fecha: date.toISOString(), pedidos: Math.floor(200 + Math.random() * 500) };
-          });
+        // Procesa los datos según el intervalo
+        if (timeFrame === 'today') {
+          const chartValues = data.hourlyOrders.map((d) => d.count);
+          const labels = data.hourlyOrders.map((d) =>
+            `${d.hour.toString().padStart(2, '0')}:00`
+          );
+          setChartData(chartValues);
+          setCategories(labels);
         } else {
-          simulatedData = Array.from({ length: 30 }, (_, i) => {
-            const date = new Date(now);
-            date.setDate(now.getDate() - (29 - i));
-            return { fecha: date.toISOString(), pedidos: Math.floor(300 + Math.random() * 600) };
+          const chartValues = data.dailyOrders.map((d) => d.count);
+          const labels = data.dailyOrders.map((d) => {
+            const date = new Date(d.date);
+            return timeFrame === 'week'
+              ? date.toLocaleDateString('es-MX', { weekday: 'short' })
+              : date.toLocaleDateString('es-MX', { day: '2-digit', month: 'short' });
           });
+          setChartData(chartValues);
+          setCategories(labels);
         }
 
-        const chartValues = simulatedData.map(d => d.pedidos);
-        const labels = simulatedData.map(d => {
-          const date = new Date(d.fecha);
-          switch (timeFrame) {
-            case 'day':
-              return date.getHours().toString().padStart(2, '0') + ':00';
-            case 'week':
-              return date.toLocaleDateString('es-MX', { weekday: 'short' });
-            case 'month':
-            default:
-              return date.toLocaleDateString('es-MX', { day: '2-digit', month: 'short' });
-          }
-        });
+        setTotalOrders(data.totalOrders);
 
         const labelMap = {
-          day: 'Últimas 24 horas',
+          today: 'Últimas 24 horas',
           week: 'Últimos 7 días',
           month: 'Últimos 30 días',
         };
-
-        setChartData(chartValues);
-        setCategories(labels);
         setCurrentInterval(labelMap[timeFrame]);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
         setLoading(false);
-      }, 700); // Simula tiempo de red
+      }
     };
 
-    simulateFetch();
+    fetchData();
   }, [timeFrame]);
 
   const handleTimeFrameChange = (event) => {
@@ -107,7 +95,7 @@ export default function StatCard({ title, value, interval, trend }) {
             inputProps={{ 'aria-label': 'Selector de intervalo' }}
             sx={{ mb: 2, minWidth: 80, height: 30 }}
           >
-            <MenuItem value="day">Día</MenuItem>
+            <MenuItem value="today">Día</MenuItem>
             <MenuItem value="week">Semana</MenuItem>
             <MenuItem value="month">Mes</MenuItem>
           </Select>
@@ -115,7 +103,7 @@ export default function StatCard({ title, value, interval, trend }) {
 
         <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1 }}>
           <Typography variant="h4" component="p">
-            {value}
+            {totalOrders}
           </Typography>
           <Chip
             size="small"
