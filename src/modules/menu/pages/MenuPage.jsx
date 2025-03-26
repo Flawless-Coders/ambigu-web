@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import CustomCard from "../../../kernel/CustomCard";
-import { Box, Typography, Grid, Alert, Button } from '@mui/material';
+import { Box, Typography, Grid, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, useTheme } from '@mui/material';
 import FloatingAddButton from "../../../kernel/FloatingAddButton";
 import { handleGetMenu, handleGetMenuPhotos, handleGetMenuById, handleCreateMenu, handleUpdateMenu } from "../controllers/MenuController";
 import { useOutletContext } from "react-router-dom";
@@ -9,42 +9,90 @@ import { RegisterDialog } from '../components/RegisterDialog';
 import { AssignAsCurrentDialog } from '../components/AssignAsCurrentDialog';
 import { InactivateMenuDialog } from '../components/InactivateMenuDialog';
 import { useNavigate } from 'react-router-dom';
+import QRCode from "react-qr-code";
+import { Page, Text, View, Document, StyleSheet, PDFViewer, pdf, Image } from '@react-pdf/renderer';
 
 export default function MenuPage() {
     const navigate = useNavigate();
+    const theme = useTheme();
     const [menuData, setMenuData] = useState(null);
     const [photos, setPhotos] = useState({});
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const { setSuccess, setError: setGlobalError } = useOutletContext();
     const [openRegisterDialog, setOpenRegisterDialog] = useState(false);
+    const [openQRdialog, setOpenQRdialog] = useState(false);
     const [selectedMenu, setSelectedMenu] = useState(null);
     const [dialogLoading, setDialogLoading] = useState(false); // Carga solo para el modal
     const [openAssignAsCurrentDialog, setOpenAssignAsCurrentDialog] = useState(false);
     const [openInactivateMenuDialog, setOpenInactivateMenuDialog] = useState(false);
     const [isCurrentMenu, setIsCurrentMenu] = useState(false);
 
-    const handleGetMenuDetails =(menu)=>{
-        navigate('/menu-details',{
-            state:{id: menu.id, name: menu.name, dishes: menu.dishes}
+    const handleGetMenuDetails = (menu) => {
+        navigate('/menu-details', {
+            state: { id: menu.id, name: menu.name, dishes: menu.dishes }
         })
     }
 
-    const handleAssignAsCurrentDialog = () => setOpenAssignAsCurrentDialog(false);
+    const generateQRCodeBase64 = () => {
+        return new Promise((resolve) => {
+            const qrElement = document.querySelector("#qr-code");
+            if (!qrElement) return resolve(null);
     
+            const svg = new XMLSerializer().serializeToString(qrElement);
+            const svgBlob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
+            const url = URL.createObjectURL(svgBlob);
+    
+            const img = new window.Image(); // Asegurar que es un HTMLImageElement
+            img.onload = () => {
+                const canvas = document.createElement("canvas");
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0);
+                resolve(canvas.toDataURL("image/png"));
+                URL.revokeObjectURL(url);
+            };
+            img.src = url;
+        });
+    };
+    
+
+
+    const handleDownloadPDF = async () => {
+        const qrBase64 = await generateQRCodeBase64();
+        if (!qrBase64) {
+            console.error("QR Code generation failed!");
+            return;
+        }
+        const blob = await pdf(<MyDocument qrImage={qrBase64} />).toBlob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = "menu.pdf";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    };
+    
+
+
+    const handleAssignAsCurrentDialog = () => setOpenAssignAsCurrentDialog(false);
+
     const handleOpenAssignAsCurrentDialog = (menu) => {
         setSelectedMenu(menu);
         setOpenAssignAsCurrentDialog(true);
-      }
+    }
 
-      const handleInactivateMenuDialog = () => setOpenInactivateMenuDialog(false);
-    
-      const handleOpenInactivateMenu = (menu) => {
-          setSelectedMenu(menu);
-          setOpenInactivateMenuDialog(true);
-        }
+    const handleInactivateMenuDialog = () => setOpenInactivateMenuDialog(false);
 
-      
+    const handleOpenInactivateMenu = (menu) => {
+        setSelectedMenu(menu);
+        setOpenInactivateMenuDialog(true);
+    }
+
+
 
     //Método para abrir el modal en caso de la creación de menú
     const handleOpenRegisterDialog = () => {
@@ -61,7 +109,6 @@ export default function MenuPage() {
 
     const handleCloseRegisterDialog = () => setOpenRegisterDialog(false); //Método para cerrar el modal
 
-
     //Método para crear o actualizar menú
     const handleSubmitDialog = async (values) => {
         setError(null);
@@ -73,24 +120,28 @@ export default function MenuPage() {
             await handleCreateMenu(values, setError, setSuccess, setLoading); //Mandar a traer mi registrar menú
         }
 
-        handleCloseRegisterDialog(); //Se cierra el menú
+        handleCloseRegisterDialog(); //Se cierra el modal
         handleGetMenu(setError, setLoading, setMenuData); //Se vuelve a traer la información de todos los menús con las actualizaciones
     };
 
-    const fetchData = ()=>{
+    const handleCloseQRdialog = () => {
+        setOpenQRdialog(false);
+    }
+
+    const fetchData = () => {
         setLoading(true);
         handleGetMenu(setError, setLoading, setMenuData);
     }
 
     useEffect(() => {
-       fetchData();
+        fetchData();
     }, []);
 
-    useEffect(()=>{
-        if(menuData){
-            setIsCurrentMenu(menuData.some(menuData=>menuData.status));
+    useEffect(() => {
+        if (menuData) {
+            setIsCurrentMenu(menuData.some(menuData => menuData.status));
         }
-    },[menuData])
+    }, [menuData])
 
     useEffect(() => {
         if (error) {
@@ -112,10 +163,28 @@ export default function MenuPage() {
         };
     }, [photos]);
 
+
+    const MyDocument = ({ qrImage }) => (
+        <Document>
+            <Page size="A6" style={styles.page}>
+                <View style={{alignItems:'center', width:"100%"}}>
+                    <Text style={{marginTop:50, fontFamily:theme.bodyFont}}>Consulta nuestro menú</Text>
+                    <Image src={theme.logo} alt="Logo" style={{ height: 40, maxWidth: 200, marginTop:25}} />
+                    {qrImage && <Image src={qrImage} style={{ width: 100, height: 100, marginTop: 25}} />}
+                </View>
+            </Page>
+        </Document>
+    );
+
+
     return (
         <>
             <Box>
-                <Typography variant="h5">Menús</Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginY: 3 }}>
+                    <Typography variant="h5">Menús</Typography>
+                    <Button variant="contained" color='primary' onClick={() => { setOpenQRdialog(true) }}>GENERAR QR</Button>
+                </Box>
+
                 {menuData && Object.keys(photos).length === menuData.length ? (
                     <>
                         <Grid container columnSpacing={{ xs: 1, sm: 2, md: 3 }} rowSpacing={3} sx={{ p: 1 }}>
@@ -131,10 +200,10 @@ export default function MenuPage() {
                                     menuStatus={menu.status}
                                     isMenu={true}
                                     isEnable={true}
-                                    enable={()=>{handleOpenAssignAsCurrentDialog(menu)}}
-                                    disable={()=>{handleOpenInactivateMenu(menu)}}
-                                    isCurrentMenu ={isCurrentMenu}
-                                    viewDishes ={()=>{handleGetMenuDetails(menu)}}
+                                    enable={() => { handleOpenAssignAsCurrentDialog(menu) }}
+                                    disable={() => { handleOpenInactivateMenu(menu) }}
+                                    isCurrentMenu={isCurrentMenu}
+                                    viewDishes={() => { handleGetMenuDetails(menu) }}
                                 />
                             ))}
                         </Grid>
@@ -166,7 +235,7 @@ export default function MenuPage() {
             />
 
 
-        <InactivateMenuDialog
+            <InactivateMenuDialog
                 open={openInactivateMenuDialog}
                 onClose={handleInactivateMenuDialog}
                 menuId={selectedMenu?.id}
@@ -175,6 +244,46 @@ export default function MenuPage() {
                 setError={setError}
                 onInactivateMenu={fetchData}
             />
+
+
+            <Dialog
+                open={openQRdialog}
+                onClose={handleCloseQRdialog}
+                aria-labelledby="qr-dialog-title"
+                aria-describedby="qr-dialog-description"
+            >
+                <DialogTitle id="qr-dialog-title" variant='h4'>
+                    Escanea
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="qr-dialog-description" color='gray' fontSize={15}>
+                       Escanea con la camara de tu teléfono el código QR de nuestro menú.
+                    </DialogContentText>
+
+                    <Box sx={{ height: "auto", margin: "0 auto", maxWidth: 300, width: "100%", paddingY: 3 }}>
+                        <QRCode
+                            id="qr-code"
+                            size={256}
+                            style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+                            value={"http://localhost:5173"}
+                            viewBox={`0 0 256 256`}
+                        />
+
+                    </Box>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseQRdialog} variant='outlined'>Cerrar</Button>
+                    <Button onClick={handleDownloadPDF} variant='contained'>Descargar PDF</Button>
+                </DialogActions>
+            </Dialog>
         </>
     );
+
 }
+
+const styles = StyleSheet.create({
+    page: {
+        flexDirection:'column',
+        display: 'flex', alignItems: 'center' 
+    }
+});
