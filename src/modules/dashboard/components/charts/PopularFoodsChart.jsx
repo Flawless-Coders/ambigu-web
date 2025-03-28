@@ -1,10 +1,11 @@
-import React from 'react';
 import { PieChart } from '@mui/x-charts/PieChart';
-import Typography from '@mui/material/Typography';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
+import {
+  Typography,
+  Card,
+  CardContent,
+  Box,
+  Stack,
+} from '@mui/material';
 import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
 
 const data = [
@@ -21,7 +22,7 @@ const comidas = [
   { name: 'Otros', value: 5, color: 'hsl(220, 25%, 20%)' },
 ];
 
-export default function ComidasPopularesChart() {
+export default function PopularFoodsChart() {
   return (
     <Card variant="outlined" sx={{ display: 'flex', flexDirection: 'column', gap: '8px', flexGrow: 1 }}>
       <CardContent>
