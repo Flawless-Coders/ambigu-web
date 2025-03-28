@@ -58,7 +58,7 @@ export default function OrderPublicPage() {
             bottom: 20,
             right: 20,
             width: '100%',
-            maxWidth: { xs: 360, sm: 390, md: 400, lg: 450 },
+            maxWidth: { xs: 280, sm: 420, md: 400, lg: 450 },
             zIndex: 900
           }}
         >
