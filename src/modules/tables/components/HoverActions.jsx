@@ -75,7 +75,7 @@ export default function HoverActions({ isEnabled, showFab, fetchTables, id, tabl
                     {isEnabled && (
                         <Fab
                             size="small"
-                            color="secondary"
+                            sx={{backgroundColor: "#673ab7", color: "white", "&:hover": { backgroundColor: "#651fff" },}}
                             aria-label="update"
                             onClick={() => handleOpenDialog('editar')}
                         >
@@ -86,7 +86,7 @@ export default function HoverActions({ isEnabled, showFab, fetchTables, id, tabl
                     {tableClientStatus === 'UNOCCUPIED' ? (
                         <Fab
                             size="small"
-                            color={isEnabled ? "error" : "primary"}
+                            color={isEnabled ? "error" : "success"}
                             aria-label={isEnabled ? "disable" : "enable"}
                             onClick={() => handleOpenDialog(isEnabled ? 'deshabilitar' : 'habilitar')}
                         >

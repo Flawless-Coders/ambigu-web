@@ -48,24 +48,24 @@ const CategoriesPage = () => {
   );
 
   return (
-    <Box sx={{ position: "relative", minHeight: "100vh", paddingBottom: "80px" }}>
+    <Box sx={{ position: "relative", minHeight: "100vh", paddingBottom: "80px", p: 3 }}>
       <Typography variant="h4">Categorías</Typography>
 
       {/* Tabs Habilitados/Deshabilitados */}
       <Tabs value={tabIndex} onChange={(event, newValue) => setTabIndex(newValue)} sx={{ mb: 1 }}>
         <Tab
-          icon={<CheckCircle sx={{ color: tabIndex === 0 ? "green" : "gray" }} />}
-          iconPosition="start"
-          label="Habilitados"
+          // icon={<CheckCircle sx={{ color: tabIndex === 0 ? "green" : "gray" }} />}
+          // iconPosition="start"
+          label="HABILITADOS"
           value={0}
-          sx={{ color: tabIndex === 0 ? "green" : "gray", fontWeight: "bold", textTransform: "none" }}
+          sx={{ color: tabIndex === 0 ? "green" : "gray",  textTransform: "none" }}
         />
         <Tab
-          icon={<RemoveCircle sx={{ color: tabIndex === 1 ? "green" : "gray" }} />}
-          iconPosition="start"
-          label="Deshabilitados"
+          // icon={<RemoveCircle sx={{ color: tabIndex === 1 ? "green" : "gray" }} />}
+          // iconPosition="start"
+          label="DESHABILITADOS"
           value={1}
-          sx={{ color: tabIndex === 1 ? "green" : "gray", fontWeight: "bold", textTransform: "none" }}
+          sx={{ color: tabIndex === 1 ? "green" : "gray",  textTransform: "none" }}
         />
       </Tabs>
 
