@@ -57,7 +57,7 @@ export default function OrdersChart() {
   const maxDay = ordersData.labels[ordersData.dailyOrders.indexOf(maxOrders)];
 
   return (
-    <Card variant="outlined" sx={{ width: '100%' }}>
+    <Card variant="outlined" sx={{ width: '100%', height: '100%' }}>
       <CardContent>
         <Typography component="h2" variant="subtitle2" gutterBottom>
           Promedio de pedidos diarios

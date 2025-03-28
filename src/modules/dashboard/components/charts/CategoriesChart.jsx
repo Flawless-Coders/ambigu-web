@@ -7,7 +7,7 @@ import { BarChart } from '@mui/x-charts/BarChart';
 
 export default function CategoriesChart() {
   return (
-    <Card variant="outlined" sx={{ width: '100%' }}>
+    <Card variant="outlined" sx={{ width: '100%', height: '100%' }}>
       <CardContent>
         <Typography component="h2" variant="subtitle2" gutterBottom>
           Ventas por categoría
