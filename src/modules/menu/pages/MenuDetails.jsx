@@ -132,7 +132,7 @@ export default function MenuDetails() {
 
   return (
     <Box>
-      <Typography variant="h5">{name}</Typography>
+      <Typography variant="h4">{name}</Typography>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         {loadingCategories ? <LoaderAmbigu /> : (
           <Tabs value={value} onChange={handleChange} aria-label="menu tabs" variant="scrollable">
