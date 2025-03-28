@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Tabs, Tab, Typography, Box } from "@mui/material";
+import { Tabs, Tab, Typography, Box, Grid } from "@mui/material";
 import { CheckCircle, RemoveCircle } from "@mui/icons-material";
 import CategoriesCard from "../components/CategoriesCard";
 import { handleGetCategories } from "../controllers/categoriesController";
@@ -54,40 +54,44 @@ const CategoriesPage = () => {
       {/* Tabs Habilitados/Deshabilitados */}
       <Tabs value={tabIndex} onChange={(event, newValue) => setTabIndex(newValue)} sx={{ mb: 1 }}>
         <Tab
-          // icon={<CheckCircle sx={{ color: tabIndex === 0 ? "green" : "gray" }} />}
-          // iconPosition="start"
           label="HABILITADOS"
           value={0}
-          sx={{ color: tabIndex === 0 ? "green" : "gray",  textTransform: "none" }}
+          sx={{ color: tabIndex === 0 ? "green" : "gray", textTransform: "none" }}
         />
         <Tab
-          // icon={<RemoveCircle sx={{ color: tabIndex === 1 ? "green" : "gray" }} />}
-          // iconPosition="start"
           label="DESHABILITADOS"
           value={1}
-          sx={{ color: tabIndex === 1 ? "green" : "gray",  textTransform: "none" }}
+          sx={{ color: tabIndex === 1 ? "green" : "gray", textTransform: "none" }}
         />
       </Tabs>
 
       {loading ? (
         <LoaderAmbigu />
       ) : (
-        <Box display="flex" flexWrap="wrap" gap={2} mt={3}>
-          {filteredCategories.map((category) => (
-            <CategoriesCard
-              key={category.id}
-              category={category}
-              onChangeStatus={handleOpenChangeStatusDialog}
-              onEdit={handleOpenEditDialog}
-            />
-          ))}
-        </Box>
+        <>
+          <Grid container columnSpacing={{ xs: 1, sm: 2, md: 3 }} rowSpacing={3} sx={{ p: 1 }}>
+            {filteredCategories.map((category) => (
+              <CategoriesCard
+                key={category.id}
+                category={category}
+                onChangeStatus={handleOpenChangeStatusDialog}
+                onEdit={handleOpenEditDialog}
+              />
+            ))}
+          </Grid>
+          <FloatingAddButton 
+            setLoading={setLoading}
+            onSuccess={() => handleGetCategories(setCategories, setLoading, setError)}
+          />
+        </>
       )}
 
-      <FloatingAddButton onClick={() => setOpenModal(true)} />
       <RegisterDialog 
         open={openModal} 
-        handleClose={() => setOpenModal(false)} 
+        handleClose={() => {
+          setOpenModal(false);
+          setSelectedCategory(null);
+        }} 
         onSuccess={() => handleGetCategories(setCategories, setLoading, setError)} 
         category={selectedCategory} 
       />
