@@ -15,20 +15,19 @@ export default function MainGrid() {
         Resumen general
       </Typography>
       <Grid container spacing={2}>
-        <Grid item xs={12} sm={6} lg={3}>
-          <TotalOrdersChart />
-        </Grid>
-        <Grid item xs={12} sm={6} lg={6}>
+         {/* BestWaitersChart - se moverá arriba en sm/md */}
+        <Grid item xs={12} sm={12} md={12} lg={6} order={{ xs: 1, sm: 1, md: 1, lg: 2 }}>
           <BestWaitersChart />
         </Grid>
-       <Grid item xs={12} sm={6} lg={3}>
-          <EvaluationDayCard />
-       </Grid>
-        <Grid item xs={12} md={12} sm={12} lg={6}>
-          <OrdersChart/>
+        
+        {/* TotalOrdersChart - se moverá a la izquierda abajo en sm/md */}
+        <Grid item xs={12} sm={6} md={6} lg={3} order={{ xs: 2, sm: 2, md: 2, lg: 1 }}>
+          <TotalOrdersChart />
         </Grid>
-        <Grid item xs={12} md={12} sm={12} lg={6}>
-          <CategoriasChart />
+        
+        {/* EvaluationDayCard - se moverá a la derecha abajo en sm/md */}
+        <Grid item xs={12} sm={6} md={6} lg={3} order={{ xs: 3, sm: 3, md: 3, lg: 3 }}>
+          <EvaluationDayCard />
         </Grid>
       </Grid>
 

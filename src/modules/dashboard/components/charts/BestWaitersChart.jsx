@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import api from '../../../auth/services/api';
 
 
-export default function BestWaitersChart() {
+export default function BestWaitersChart({order}) {
     const [waiters, setWaiters] = useState([]);
 
 useEffect(() => {
@@ -21,13 +21,13 @@ useEffect(() => {
 }, []);
 
   return (
-    <Card variant="outlined" sx={{ width: '100%', height: '100%' }}>
+    <Card variant="outlined" sx={{ width: '100%', height: '100%',}}>
       <CardContent>
-        <Typography component="h2" variant="subtitle2" sx={{ mb: 2 }}>
+        <Typography component="h2" variant="subtitle2" sx={{ mb: 3 }}>
           Meseros mejor calificados
         </Typography>
 
-        <Stack direction="row" justifyContent="space-between" flexWrap="wrap" spacing={2}>
+        <Stack direction="row" justifyContent="space-between" flexWrap="wrap" spacing={1}>
           {waiters.map((w, index) => (
             <Box key={index} textAlign="center">
               <Gauge
