@@ -16,6 +16,7 @@ import DishesPage from "../modules/dishes/pages/DishesPage"
 import { ThemesPage } from "../modules/theming/pages/ThemesPage"
 import OrderPublicPage from "../modules/public-order/pages/OrderPublicPage"
 import ScoreServicePage from "../modules/public-order/pages/ScoreServicePage"
+import PublicMenu from "../modules/public-menu/pages/PublicMenu"
 
 // Protected route component
 const ProtectedRoute = ({ children }) => {
@@ -65,6 +66,7 @@ const AppRoutes = () => {
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/order-client/:orderNumber" element={<OrderPublicPage />} />
       <Route path="/score-service/:orderNumber" element={<ScoreServicePage />} />
+      <Route path="/public-menu" element={<PublicMenu />} />
       
       {/* Rutas protegidas bajo Layout */}
       <Route element={

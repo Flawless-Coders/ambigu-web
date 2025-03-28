@@ -52,9 +52,9 @@ export default function ModalActions({
     left: "50%",
     transform: "translate(-50%, -50%)",
     width: {
-      xs: 300,
-      sm: disable || enable ? 300 : 400,
-      md: disable || enable ? 350 : 500,
+      xs: 250,
+      sm: disable || enable ? 300 : 350,
+      md: disable || enable ? 350 : 450,
     },
     bgcolor: "background.paper",
     borderRadius: "16px",
@@ -349,9 +349,9 @@ export default function ModalActions({
                           variant="outlined"
                           error={Boolean(touched.price && errors.price)}
                           helperText={touched.price && errors.price}
-                          sx={{ width: "55%" }}
+                          sx={{ width: "50%" }}
                         />
-                        <FormControl sx={{ width: "43%" }}>
+                        <FormControl sx={{ width: "45%" }}>
                           <InputLabel id="category-label">Categoría</InputLabel>
                           <Field
                             as={Select}
@@ -379,6 +379,7 @@ export default function ModalActions({
                         display="flex"
                         flexDirection="column"
                         justifyContent="center"
+                        alignItems="center"
                       >
                         <img
                           src={dishImage ? dishImage : placeHolderImg}
@@ -386,8 +387,9 @@ export default function ModalActions({
                           onClick={handleClick}
                           style={{
                             cursor: "pointer",
-                            width: "auto",
-                            height: "300px",
+                            maxWidth: "100%",
+                            marginBottom: "10px",
+                            maxHeight: "200px",
                             marginTop: 25,
                           }}
                         />
@@ -447,8 +449,9 @@ export default function ModalActions({
                         size="large"
                         sx={{ width: "40%" }}
                         onClick={handleClose}
+                        fon
                       >
-                        CANCELAR
+                        Cancelar
                       </Button>
                       <Button
                         variant="contained"

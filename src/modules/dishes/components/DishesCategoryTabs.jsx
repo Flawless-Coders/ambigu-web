@@ -144,7 +144,7 @@ export default function DishesCategoryTabs(props) {
       {loading ? (
         <LoaderAmbigu />
       ) : (
-        <Box sx={{ width: "100%" }}>
+        <Box sx={{ p: 0 }}>
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
             <Tabs
               value={value}
@@ -163,14 +163,14 @@ export default function DishesCategoryTabs(props) {
             </Tabs>
           </Box>
           {categories.map((category, index) => (
-            <CustomTabPanel key={category.id} value={value} index={index}>
+            <CustomTabPanel key={category.id} value={value} index={index} padding={0}>
               {dishesLoading ? (
                 <Box
                   sx={{
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
-                    height: "50vh",
+                    height: "100vh",
                   }}
                 >
                   <CircularProgress color="primary" />
@@ -178,9 +178,9 @@ export default function DishesCategoryTabs(props) {
               ) : Array.isArray(dishes) && dishes.length > 0 ? (
                 <Grid
                   container
+                  padding={0}
                   columnSpacing={{ xs: 1, sm: 2, md: 3 }}
                   rowSpacing={3}
-                  sx={{ p: 1 }}
                 >
                   {dishes.map((dish, index) => (
                     <CustomCard

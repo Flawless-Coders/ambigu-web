@@ -1,0 +1,36 @@
+import { getCurrentMenu, getCurrentMenuCategories, getCurrentMenuDishesByCategory } from "../services/publicMenuService";
+
+export const handleGetCurrentMenu = async(setCurrentMenu, setLoading) =>{
+    setLoading(true);
+    try{
+        const response = await getCurrentMenu();
+        setCurrentMenu(response);
+        setLoading(false);
+    }catch{
+        console.error("Ocurrió un error al obtener el menú, pero no es su culpa.");
+    }
+}
+
+export const handleGetCurrentMenuCategories = async(setCategories, setLoading) =>{
+    setLoading(true);
+    try{
+        const response = await getCurrentMenuCategories();
+        setCategories(response);
+        setLoading(false);
+    }catch{
+        console.error("Ocurrió un error al obtener las categorías del menú, pero no es su culpa.");
+    }
+}
+
+export const handleGetCurrentMenuDishesByCategory = async(categoryId, setDishes, setLoading) =>{
+    setLoading(true);
+    try{        
+        const response = await getCurrentMenuDishesByCategory(categoryId);
+        console.log(response);
+        
+        setDishes(response);
+        setLoading(false);
+    }catch{
+        console.error("Ocurrió un error al obtener los platillos del menú, pero no es su culpa.");
+    }
+}

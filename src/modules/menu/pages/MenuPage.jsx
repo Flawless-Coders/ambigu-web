@@ -75,7 +75,7 @@ export default function MenuPage() {
     return (
         <>
             <Box>
-                <Typography variant="h5">Menús</Typography>
+                <Typography variant="h4">Menús</Typography>
                 {menuData && Object.keys(photos).length === menuData.length ? (
                     <>
                         <Grid container columnSpacing={{ xs: 1, sm: 2, md: 3 }} rowSpacing={3} sx={{ p: 1 }}>
