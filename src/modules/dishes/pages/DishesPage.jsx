@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Box, Button, Icon, IconButton, Typography } from "@mui/material";
 import DishesCategoryTabs from "../components/DishesCategoryTabs";
+import FloatingAddButton from "../../../kernel/FloatingAddButton";
 import { handleGetCategories } from "../controllers/DishesController";
 import ModalActions from "../components/ModalActions";
 import { useOutletContext } from "react-router-dom";
@@ -10,7 +11,6 @@ import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import FloatingButton from "../../../kernel/FloatingButton";
 
 export default function DishesPage() {
   const [loading, setLoading] = useState(false); // Carga solo para la tabla
@@ -71,7 +71,7 @@ export default function DishesPage() {
           setCreatedDish={setCreatedDish}
           isAvailable={isAvailable}
         />
-        <FloatingButton action={handleOpenModal} />
+        <FloatingAddButton action={handleOpenModal} />
       </Box>
 
       <ModalActions

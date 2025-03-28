@@ -1,8 +1,4 @@
-import { Box, Typography } from '@mui/material'
-import React from 'react'
-import PedidosChart from '../components/PedidosChart'
-import CategoriasChart from '../components/CategoriasChart'
-import ComidasPopularesChart from '../components/ComidasPopularesChart'
+import { Box } from '@mui/material'
 import MainGrid from '../components/MainGrid'
 
 export const DashboardPage = () => {

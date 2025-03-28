@@ -1,4 +1,4 @@
-import {CircularProgress, Typography, Box} from '@mui/material';
+import {CircularProgress, Box} from '@mui/material';
 
 const LoaderAmbigu = () => {
     return (

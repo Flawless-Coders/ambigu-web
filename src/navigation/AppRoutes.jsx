@@ -17,6 +17,8 @@ import { ThemesPage } from "../modules/theming/pages/ThemesPage"
 import OrderPublicPage from "../modules/public-order/pages/OrderPublicPage"
 import ScoreServicePage from "../modules/public-order/pages/ScoreServicePage"
 import PublicMenu from "../modules/public-menu/pages/PublicMenu"
+import MenuDetails from "../modules/menu/pages/MenuDetails"
+import OrderPage from "../modules/orders/pages/OrderPage"
 
 // Protected route component
 const ProtectedRoute = ({ children }) => {
@@ -38,16 +40,17 @@ const AppRoutes = () => {
       "/": "Inicio",
       "/password-recovery": "Recuperar Contraseña",
       "/forgot-password": "Olvidé mi Contraseña",
-      "/order/public/:orderNumber": "Cuenta",
+      "/order-client/:orderNumber": "Cuenta",
       "/dashboard": "Dashboard",
       "/waiters": "Meseros",
       "/categories": "Categorías",
       "/dishes": "Platillos",
       "/tables": "Mesas",
       "/menu": "Menú",
+      "/menu-details" : "Detalles de Menú",
       "/customization": "Personalización",
       "/orders": "Pedidos",
-      "/profile": "Perfil",
+      "/profile": "Perfil"
     };
 
     const title = routeTitles[location.pathname] || "Mi Proyecto";
@@ -81,8 +84,8 @@ const AppRoutes = () => {
         <Route path="/tables" element={<TablePage />} />
         <Route path="/menu" element={<MenuPage/>} />
         <Route path="/customization" element={<ThemesPage />} />
-        <Route path="/menu" element={<MenuPage/>} />
-        <Route path="/orders" element={<div>Pedidos (Coming Soon)</div>} />
+        <Route path="menu-details" element={<MenuDetails/>}/>
+        <Route path="/orders" element={<OrderPage/>}/>
         <Route path="/profile" element={<ProfilePage/>} />
       </Route>
       
