@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { DataGrid } from '@mui/x-data-grid';
-import { Box, Typography, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material';
+import { Box, Typography, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Divider } from '@mui/material';
 import { number } from 'yup';
 import { handleGetOrder } from '../controllers/orderController';
 import { useOutletContext } from "react-router-dom";
@@ -13,7 +13,7 @@ export default function OrderPage() {
   const { setError: setGlobalError } = useOutletContext();
   const [orderData, setOrderData] = useState(null);
   const [open, setOpen] = React.useState(false);
-  const [selectedDishes, setSelectedDishes] = useState([]);
+  const [selectedOrder, setSelectedOrder] = useState(null);
   const [selectedDate, setSelectedDate] = useState("");
 
   const handleDateChange = (event) => {
@@ -40,7 +40,7 @@ export default function OrderPage() {
         const hour = dateTime.toLocaleTimeString(); // Para mostrar
 
         const localDate = new Date(dateTime.getFullYear(), dateTime.getMonth(), dateTime.getDate());
-        const isoDate = localDate.toISOString().split("T")[0]; 
+        const isoDate = localDate.toISOString().split("T")[0];
 
         return {
           ...order,
@@ -48,7 +48,7 @@ export default function OrderPage() {
           originalDate: isoDate,  // Guarda YYYY-MM-DD para filtrar
           hour,
           qualification: order.opinion?.qualification || 0,
-          dishes: order.dishes.map(dish => dish.dishName),
+          dishes: order.dishes.map(dish => (dish)),
           finalized: order.finalized ? "Completado" : "En curso"
         };
       });
@@ -56,8 +56,10 @@ export default function OrderPage() {
     });
   }, []);
 
-  const handleClickOpen = (dishes) => {
-    setSelectedDishes(dishes);
+  const handleClickOpen = (order) => {
+    setSelectedOrder(order);
+    console.log(order);
+
     setOpen(true);
   };
 
@@ -79,7 +81,7 @@ export default function OrderPage() {
       justifyContent: "center",
       renderCell: (params) => (
         <Box display="flex" justifyContent="center" width="100%">
-          <Button size="small" color="warning" variant="contained" onClick={() => handleClickOpen(params.row.dishes)}>
+          <Button size="small" color="warning" variant="contained" onClick={() => handleClickOpen(params.row)}>
             <RemoveRedEyeOutlinedIcon />
           </Button>
         </Box>
@@ -103,7 +105,7 @@ export default function OrderPage() {
 
   return (
     <>
-      <Box sx={{ marginY: 3, display: "flex", justifyContent: { md: "space-between"}, alignItems: 'center' }}>
+      <Box sx={{ marginY: 3, display: "flex", justifyContent: { md: "space-between" }, alignItems: 'center' }}>
         <Typography variant='h4'>
           Historial de pedidos
         </Typography>
@@ -124,15 +126,15 @@ export default function OrderPage() {
 
       {loading && !orderData ? <LoaderAmbigu /> : (
         <Box sx={{ width: '100%', overflowX: 'auto' }}>
-        <div style={{ minWidth: '600px' }}>
-        <DataGrid
-          rows={filteredRows}
-          columns={columns}
-          initialState={{ pagination: { paginationModel } }}
-          pageSizeOptions={[5, 10, 15, 20]}
-          sx={{ border: 0 }}
-        />
-        </div>
+          <div style={{ minWidth: '600px' }}>
+            <DataGrid
+              rows={filteredRows}
+              columns={columns}
+              initialState={{ pagination: { paginationModel } }}
+              pageSizeOptions={[5, 10, 15, 20]}
+              sx={{ border: 0 }}
+            />
+          </div>
         </Box>
       )}
 
@@ -141,30 +143,69 @@ export default function OrderPage() {
           sx={{
             "& .MuiDialog-paper": {
               width: "450px",
-              maxHeight: "400px"
+              borderRadius: 2,
+              padding: "20px",
+              backgroundColor: "#f9f9f9",
+              boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)"
             }
           }}
           open={open}
           onClose={handleClose}
           aria-labelledby="dish-dialog-title"
-          aria-describedby="dish-dialog-description"
         >
-          <DialogTitle id="dish-dialog-title">
-            Platillos
+          <DialogTitle id="dish-dialog-title" sx={{ textAlign: 'center' }}>
+            Platillos del Pedido
           </DialogTitle>
           <DialogContent>
-            <DialogContentText id="dish-dialog-description">
-              <ul>
-                {selectedDishes.map((dish, index) => (
-                  <li key={index}>{dish}</li>
-                ))}
-              </ul>
-            </DialogContentText>
+            <Box>
+              <Box sx={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Typography variant="body2" sx={{ fontWeight: 'bold', flex: 1, textAlign: 'center' }}>
+                  Cantidad
+                </Typography>
+                <Typography variant="body2" sx={{ fontWeight: 'bold', flex: 3, textAlign: 'center' }}>
+                  Platillo
+                </Typography>
+                <Typography variant="body2" sx={{ fontWeight: 'bold', flex: 1, textAlign: 'center' }}>
+                  Precio
+                </Typography>
+              </Box>
+
+              {selectedOrder && selectedOrder.dishes.length > 0 ? (
+                selectedOrder.dishes.map((dish, index) => (
+                  <Box key={index} sx={{ marginBottom: '10px', justifyContent: 'space-between', display: 'flex' }}>
+                    <Typography variant="body2">
+                      {dish.quantity}
+                    </Typography>
+                    <Typography variant="body2">
+                      {dish.dishName}
+                    </Typography>
+                    <Typography variant="body2">
+                      {`$${dish.unitPrice}`}
+                    </Typography>
+                  </Box>
+                ))
+              ) : (
+                <Typography variant="body2" color="textSecondary">
+                  No hay platillos disponibles para este pedido.
+                </Typography>
+              )}
+
+            <Divider/>
+              {selectedOrder && (
+                <Box sx={{ marginTop: '20px', display: 'flex', justifyContent: 'space-between', fontWeight: 'bold' }}>
+                  <Typography variant="h6">Total:</Typography>
+                  <Typography variant="h6">${selectedOrder.total}</Typography>
+                </Box>
+              )}
+            </Box>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose} variant="contained">Cerrar</Button>
+            <Button onClick={handleClose} variant="contained" color="primary" sx={{ width: '100%' }}>
+              Cerrar
+            </Button>
           </DialogActions>
         </Dialog>
+
       </React.Fragment>
     </>
   );
