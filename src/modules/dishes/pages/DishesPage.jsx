@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Box, Button, Icon, IconButton, Typography } from "@mui/material";
 import DishesCategoryTabs from "../components/DishesCategoryTabs";
-import FloatingAddButton from "../../categories/components/FloatingAddButton";
+import FloatingAddButton from "../../../kernel/FloatingAddButton";
 import { handleGetCategories } from "../controllers/DishesController";
 import ModalActions from "../components/ModalActions";
 import { useOutletContext } from "react-router-dom";

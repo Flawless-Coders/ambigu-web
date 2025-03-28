@@ -4,10 +4,11 @@ import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import FlatwareOutlinedIcon from '@mui/icons-material/FlatwareOutlined';
 import TaskAltOutlinedIcon from '@mui/icons-material/TaskAltOutlined';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function CustomCard(props) {
-    const { image, title, price, description, buttonTitle, chipTitle, chipColor, update, disable, enable, isEnable, isMenu, viewDishes, menuStatus } = props;
-
+    const { image, title, price, description, buttonTitle, chipTitle, chipColor, update, disable,
+        enable, isEnable, isMenu, viewDishes, menuStatus, isCurrentMenu, remove } = props;
     const [showFab, setShowFab] = React.useState(false);
 
     return (
@@ -36,93 +37,62 @@ export default function CustomCard(props) {
                         component="img"
                         image={image}
                         alt={title}
-                        sx={{ maxHeight: { xs: 200 }, height: { md: 150 } }}
+                        sx={{ height: 150 }}
                     />
 
-                    {isEnable && showFab ? (
+                    {isEnable && showFab && (
                         <Box
-                            sx={{
-                                position: 'absolute',
-                                top: '60%',
-                                left: '50%',
-                                transform: 'translate(-50%, -50%)',
-                                display: 'flex',
-                                gap: 2,
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                width: '100%',
-                            }}
+                            sx={styles.buttonContainer}
                         >
-                            <Fab
-                                size="small"
-                                color="secondary"
-                                aria-label="update"
-                                onClick={update}
-                            >
+                            <Fab size="small" sx={{backgroundColor: "#673ab7", color: "white", "&:hover": { backgroundColor: "#651fff" },}} aria-label="update" onClick={update}>
                                 <ModeEditIcon />
                             </Fab>
 
-                            {!isMenu && (
-                                <Fab
-                                    size="small"
-                                    color={"error"}
-                                    aria-label={"disable"}
-                                    onClick={disable}
-                                >
+                            {!isMenu || menuStatus ? (
+                                <Fab size="small" color="error" aria-label="disable" onClick={disable}>
                                     <RemoveCircleOutlineIcon />
+                                </Fab>
+                            ) : null}
+
+                            {isMenu && !menuStatus && !isCurrentMenu && (
+                                <Fab size="small" color="success" aria-label="enable" onClick={enable}>
+                                    <TaskAltOutlinedIcon />
                                 </Fab>
                             )}
 
-
                             {isMenu && (
-                                <>
-                                    <Fab
-                                        size="small"
-                                        color={menuStatus ? "error" : "primary"}
-                                        aria-label={menuStatus ? "disable" : "enable"}
-                                        onClick={menuStatus ? disable : enable}
-                                    >
-                                        {menuStatus ? <RemoveCircleOutlineIcon /> : <TaskAltOutlinedIcon />}
-                                    </Fab>
-                                    <Fab
-                                        size="small"
-                                        color="warning"
-                                        aria-label="disable"
-                                        onClick={viewDishes}
-                                    >
-                                        <FlatwareOutlinedIcon />
-                                    </Fab>
-                                </>
+                                <Fab size="small" color="warning" aria-label="view-dishes" onClick={viewDishes}>
+                                    <FlatwareOutlinedIcon />
+                                </Fab>
                             )}
-
                         </Box>
-                    ) : ""}
+                    )}
+
+                    {remove && showFab &&(
+                        <Box sx={styles.buttonContainer}>
+                            <Fab size="small" color="error" aria-label="disable" onClick={remove}>
+                                    <DeleteIcon />
+                                </Fab>
+                        </Box>
+                    )}
                 </Box>
                 <CardContent>
-                    {price ? (
-                        <Grid container width="100%">
-                            <Grid item xs={6}>
-                                <Typography gutterBottom component="div" sx={{ fontWeight: "bold", fontSize: 15 }}>
-                                    {title}
-                                </Typography>
-                            </Grid>
+                    <Grid container width="100%">
+                        <Grid item xs={6}>
+                            <Typography gutterBottom component="div" sx={{ fontWeight: "bold", fontSize: 15 }}>
+                                {title}
+                            </Typography>
+                        </Grid>
+                        {price && (
                             <Grid item xs={6} sx={{ display: "flex", justifyContent: "flex-end" }}>
                                 <Typography gutterBottom component="div" sx={{ fontWeight: "bold", fontSize: 15 }}>
                                     {price}
                                 </Typography>
                             </Grid>
-                        </Grid>
-                    ) : (
-                        <Grid container justifyContent="flex-start">
-                            <Grid item>
-                                <Typography gutterBottom component="div" sx={{ fontWeight: "bold", fontSize: 15 }}>
-                                    {title}
-                                </Typography>
-                            </Grid>
-                        </Grid>
-                    )}
+                        )}
+                    </Grid>
 
-                    <Typography variant="body2" sx={{ color: "text.secondary", display: { xs: "none", sm: "block" } }}>
+                    <Typography variant="body2" sx={{ color: "text.#3f51b5", display: { xs: "none", sm: "block" } }}>
                         {description}
                     </Typography>
 
@@ -132,8 +102,7 @@ export default function CustomCard(props) {
                         </Button>
                     )}
 
-
-                    {!isEnable ? (
+                    {!isMenu && !isEnable && (
                         <Box
                             sx={{
                                 position: 'absolute',
@@ -146,20 +115,27 @@ export default function CustomCard(props) {
                                 width: '100%',
                             }}
                         >
-                            <Fab
-                                size="small"
-                                color={"primary"}
-                                aria-label={"enable"}
-                                onClick={enable}
-                            >
-                                {<TaskAltOutlinedIcon />}
+                            <Fab size="small" color="success" aria-label="enable" onClick={enable}>
+                                <TaskAltOutlinedIcon />
                             </Fab>
                         </Box>
-                    ) : ""}
-
-
+                    )}
                 </CardContent>
             </Card>
         </Grid>
     );
+}
+
+const styles = {
+    buttonContainer: {
+        position: 'absolute',
+        top: '60%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        display: 'flex',
+        gap: 2,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+    }
 }
