@@ -29,6 +29,12 @@ export default function MainGrid() {
         <Grid item xs={12} sm={6} md={6} lg={3} order={{ xs: 3, sm: 3, md: 3, lg: 3 }}>
           <EvaluationDayCard />
         </Grid>
+         <Grid item xs={12} md={12} sm={12} lg={6} order={{ xs: 4, sm: 4, md: 4, lg: 4 }}>
+          <OrdersChart/>
+        </Grid>
+        <Grid item xs={12} md={12} sm={12} lg={6} order={{ xs: 5, sm: 5, md: 5, lg: 5 }}>
+          <CategoriasChart />
+        </Grid>
       </Grid>
 
       <Typography component="h2" variant="h6" sx={{ my: 2 }}>
