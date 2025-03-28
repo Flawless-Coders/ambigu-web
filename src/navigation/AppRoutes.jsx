@@ -38,7 +38,7 @@ const AppRoutes = () => {
       "/": "Inicio",
       "/password-recovery": "Recuperar Contraseña",
       "/forgot-password": "Olvidé mi Contraseña",
-      "/order/public/:orderNumber": "Cuenta",
+      "/order-client/:orderNumber": "Cuenta",
       "/dashboard": "Dashboard",
       "/waiters": "Meseros",
       "/categories": "Categorías",

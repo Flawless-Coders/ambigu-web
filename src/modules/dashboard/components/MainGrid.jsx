@@ -1,68 +1,38 @@
-import React from 'react';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
-import ComidasPopularesChart from './ComidasPopularesChart'; // antes ChartUserByCountry
-import CategoriasChart from './CategoriasChart'; // antes PageViewsBarChart
-import PedidosChart from './PedidosChart'; // antes SessionsChart
-import StatCard from './StatCard';
-import VentasPorCategoriaChart from './VentasPorCategoriaChart';
-import EvaluationDayCard from './EvaluationDayCard';
+import { Grid, Box, Stack, Typography } from '@mui/material';
 
-const data = [
-  {
-    title: 'Pedidos totales',
-    value: '14k',
-    interval: 'Últimos 30 días',
-    trend: 'up',
-    data: [
-      200, 240, 220, 260, 240, 380, 100, 240, 280, 240, 300, 340, 320, 360, 340, 380,
-      360, 400, 380, 420, 400, 640, 340, 460, 440, 480, 460, 600, 880, 920,
-    ],
-  },
-  {
-    title: 'Cancelaciones',
-    value: '325',
-    interval: 'Últimos 30 días',
-    trend: 'down',
-    data: [
-      1640, 1250, 970, 1130, 1050, 900, 720, 1080, 900, 450, 920, 820, 840, 600, 820,
-      780, 800, 760, 380, 740, 660, 620, 840, 500, 520, 480, 400, 360, 300, 220,
-    ],
-  },
-  {
-    title: 'Clientes únicos',
-    value: '200k',
-    interval: 'Últimos 30 días',
-    trend: 'neutral',
-    data: [
-      500, 400, 510, 530, 520, 600, 530, 520, 510, 730, 520, 510, 530, 620, 510, 530,
-      520, 410, 530, 520, 610, 530, 520, 610, 530, 420, 510, 430, 520, 510,
-    ],
-  },
-];
+import EvaluationDayCard from './EvaluationDayCard';
+import CategoriasChart from './charts/CategoriesChart';
+import TotalOrdersChart from './charts/TotalOrdersChart';
+import OrdersChart from './charts/OrdersChart';
+import PopularFoodsChart from './charts/PopularFoodsChart';
+import CategorySalesChart from './charts/CategorySalesChart';
+import BestWaitersChart from './charts/BestWaitersChart';
 
 export default function MainGrid() {
   return (
     <Box sx={{ width: '100%', maxWidth: '1700px' }}>
-      {/* cards */}
       <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
         Resumen general
       </Typography>
       <Grid container spacing={2}>
-        {data.map((card, index) => (
-          <Grid key={index} item xs={12} sm={6} lg={3}>
-            <StatCard {...card} />
-          </Grid>
-        ))}
-       <Grid item xs={12} sm={6} lg={3}>
-          <EvaluationDayCard />
-       </Grid>
-        <Grid item xs={12} md={12} sm={12} lg={6}>
-          <PedidosChart />
+         {/* BestWaitersChart - se moverá arriba en sm/md */}
+        <Grid item xs={12} sm={12} md={12} lg={6} order={{ xs: 1, sm: 1, md: 1, lg: 2 }}>
+          <BestWaitersChart />
         </Grid>
-        <Grid item xs={12} md={12} sm={12} lg={6}>
+        
+        {/* TotalOrdersChart - se moverá a la izquierda abajo en sm/md */}
+        <Grid item xs={12} sm={6} md={6} lg={3} order={{ xs: 2, sm: 2, md: 2, lg: 1 }}>
+          <TotalOrdersChart />
+        </Grid>
+        
+        {/* EvaluationDayCard - se moverá a la derecha abajo en sm/md */}
+        <Grid item xs={12} sm={6} md={6} lg={3} order={{ xs: 3, sm: 3, md: 3, lg: 3 }}>
+          <EvaluationDayCard />
+        </Grid>
+         <Grid item xs={12} md={12} sm={12} lg={6} order={{ xs: 4, sm: 4, md: 4, lg: 4 }}>
+          <OrdersChart/>
+        </Grid>
+        <Grid item xs={12} md={12} sm={12} lg={6} order={{ xs: 5, sm: 5, md: 5, lg: 5 }}>
           <CategoriasChart />
         </Grid>
       </Grid>
@@ -73,13 +43,12 @@ export default function MainGrid() {
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6} lg={6} md={6}>
           <Stack gap={2} direction={{ xs: 'column', sm: 'row', lg: 'column' }}>
-            <ComidasPopularesChart />
+            <PopularFoodsChart />
           </Stack>
         </Grid>
         <Grid item xs={12} sm={6} md={6} lg={6}>
-          <VentasPorCategoriaChart />
+          <CategorySalesChart />
         </Grid>
-
       </Grid>
     </Box>
   );
