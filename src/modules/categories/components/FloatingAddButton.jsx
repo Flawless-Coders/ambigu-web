@@ -3,7 +3,7 @@ import { Fab } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import CategoryModal from "./RegisterDialog";
 
-const FloatingAddButton = () => {
+const FloatingAddButton = ({ setLoading, onSuccess }) => {
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => setOpen(true);
@@ -23,7 +23,11 @@ const FloatingAddButton = () => {
       >
         <AddIcon />
       </Fab>
-      <CategoryModal open={open} handleClose={handleClose} />
+      <CategoryModal 
+        open={open} 
+        handleClose={handleClose} 
+        onSuccess={onSuccess}
+      />
     </>
   );
 };

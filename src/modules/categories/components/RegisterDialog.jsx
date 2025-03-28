@@ -24,7 +24,9 @@ const RegisterDialog = ({ open, handleClose, category, onSuccess }) => {
 
   const validationSchema = Yup.object({
     name: Yup.string().required("El nombre de la categoría es obligatorio"),
-    image: Yup.mixed().required("La imagen es obligatoria"),
+    image: category 
+      ? Yup.mixed().nullable()
+      : Yup.mixed().required("La imagen es obligatoria"),
   });
 
   return (
@@ -64,6 +66,7 @@ const RegisterDialog = ({ open, handleClose, category, onSuccess }) => {
             name: category?.name || "",
             imageBase64: category?.imageBase64 || "",
             status: category?.status ?? true,
+            image: category ? null : undefined,
           }}
           validationSchema={validationSchema}
           onSubmit={async (values, { setSubmitting, resetForm }) => {
@@ -87,6 +90,8 @@ const RegisterDialog = ({ open, handleClose, category, onSuccess }) => {
               setImageFile(null);
               setPreviewImage(null);
           
+              await onSuccess();
+              
               setTimeout(() => {
                 handleClose();
               }, 300);
