@@ -16,6 +16,7 @@ import DishesPage from "../modules/dishes/pages/DishesPage"
 import { ThemesPage } from "../modules/theming/pages/ThemesPage"
 import OrderPublicPage from "../modules/public-order/pages/OrderPublicPage"
 import ScoreServicePage from "../modules/public-order/pages/ScoreServicePage"
+import MenuDetails from "../modules/menu/pages/MenuDetails"
 
 // Protected route component
 const ProtectedRoute = ({ children }) => {
@@ -44,9 +45,10 @@ const AppRoutes = () => {
       "/dishes": "Platillos",
       "/tables": "Mesas",
       "/menu": "Menú",
+      "/menu-details" : "Detalles de Menú",
       "/customization": "Personalización",
       "/orders": "Pedidos",
-      "/profile": "Perfil",
+      "/profile": "Perfil"
     };
 
     const title = routeTitles[location.pathname] || "Mi Proyecto";
@@ -79,7 +81,7 @@ const AppRoutes = () => {
         <Route path="/tables" element={<TablePage />} />
         <Route path="/menu" element={<MenuPage/>} />
         <Route path="/customization" element={<ThemesPage />} />
-        <Route path="/menu" element={<MenuPage/>} />
+        <Route path="menu-details" element={<MenuDetails/>}/>
         <Route path="/orders" element={<div>Pedidos (Coming Soon)</div>} />
         <Route path="/profile" element={<ProfilePage/>} />
       </Route>

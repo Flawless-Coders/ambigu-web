@@ -47,7 +47,11 @@ const Sidebar = ({ onLogout }) => {
     >
       {/* Logo y botón de colapsar */}
       <Box sx={{ display: "flex", alignItems: "center", justifyContent: open ? "space-between" : "center", p: 2 }}>
-        {open && <Typography variant="h6" sx={{ fontWeight: "bold" }}>Cereza Bar</Typography>}
+        {open ? (
+          <img src={theme.logo} alt="Logo" style={{ height: 40 }} />
+        ) : (
+          <img src={theme.logoSmall} alt="Logo" style={{ height: 40 }} />
+        )}
       </Box>
 
       <Divider sx={{ borderColor: "rgba(255,255,255,0.2)" }} />

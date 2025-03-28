@@ -6,5 +6,8 @@ export default defineConfig({
   plugins: [react()],
   server: {
     historyApiFallback: true,
+  },
+  define: {
+    global: 'window',
   }
 })

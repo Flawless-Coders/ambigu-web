@@ -3,18 +3,20 @@ import theme from "./config/theme"
 import { BrowserRouter } from "react-router-dom";
 import AppRoutes from "./navigation/AppRoutes";
 import { AuthProvider } from "./context/AuthContext";
+import { ThemeProviderComponent } from "./context/ThemeContext";
 
 function App() {
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <AuthProvider>
-        <BrowserRouter>
-          <AppRoutes />
-        </BrowserRouter>
-      </AuthProvider>
-    </ThemeProvider>
+    <AuthProvider>
+      <ThemeProviderComponent>
+        <CssBaseline />
+          <BrowserRouter>
+            <AppRoutes />
+          </BrowserRouter>
+        <CssBaseline />
+      </ThemeProviderComponent>
+    </AuthProvider>
   );
 }
 
