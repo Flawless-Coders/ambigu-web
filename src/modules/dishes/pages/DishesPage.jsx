@@ -50,19 +50,27 @@ export default function DishesPage() {
   return (
     <>
       <Box sx={{ padding: 3 }}>
-        <Box sx={{ display: "flex", justifyContent: {xs: "center", sm: "flex-end"} }}>
-          <ToggleButtonGroup
-            color={isAvailable ? "primary" : "error"}
-            value={alignment}
-            exclusive
-            onChange={handleChange}
-            aria-label="available-unavailable dishes"
-          >
-            <ToggleButton value="available">Activos{alignment === "available" ? <CheckCircleIcon sx={iconStyle}/> : <CheckCircleOutlinedIcon sx={iconStyle}/>}</ToggleButton>
-            <ToggleButton value="unavailable">Inactivos{alignment === "unavailable" ? <CancelIcon sx={iconStyle}/> : <CancelOutlinedIcon sx={iconStyle}/>}</ToggleButton>
-          </ToggleButtonGroup>
-        </Box>
+      <Box sx={{ 
+        display: "flex", 
+        flexDirection: { xs: "column", sm: "row" },
+        justifyContent: "space-between",
+        alignItems: { xs: "flex-start", sm: "center" },
+        gap: { xs: 2, sm: 0 },
+        mb: 2
+      }}>
         <Typography variant="h4" marginTop={{xs: 2, md: 0}}>Platillos</Typography>
+        <ToggleButtonGroup
+          color={isAvailable ? "primary" : "error"}
+          value={alignment}
+          exclusive
+          onChange={handleChange}
+          aria-label="available-unavailable dishes"
+        >
+          <ToggleButton value="available">Activos{alignment === "available" ? <CheckCircleIcon sx={iconStyle}/> : <CheckCircleOutlinedIcon sx={iconStyle}/>}</ToggleButton>
+          <ToggleButton value="unavailable">Inactivos{alignment === "unavailable" ? <CancelIcon sx={iconStyle}/> : <CancelOutlinedIcon sx={iconStyle}/>}</ToggleButton>
+        </ToggleButtonGroup>
+      </Box>
+
         <DishesCategoryTabs
           categories={categories}
           loading={loading}

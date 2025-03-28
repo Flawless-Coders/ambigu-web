@@ -30,7 +30,7 @@ export default function ProfilePage() {
     }, [error, setGlobalError]);
 
     return (
-        <Box>
+        <Box sx={{ padding: 3 }}>
             <Typography variant="h4">Perfil</Typography>
             {loading && <LoaderAmbigu />}
             {error && <Alert severity="error">{error}</Alert>}
