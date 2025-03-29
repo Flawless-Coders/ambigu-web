@@ -1,4 +1,4 @@
-import { Box, Grid, Typography } from '@mui/material';
+import { Box, Card, Grid, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import OrdersCard from '../components/OrdersCard.jsx';
 import CreditScoreIcon from '@mui/icons-material/CreditScore';
@@ -48,9 +48,48 @@ export default function OrderPublicPage() {
             </Typography>
         </Grid>
 
-        <Grid item xs={12} sm={12} >
+        <Grid item xs={12} sm={12} style={{marginBottom:60}}>
           <OrdersCard order={order} />
         </Grid>
+        <Grid container >
+          <Box
+          sx={{
+            position: 'fixed',
+            bottom: 20,
+            right: 20,
+            width: '100%',
+            maxWidth: { xs: 280, sm: 420, md: 400, lg: 450 },
+            zIndex: 900
+          }}
+        >
+          <Card
+            sx={{
+              width: '100%', // ✅ ahora sí es seguro usarlo
+              boxShadow: 6,
+              p: 2
+            }}
+          >
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              {/* Mitad izquierda */}
+              <Box sx={{ width: '50%' }}>
+                <Typography fontSize={17} sx={{ fontWeight: 'bold' }}>
+                  Total a pagar
+                </Typography>
+              </Box>
+
+              {/* Mitad derecha */}
+              <Box sx={{ width: '50%', display: 'flex', justifyContent: 'flex-end' }}>
+                <Typography fontSize={17}>
+                  ${order.total}
+                </Typography>
+              </Box>
+            </Box>
+          </Card>
+        </Box>
+
+
+        </Grid>
+
       </Grid>
     </Box>
     </>

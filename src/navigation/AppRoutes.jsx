@@ -17,6 +17,7 @@ import { ThemesPage } from "../modules/theming/pages/ThemesPage"
 import OrderPublicPage from "../modules/public-order/pages/OrderPublicPage"
 import ScoreServicePage from "../modules/public-order/pages/ScoreServicePage"
 import MenuDetails from "../modules/menu/pages/MenuDetails"
+import OrderPage from "../modules/orders/pages/OrderPage"
 
 // Protected route component
 const ProtectedRoute = ({ children }) => {
@@ -38,7 +39,7 @@ const AppRoutes = () => {
       "/": "Inicio",
       "/password-recovery": "Recuperar Contraseña",
       "/forgot-password": "Olvidé mi Contraseña",
-      "/order/public/:orderNumber": "Cuenta",
+      "/order-client/:orderNumber": "Cuenta",
       "/dashboard": "Dashboard",
       "/waiters": "Meseros",
       "/categories": "Categorías",
@@ -82,7 +83,7 @@ const AppRoutes = () => {
         <Route path="/menu" element={<MenuPage/>} />
         <Route path="/customization" element={<ThemesPage />} />
         <Route path="menu-details" element={<MenuDetails/>}/>
-        <Route path="/orders" element={<div>Pedidos (Coming Soon)</div>} />
+        <Route path="/orders" element={<OrderPage/>}/>
         <Route path="/profile" element={<ProfilePage/>} />
       </Route>
       

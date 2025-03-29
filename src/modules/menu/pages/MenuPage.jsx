@@ -179,9 +179,9 @@ export default function MenuPage() {
 
     return (
         <>
-            <Box>
+            <Box sx={{ pt: 0, pb: 3, px: 3 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginY: 3 }}>
-                    <Typography variant="h5">Menús</Typography>
+                    <Typography variant="h4">Menús</Typography>
                     <Button variant="contained" color='primary' onClick={() => { setOpenQRdialog(true) }}>GENERAR QR</Button>
                 </Box>
 

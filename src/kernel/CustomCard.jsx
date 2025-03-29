@@ -19,7 +19,12 @@ export default function CustomCard(props) {
                     flexDirection: 'column',
                     height: '100%',
                     position: 'relative',
-                    "&:hover": { filter: "brightness(0.95)" }
+                    transition: "transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
+                   "&:hover": {
+                                        filter: "brightness(0.95)",
+                                      transform: "translateY(-5px)",
+                                      boxShadow: 6,
+                                  },
                 }}
                 onMouseEnter={() => setShowFab(true)}
                 onMouseLeave={() => setShowFab(false)}

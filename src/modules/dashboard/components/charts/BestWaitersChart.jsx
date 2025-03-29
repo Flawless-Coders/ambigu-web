@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import api from '../../../auth/services/api';
 
 
-export default function BestWaitersChart() {
+export default function BestWaitersChart({order}) {
     const [waiters, setWaiters] = useState([]);
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));

@@ -4,7 +4,6 @@ import { Typography, Box, Tabs, Tab, Button, Dialog, DialogActions, DialogConten
 import { Formik, Form, Field } from "formik";
 import Backdrop from "@mui/material/Backdrop";
 import * as Yup from "yup";
-import Autocomplete from '@mui/material/Autocomplete';
 import TableCard from "../components/TableCard";
 import { handleGetDisabledTables, handleGetEnabledTables, handleSaveTable } from "../controllers/tableController";
 import FloatingAddButton from "../components/FloatingAddButton";
@@ -13,19 +12,24 @@ import LoaderAmbigu from "../../../kernel/LoaderAmbigu";
 export default function TablePage() {
     const [error, setError] = useState(null);
     const [tabIndex, setTabIndex] = useState(0);
-    const { setSuccess, setError: setGlobalError } = useOutletContext();
+    const { setSuccess, setError: setGlobalError, searchTerm } = useOutletContext();
+    const [selectedTableName, setSelectedTableName] = useState("");
     const [loading, setLoading] = useState(false);
     const [dataTable, setDataTable] = useState(null);
-    
-    const [open, setOpen] = useState(false); // Estado para el modal
-    const [tableIdentifier, setTableIdentifier] = useState('');
-    const [inputError, setInputError] = useState(false); // Estado para manejar errores de validación
+    const [open, setOpen] = useState(false);
 
     useEffect(() => {
         if (error) {
             setGlobalError(error);
         }
     }, [error, setGlobalError]);
+
+        const filteredTables = dataTable
+    ? dataTable.filter((mesa) =>
+        mesa.tableIdentifier.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+    : [];
+
 
     const fetchTables = () => {
         if (tabIndex === 0) {
@@ -42,15 +46,16 @@ export default function TablePage() {
     const handleOpen = () => setOpen(true);
     const handleClose = () => {
         setOpen(false);
-        setTableIdentifier(""); // Limpiar input al cerrar el modal
-        setInputError(false); // Limpiar el estado de error
+        setError(null);
     };
 
-    const handleSave = async (values) => {
+    const handleSave = async (values, { resetForm }) => {
         try {
             await handleSaveTable(setError, setLoading, setSuccess, values.tableIdentifier);
-            fetchTables(); 
-            handleClose(); // Cerrar el modal inmediatamente después de guardar
+            setSelectedTableName(values.tableIdentifier);
+            fetchTables();
+            resetForm();
+            handleClose();
         } catch (err) {
             setError(err.message);
         }
@@ -78,9 +83,9 @@ export default function TablePage() {
             ) : (
                 <>
                     {tabIndex === 0 ? (
-                        <TableCard status="habilitados" data={dataTable} loading={loading} fetchTables={fetchTables} setSuccess={setSuccess} />
+                        <TableCard status="habilitados" data={filteredTables} loading={loading} fetchTables={fetchTables} setSuccess={setSuccess} />
                     ) : (
-                        <TableCard status="deshabilitados" data={dataTable} loading={loading} fetchTables={fetchTables} setSuccess={setSuccess} />
+                        <TableCard status="deshabilitados" data={filteredTables} loading={loading} fetchTables={fetchTables} setSuccess={setSuccess} />
                     )}
                     {tabIndex === 0 && <FloatingAddButton action={handleOpen} />}
                 </>
@@ -93,7 +98,7 @@ export default function TablePage() {
                 fullWidth
                 maxWidth="md"
                 sx={{
-                    "& .MuiDialog-paper": { width: "90%", maxWidth: "600px" }
+                    "& .MuiDialog-paper": { width: "90%", maxWidth: "450px" }
                 }}
                 slots={{ backdrop: Backdrop }}
                 slotProps={{
@@ -109,48 +114,29 @@ export default function TablePage() {
                 <DialogTitle id="dialog-title">Agregar mesa</DialogTitle>
                 <DialogContent>
                     <Formik
-                        initialValues={{
-                            tableIdentifier: tableIdentifier
-                        }}
+                        initialValues={{ tableIdentifier: '' }}
                         validationSchema={validationSchema}
                         onSubmit={handleSave}
                     >
-                        {({ errors, touched, setFieldValue, isValid }) => (
+                        {({ errors, touched, isSubmitting, isValid, dirty }) => (
                             <Form>
-                                <Field name="tableIdentifier">
-                                    {({ field, meta }) => (
-                                        <Autocomplete
-                                            {...field}
-                                            freeSolo
-                                            value={tableIdentifier}
-                                            onInputChange={(event, newInputValue) => {
-                                                setFieldValue('tableIdentifier', newInputValue);
-                                                setTableIdentifier(newInputValue);
-                                            }}
-                                            id="table-identifier-input"
-                                            options={[]}
-                                            sx={{ width: '100%', mt: 2 }}
-                                            renderInput={(params) => (
-                                                <TextField
-                                                    {...params}
-                                                    label="Identificador de mesa"
-                                                    error={meta.touched && Boolean(meta.error)} // Mostrar error visual
-                                                    helperText={meta.touched && meta.error} // Mostrar mensaje de error
-                                                />
-                                            )}
-                                        />
-                                    )}
-                                </Field>
+                                <Field
+                                    as={TextField}
+                                    name="tableIdentifier"
+                                    label="Identificador de mesa"
+                                    fullWidth
+                                    margin="normal"
+                                    error={touched.tableIdentifier && Boolean(errors.tableIdentifier)}
+                                    helperText={touched.tableIdentifier && errors.tableIdentifier}
+                                />
                                 <DialogActions>
                                     <Button onClick={handleClose} color="secondary" variant="outlined">Cancelar</Button>
                                     <Button 
                                         type="submit" 
                                         color="primary" 
                                         variant="contained"
-                                        autoFocus
-                                        disabled={!isValid || loading} // Deshabilitar el botón si el formulario no es válido o está cargando
                                     >
-                                        Aceptar
+                                        {isSubmitting ? 'Guardando...' : 'Aceptar'}
                                     </Button>
                                 </DialogActions>
                             </Form>

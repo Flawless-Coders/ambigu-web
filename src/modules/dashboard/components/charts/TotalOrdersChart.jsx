@@ -93,7 +93,7 @@ export default function TotalOrdersChart() {
   };
 
   return (
-    <Card variant="outlined" sx={{ width: '100%' }}>
+    <Card variant="outlined" sx={{ width: '100%', height: '100%' }}>
       <CardContent>
         <Stack direction="row" justifyContent="space-between" alignItems="center">
           <Typography component="h2" variant="subtitle2" gutterBottom>
