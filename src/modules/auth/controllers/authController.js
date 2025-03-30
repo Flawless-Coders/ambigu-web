@@ -17,12 +17,10 @@ export const handleLogin = async (email, password, setErrors, setLoading, login,
             token: response.token
         });
 
-        navigate("/dashboard");
     } catch (error) {
         setErrors(error);
-    } finally {
         setLoading(false);
-    }
+    } 
 }
 
 
