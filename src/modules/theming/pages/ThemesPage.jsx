@@ -76,8 +76,8 @@ export const ThemesPage = () => {
     } catch (error) {
       console.error('Error al aplicar:', error);
       setError('Error al aplicar los cambios');
-    } finally {
       setIsApplying(false); // Desactivar el loader de "Aplicar cambios"
+      setIsConfirmDialogOpen(false); // Cerrar el diálogo de confirmación
     }
   };
 
@@ -86,11 +86,11 @@ export const ThemesPage = () => {
   };
 
   const handleCloseConfirmDialog = () => {
+    if(isApplying) return; // No cerrar el diálogo si se está aplicando
     setIsConfirmDialogOpen(false); // Cerrar el diálogo de confirmación
   };
 
   const handleConfirmApply = async () => {
-    setIsConfirmDialogOpen(false); // Cerrar el diálogo de confirmación
     await handleApply(); // Ejecutar la función para aplicar cambios
   };
 
@@ -157,50 +157,81 @@ export const ThemesPage = () => {
       </Box>
 
       {/* Diálogo de confirmación */}
-      <Dialog open={isConfirmDialogOpen} onClose={handleCloseConfirmDialog}>
-        <DialogTitle sx={{ textAlign: 'center', fontWeight: 'bold', fontSize: '1.5rem' }}>
-          Confirmar aplicación de cambios
-        </DialogTitle>
-        <DialogContent>
-          <Box sx={{ textAlign: 'center', mb: 2 }}>
-            <Box
-              sx={{
-                display: 'inline-block',
-                animation: 'pulse 1.5s infinite',
-                '@keyframes pulse': {
-                  '0%': { transform: 'scale(1)' },
-                  '50%': { transform: 'scale(1.2)' },
-                  '100%': { transform: 'scale(1)' },
-                },
-              }}
+      <Dialog
+  open={isConfirmDialogOpen}
+  onClose={isApplying ? () => {} : handleCloseConfirmDialog}
+  disableEscapeKeyDown={isApplying}
+  disableBackdropClick={isApplying}
+>
+  {isApplying ? (
+    <>
+      <DialogTitle sx={{ textAlign: 'center', fontWeight: 'bold', fontSize: '1.5rem' }}>
+        Aplicando cambios...
+      </DialogTitle>
+      <DialogContent>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', py: 4 }}>
+          <CircularProgress size={60} />
+          <Typography variant="body1" sx={{ mt: 2 }}>
+            Se redirigirá a a la página de inicio de sesión.
+          </Typography>
+        </Box>
+      </DialogContent>
+    </>
+  ) : (
+    <>
+      <DialogTitle sx={{ textAlign: 'center', fontWeight: 'bold', fontSize: '1.5rem' }}>
+        Confirmar aplicación de cambios
+      </DialogTitle>
+      <DialogContent>
+        <Box sx={{ textAlign: 'center', mb: 2 }}>
+          <Box
+            sx={{
+              display: 'inline-block',
+              animation: 'pulse 1.5s infinite',
+              '@keyframes pulse': {
+                '0%': { transform: 'scale(1)' },
+                '50%': { transform: 'scale(1.2)' },
+                '100%': { transform: 'scale(1)' },
+              },
+            }}
+          >
+            <Typography
+              variant="h2"
+              sx={{ color: 'red', fontWeight: 'bold' }}
             >
-              <Typography
-                variant="h2"
-                sx={{ color: 'red', fontWeight: 'bold' }}
-              >
-                !
-              </Typography>
-            </Box>
+              !
+            </Typography>
           </Box>
-          <Typography variant="body1" paragraph sx={{ textAlign: 'center' }}>
-            ¿Estás seguro de que deseas aplicar los cambios?
-          </Typography>
-          <Typography variant="body2" paragraph sx={{ textAlign: 'center', color: 'text.secondary' }}>
-            Esta acción cerrará todas las sesiones activas, tanto en la aplicación web como en la aplicación móvil.
-          </Typography>
-        </DialogContent>
-        <DialogActions sx={{ justifyContent: 'center', pb: 3 }}>
-          <Button onClick={handleCloseConfirmDialog} sx={{ backgroundColor: 'grey', color: 'white', '&:hover': { backgroundColor: 'darkgrey' }, mr: 2 }}  variant="outlined">
-            Cancelar
-          </Button>
-          <Button onClick={handleConfirmApply} sx={{ backgroundColor: 'red', color: 'white', '&:hover': { backgroundColor: 'darkred' } }} variant="contained">
-            Confirmar
-          </Button>
-        </DialogActions>
-      </Dialog>
+        </Box>
+        <Typography variant="body1" paragraph sx={{ textAlign: 'center' }}>
+          ¿Estás seguro de que deseas aplicar los cambios?
+        </Typography>
+        <Typography variant="body2" paragraph sx={{ textAlign: 'center', color: 'text.secondary' }}>
+          Esta acción cerrará todas las sesiones activas, tanto en la aplicación web como en la aplicación móvil.
+        </Typography>
+      </DialogContent>
+      <DialogActions sx={{ justifyContent: 'center', pb: 3 }}>
+        <Button
+          onClick={handleCloseConfirmDialog}
+          sx={{ backgroundColor: 'grey', color: 'white', '&:hover': { backgroundColor: 'darkgrey' }, mr: 2 }}
+          variant="outlined"
+        >
+          Cancelar
+        </Button>
+        <Button
+          onClick={handleConfirmApply}
+          sx={{ backgroundColor: 'red', color: 'white', '&:hover': { backgroundColor: 'darkred' } }}
+          variant="contained"
+        >
+          Confirmar
+        </Button>
+      </DialogActions>
+    </>
+  )}
+</Dialog>
     </Box>
   );
-};
+}
 
 const TabPanel = ({ children, value, index, ...other }) => {
   return (
