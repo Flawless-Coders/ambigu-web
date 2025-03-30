@@ -58,7 +58,7 @@ export default function DishesPage() {
         gap: { xs: 2, sm: 0 },
         mb: 2
       }}>
-        <Typography variant="h4" marginTop={{xs: 2, md: 0}}>Platillos</Typography>
+        <Typography variant="h1" marginTop={{xs: 2, md: 0}}>Platillos</Typography>
         <ToggleButtonGroup
           color={isAvailable ? "primary" : "error"}
           value={alignment}

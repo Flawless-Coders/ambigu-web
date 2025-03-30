@@ -96,7 +96,7 @@ export const ThemesPage = () => {
 
   return (
     <Box sx={{ p: 1 }}>
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h1" gutterBottom>
         Personalización
       </Typography>
       <Tabs value={tabValue} onChange={handleTabChange} aria-label="tabs">

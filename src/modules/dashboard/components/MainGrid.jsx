@@ -11,7 +11,7 @@ import HourlySalesByCategory from './charts/HourlySalesByCategory';
 export default function MainGrid() {
   return (
     <Box sx={{ width: '100%', maxWidth: '1700px' }}>
-      <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
+      <Typography variant='h1' sx={{ mb: 2 }}>
         Resumen general
       </Typography>
       <Grid container spacing={2}>
