@@ -49,7 +49,7 @@ const CategoriesPage = () => {
 
   return (
     <Box sx={{ position: "relative", minHeight: "100vh", paddingBottom: "80px", p: 3 }}>
-      <Typography variant="h4">Categorías</Typography>
+      <Typography variant="h1">Categorías</Typography>
 
       {/* Tabs Habilitados/Deshabilitados */}
       <Tabs value={tabIndex} onChange={(event, newValue) => setTabIndex(newValue)} sx={{ mb: 1 }}>
