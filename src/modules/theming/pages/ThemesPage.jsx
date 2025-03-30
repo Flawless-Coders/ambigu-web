@@ -7,7 +7,6 @@ import TypographySection from '../components/TypographySection';
 import useColors from '../hooks/useColors';
 import useTypography from '../hooks/useTypography';
 import useLogos from '../hooks/useLogos';
-import axios from 'axios';
 import { useOutletContext } from 'react-router-dom';
 import api from '../../auth/services/api';
 
@@ -172,7 +171,7 @@ export const ThemesPage = () => {
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', py: 4 }}>
           <CircularProgress size={60} />
           <Typography variant="body1" sx={{ mt: 2 }}>
-            Se redirigirá a a la página de inicio de sesión.
+            Se redirigirá a la página de inicio de sesión.
           </Typography>
         </Box>
       </DialogContent>

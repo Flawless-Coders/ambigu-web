@@ -1,12 +1,13 @@
 import { AccountCircle, Category, Fastfood, Home, MenuBook, Palette, People, Receipt, TableBar, DoubleArrow, Logout} from '@mui/icons-material';
 import { useTheme, Drawer, Box, Typography, IconButton, Divider, List, ListItemButton, ListItemIcon, ListItemText, Tooltip} from '@mui/material';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Sidebar = ({ onLogout }) => {
   const [open, setOpen] = useState(true);
   const theme = useTheme();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const toggleDrawer = () => {
     setOpen(!open);
@@ -62,10 +63,11 @@ const Sidebar = ({ onLogout }) => {
           <Tooltip title={!open ? text : ""} placement="right" key={text}>
             <ListItemButton 
               onClick={() => handleNavigate(path)}
+              selected={location.pathname === path}
               sx={{
                 justifyContent: open ? "initial" : "center",
                 "&:hover": { backgroundColor: theme.palette.sidebar.hover },
-                "&.Mui-selected": { backgroundColor: theme.palette.sidebar.selected },
+                "&.Mui-selected": { backgroundColor: theme.palette.sidebar.hover },
               }}
             >
               <ListItemIcon sx={{ color: theme.palette.sidebar.text, minWidth: 40 }}>{icon}</ListItemIcon>
