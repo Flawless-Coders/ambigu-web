@@ -19,8 +19,8 @@ function HeaderPublic({ section, download, downloadPDF, loadingButton }) {
           </Typography> */}
         </Box>
         <Box display="flex" flexDirection="row" alignItems="center">
-          {loadingButton ? (<CircularProgress color="white" size={20} sx={{marginRight:2}}/>) : download ? <IconButton onClick={downloadPDF} sx={{color:"white", marginRight:1}}><DownloadIcon /></IconButton> : ""}
-          <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+          {loadingButton ? (<CircularProgress  sx={{color: theme.palette.sidebar.text, marginRight:2}} size={20}/>) : download ? <IconButton onClick={downloadPDF} sx={{color: theme.palette.sidebar.text, marginRight:1}}><DownloadIcon /></IconButton> : ""}
+          <Typography variant="body1"  sx={{  color: theme.palette.sidebar.text}}>
             {section}
           </Typography>
         </Box>
