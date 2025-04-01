@@ -17,7 +17,7 @@ const LogoImageSection = ({ logos, logoDraft, setLogoDraft, loading }) => {
   return (
     <Grid2 container spacing={3} sx={{ mt: 3 }}>
       <Grid2 item xs={12} md={6}>
-        <Card sx={{ width: 350 }}>
+        <Card sx={{ width: 350, height: 445 }}>
           <CardContent>
             <Box sx={{ height: 200, display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#f0f0f0' }}>
               {logoDraft.previewLogo ? (
@@ -30,18 +30,21 @@ const LogoImageSection = ({ logos, logoDraft, setLogoDraft, loading }) => {
             </Box>
             <Typography variant="h6">Logo con nombre</Typography>
             <Typography variant="body2" color="textSecondary">
-              • Imagen en formato png o svg con fondo transparente<br />
-              • Ancho preferible de 500px
+              • Imagen en formato <strong>PNG</strong> o <strong>SVG</strong> con fondo transparente<br />
+              • Ancho preferido: <strong>500px</strong><br />
+              • Alto máximo: <strong>120px</strong><br />
+              • Relación de aspecto recomendada: <strong>horizontal (ej. 5:1)</strong><br />
+              • Se usará en el menú lateral y en el encabezado de la app móvil
             </Typography>
             <Button variant="contained" component="label" color="primary" sx={{ mt: 2 }}>
-              SUBIR ARCHIVOS
+              SUBIR ARCHIVO
               <input type="file" hidden onChange={(e) => handleFileChange(e, 'logo')} />
             </Button>
           </CardContent>
         </Card>
       </Grid2>
       <Grid2 item xs={12} md={6}>
-        <Card sx={{ width: 350 }}>
+        <Card sx={{ width: 350, height: 445}}>
           <CardContent>
             <Box sx={{ height: 200, display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#f0f0f0' }}>
               {logoDraft.previewLogoSmall ? (
@@ -53,9 +56,12 @@ const LogoImageSection = ({ logos, logoDraft, setLogoDraft, loading }) => {
               )}
             </Box>
             <Typography variant="h6">Logo chico sin texto (Icono)</Typography>
-            <Typography variant="body2" color="textSecondary">
-              • Imagen en formato png o svg con fondo transparente<br />
-              • Ancho preferible de 100px
+            <Typography variant="body2" color="textSecondary" sx={{ mb: 3 }}>
+              • Imagen en formato <strong>PNG</strong> o <strong>SVG</strong> con fondo transparente<br />
+              • Tamaño preferido: <strong>100 × 100px</strong><br />
+              • Relación de aspecto: <strong>cuadrada</strong><br />
+              • No debe contener texto<br />
+              • Se usará como ícono cuando el menú esté contraído
             </Typography>
             <Button variant="contained" component="label" color="primary" sx={{ mt: 2 }}>
               SUBIR ARCHIVO

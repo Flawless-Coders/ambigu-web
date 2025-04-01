@@ -31,7 +31,7 @@ export default function ProfilePage() {
 
     return (
         <Box sx={{ padding: 3 }}>
-            <Typography variant="h4">Perfil</Typography>
+            <Typography variant="h1">Perfil</Typography>
             {loading && <LoaderAmbigu />}
             {error && <Alert severity="error">{error}</Alert>}
             {profileData && <ProfileCard user={profileData} onUpdate={fetchUserData} setSuccess={setSuccess} setError={setGlobalError} />}

@@ -70,7 +70,7 @@ export default function TablePage() {
 
     return (
         <Box sx={{ p: 3 }}>
-            <Typography variant="h4">Mesas</Typography>
+            <Typography variant="h1">Mesas</Typography>
             <Box sx={{ justifyContent: "flex-start" }}>
                 <Tabs value={tabIndex} onChange={(event, newIndex) => setTabIndex(newIndex)} sx={{ mb: 1 }}>
                     <Tab label="Habilitados" />

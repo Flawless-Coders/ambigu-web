@@ -1,12 +1,13 @@
 import { TextField, Button, Typography, Box, Link, CircularProgress, Alert, ThemeProvider } from "@mui/material";
 import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import { AuthContext } from "../../../context/AuthContext";
 import { handleLogin } from "../controllers/AuthController";
 import * as Yup from "yup";
 import { Formik, Form, Field } from "formik";
 import AuthLayout from "../components/AuthLayout";
 import theme from "../../../config/theme";
+import LoaderAmbigu from "../../../kernel/LoaderAmbigu";
 
 const loginValidationSchema = Yup.object().shape({
   email: Yup.string().email("Ingresa un correo válido").required("El correo es obligatorio"),
@@ -15,7 +16,18 @@ const loginValidationSchema = Yup.object().shape({
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { login } = useContext(AuthContext);
+  const { login, user, loading } = useContext(AuthContext);
+
+
+if (loading) {
+  return (
+    <LoaderAmbigu />
+  );
+}
+
+if (user) {
+  return <Navigate to="/dashboard" replace />;
+}
 
   return (
     <ThemeProvider theme={theme}>

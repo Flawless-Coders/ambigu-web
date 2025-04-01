@@ -16,8 +16,7 @@ const CategoriesPage = () => {
   const [openModal, setOpenModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [openChangeStatusDialog, setOpenChangeStatusDialog] = useState(false);
-
-  const { setSuccess, setError } = useOutletContext();
+  const { setSuccess, setError, searchTerm } = useOutletContext();
 
   useEffect(() => {
     handleGetCategories(setCategories, setLoading, setError);
@@ -43,16 +42,18 @@ const CategoriesPage = () => {
     setOpenModal(true);
   };
 
-  const filteredCategories = categories.filter((category) =>
-    tabIndex === 0 ? category.status === true : category.status === false
-  );
+  const filteredCategories = categories.filter((category) => {
+    const matchesStatus = tabIndex === 0 ? category.status === true : category.status === false;
+    const matchesSearch = category.name.toLowerCase().includes(searchTerm?.toLowerCase() || "");
+    return matchesStatus && matchesSearch;
+  });
 
   return (
     <Box sx={{ position: "relative", minHeight: "100vh", paddingBottom: "80px", p: 3 }}>
-      <Typography variant="h4">Categorías</Typography>
+      <Typography variant="h1">Categorías</Typography>
 
       {/* Tabs Habilitados/Deshabilitados */}
-      <Tabs value={tabIndex} onChange={(event, newValue) => setTabIndex(newValue)} sx={{ mb: 1 }}>
+      <Tabs value={tabIndex} onChange={(event, newValue) => setTabIndex(newValue)} sx={{ mb: 3 }}>
         <Tab
           label="HABILITADOS"
           value={0}

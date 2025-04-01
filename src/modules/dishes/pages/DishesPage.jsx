@@ -13,7 +13,7 @@ import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 export default function DishesPage() {
-  const [loading, setLoading] = useState(false); // Carga solo para la tabla
+  const [loading, setLoading] = useState(false); 
   const [error, setError] = useState(null);
   const [categories, setCategories] = useState([]);
   const [openModal, setOpenModal] = useState(false);
@@ -58,7 +58,7 @@ export default function DishesPage() {
         gap: { xs: 2, sm: 0 },
         mb: 2
       }}>
-        <Typography variant="h4" marginTop={{xs: 2, md: 0}}>Platillos</Typography>
+        <Typography variant="h1" marginTop={{xs: 2, md: 0}}>Platillos</Typography>
         <ToggleButtonGroup
           color={isAvailable ? "primary" : "error"}
           value={alignment}

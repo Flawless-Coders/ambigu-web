@@ -180,15 +180,7 @@ export default function MenuPage() {
     return (
         <>
             <Box sx={{ pt: 0, pb: 3, px: 3 }}>
-                
-                    <Box sx={{ 
-                            display: "flex", 
-                            flexDirection: { xs: "column", sm: "row" },
-                            justifyContent: "space-between",
-                            alignItems: { xs: "flex-start", sm: "center" },
-                            gap: { xs: 2, sm: 0 },
-                            mb: 2
-                          }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginY: 3 }}>
                     <Typography variant="h4">Menús</Typography>
                     <Button variant="contained" color='primary' onClick={() => { setOpenQRdialog(true) }}>GENERAR QR</Button>
                     </Box>
