@@ -96,13 +96,13 @@ const Layout = ({ onLogout }) => {
         <Outlet context={{setSuccess, setError, searchTerm}}/>
       </Box>
       
-      <Snackbar open={Boolean(success)} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+      <Snackbar open={Boolean(success)} autoHideDuration={6000} onClose={handleCloseSnackbar} anchorOrigin={{ vertical: 'down', horizontal: 'right' }}>
         <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
           {success}
         </Alert>
       </Snackbar>
       
-      <Snackbar open={Boolean(error)} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+      <Snackbar open={Boolean(error)} autoHideDuration={6000} onClose={handleCloseSnackbar} anchorOrigin={{ vertical: 'down', horizontal: 'right' }}>
         <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%' }}>
           {error}
         </Alert>

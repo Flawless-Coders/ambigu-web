@@ -3,7 +3,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 export const getCategories = async () => {
     try {
-        const response = await api.get(`${API_URL}/categories`)
+        const response = await api.get(`${API_URL}/categories/getByStatus/${true}`)
         return response.data;
     } catch (error) {
         console.error("Error al obtener las categorías:", error);
