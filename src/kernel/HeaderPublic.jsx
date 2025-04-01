@@ -4,9 +4,9 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import DownloadIcon from "@mui/icons-material/Download";
-import { IconButton } from "@mui/material";
+import { CircularProgress, IconButton } from "@mui/material";
 
-function HeaderPublic({ section, download, downloadPDF }) {
+function HeaderPublic({ section, download, downloadPDF, loadingButton }) {
   return (
     <AppBar position="static">
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -21,7 +21,7 @@ function HeaderPublic({ section, download, downloadPDF }) {
           </Typography>
         </Box>
         <Box display="flex" flexDirection="row" alignItems="center">
-          {download && <IconButton onClick={downloadPDF} sx={{color:"white", marginRight:1}}><DownloadIcon /></IconButton>}
+          {loadingButton ? (<CircularProgress color="white" size={20} sx={{marginRight:2}}/>) : download ? <IconButton onClick={downloadPDF} sx={{color:"white", marginRight:1}}><DownloadIcon /></IconButton> : ""}
           <Typography variant="body1" sx={{ fontWeight: "bold" }}>
             {section}
           </Typography>

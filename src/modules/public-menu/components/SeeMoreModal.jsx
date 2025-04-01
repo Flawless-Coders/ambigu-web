@@ -56,7 +56,7 @@ export default function SeeMoreModal({ openModal, setOpenModal, dish }) {
               <Divider sx={{marginTop:2}}/>
               <Typography variant="h4" marginTop={2}>{dish?.name}</Typography>
               <Divider sx={{marginTop:2}}/>
-              <Typography variant="subtitle1" marginTop={1}>{dish?.description}</Typography>
+              <Typography variant="subtitle2" marginTop={1}>{dish?.description}</Typography>
               <Divider sx={{marginTop:1}}/>
               <Box
                 display="flex"

@@ -30,3 +30,13 @@ export const getCurrentMenuDishesByCategory = async (id) => {
         throw error;
     }
 };
+
+export const getCurrentMenuCategoriesAndDishes = async () => {
+    try {
+        const response = await api.get(`${API_URL}/menu/public/currentMenuCategoriesAndDishes`)
+        return response.data;
+    } catch (error) {
+        console.error("Error al obtener los platillos del menú actual:", error);
+        throw error;
+    }
+};

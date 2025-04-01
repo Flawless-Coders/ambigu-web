@@ -114,11 +114,18 @@ export default function ModalActions({
   };
 
   const validationSchema = Yup.object({
-    name: Yup.string().required("El nombre es obligatorio"),
-    description: Yup.string().required("La descripción es obligatoria"),
+    name: Yup.string().required("El nombre es obligatorio").max(26, "El nombre no puede tener mas de 25 caracteres").matches(
+      /^(?!.*(<script|javascript:|onerror|alert|<iframe|<img|<body|<head|<html)).*$/,
+      "El nombre no puede contener palabras reservadas o códigos, travieso."
+    ),
+    description: Yup.string().required("La descripción es obligatoria").max(121, "La descripción no puede tener mas de 120 caracteres").matches(
+      /^(?!.*(<script|javascript:|onerror|alert|<iframe|<img|<body|<head|<html)).*$/,
+      "La descripción no puede contener palabras reservadas o códigos.travieso."
+    ),
     price: Yup.number()
       .typeError("Ingrese el precio en números")
       .moreThan(0, "El precio debe de ser mayor que 0")
+      .lessThan(100000, "El precio no puede ser tan alto")
       .required("El precio es obligatorio"),
     category: Yup.string().required("La categoría es obligatoria"),
     imageBase64: Yup.mixed()
@@ -318,6 +325,7 @@ export default function ModalActions({
                         fullWidth
                         error={Boolean(touched.name && errors.name)}
                         helperText={touched.name && errors.name}
+                        inputProps={{ maxLength: 25 }}
                       />
                       <Field
                         as={TextField}
@@ -332,7 +340,8 @@ export default function ModalActions({
                         helperText={touched.description && errors.description}
                         multiline
                         minRows={1}
-                        maxRows={3}
+                        maxRows={2}
+                        inputProps={{ maxLength: 121 }}
                         sx={{ marginTop: 3 }}
                       />
                       <Box
@@ -350,6 +359,7 @@ export default function ModalActions({
                           error={Boolean(touched.price && errors.price)}
                           helperText={touched.price && errors.price}
                           sx={{ width: "50%" }}
+                          inputProps={{ maxLength: 6 }}
                         />
                         <FormControl sx={{ width: "45%" }}>
                           <InputLabel id="category-label">Categoría</InputLabel>
@@ -449,7 +459,6 @@ export default function ModalActions({
                         size="large"
                         sx={{ width: "40%" }}
                         onClick={handleClose}
-                        fon
                       >
                         Cancelar
                       </Button>

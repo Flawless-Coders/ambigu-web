@@ -25,12 +25,12 @@ export default function DishCard({ image, description, price, name, seeMore }) {
     <Card
       sx={{
         maxWidth: 300,
-        height: 220,
+        height: {xs: 120, sm: 220},
         margin: 0,
       }}
     >
       <CardActionArea onClick={seeMore}>
-        <CardMedia component="img" height={110} image={image} alt={name} />
+        <CardMedia component="img" sx={{height: {xs: 70, sm: 110}}} image={image} alt={name} />
         <CardContent
           sx={{ p: 0, paddingLeft: 1, paddingRight: 1, marginTop: 1 }}
         >
@@ -41,11 +41,11 @@ export default function DishCard({ image, description, price, name, seeMore }) {
           >
             {name}
           </Typography>
-          <Typography variant="body2" sx={{ color: "text.secondary" }}>
+          {isSmallScreen ? "" : (<Typography variant="body2" sx={{ color: "text.secondary" }}>
             {truncatedDescription}
-          </Typography>
-          <Box position="absolute" top={190} right={10}>
-            <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+          </Typography>)}
+          <Box position="absolute" top={{xs: 100, sm: 190}} right={10}>
+            <Typography variant={{xs: "subtitle2", sm:"subtitle1"}} sx={{ fontWeight: "bolder" }}>
               ${price}
             </Typography>
           </Box>
