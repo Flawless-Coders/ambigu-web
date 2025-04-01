@@ -115,11 +115,11 @@ export default function ModalActions({
 
   const validationSchema = Yup.object({
     name: Yup.string().required("El nombre es obligatorio").max(26, "El nombre no puede tener mas de 25 caracteres").matches(
-      /^(?!.*(<script|javascript:|onerror|alert|<iframe|<img|<body|<head|<html)).*$/,
+      /^(?!.*(<script|javascript:|onerror|alert|<iframe|<img|<body|<head|<html|find|db|delete|insert|aggregate|data)).*$/,
       "El nombre no puede contener palabras reservadas o códigos, travieso."
     ),
     description: Yup.string().required("La descripción es obligatoria").max(121, "La descripción no puede tener mas de 120 caracteres").matches(
-      /^(?!.*(<script|javascript:|onerror|alert|<iframe|<img|<body|<head|<html)).*$/,
+      /^(?!.*(<script|javascript:|onerror|alert|<iframe|<img|<body|<head|<html|find|db|delete|insert|aggregate|data)).*$/,
       "La descripción no puede contener palabras reservadas o códigos.travieso."
     ),
     price: Yup.number()
@@ -399,8 +399,9 @@ export default function ModalActions({
                             cursor: "pointer",
                             maxWidth: "100%",
                             marginBottom: "10px",
-                            maxHeight: "200px",
+                            maxHeight: "150px",
                             marginTop: 25,
+                            objectFit: "contain"
                           }}
                         />
                         <input
