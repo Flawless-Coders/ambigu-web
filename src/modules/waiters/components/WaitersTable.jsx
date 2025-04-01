@@ -1,5 +1,5 @@
 import { DataGrid } from "@mui/x-data-grid";
-import { Button, Box } from "@mui/material";
+import { Button, Box, Chip } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -13,9 +13,14 @@ const useStyles = makeStyles({
   }
 });
 
-const columns = (onEdit, onCStatus, onCLeader) => [
+const columns = (onEdit, onCStatus, onCLeader, classes) => [
   { field: "id", headerName: "ID", width: 0, flex: 0 },
-  { field: "name", headerName: "NOMBRE COMPLETO", flex: 2, headerAlign: "center", align: "center" },
+  { field: "name", headerName: "NOMBRE COMPLETO", flex: 2, headerAlign: "center", align: "center", renderCell: (params) => (
+    <Box display="flex" alignItems="center" justifyContent="center">
+      {params.row.name}
+      {params.row.leader && <Chip label="Líder" size="small" sx={{ bgcolor: 'primary.main', color: 'white', ml: 2 }} />}
+    </Box>
+  ) },
   { field: "email", headerName: "CORREO", flex: 2, headerAlign: "center", align: "center" },
   { field: "phone", headerName: "TELÉFONO", flex: 1, headerAlign: "center", align: "center" },
   { field: "status", headerName: "ESTADO", flex: 1, headerAlign: "center", align: "center" },
@@ -48,7 +53,7 @@ const columns = (onEdit, onCStatus, onCLeader) => [
 
 export default function WaitersTable({ rows, onEdit, onCStatus, onCLeader }) {
   const classes = useStyles();
-  const columnsConfig = columns(onEdit, onCStatus, onCLeader);
+  const columnsConfig = columns(onEdit, onCStatus, onCLeader, classes);
   const { searchTerm } = useOutletContext();
 
   const filteredRows = rows.filter(row => 
