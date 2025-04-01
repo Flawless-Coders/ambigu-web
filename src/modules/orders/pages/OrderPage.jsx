@@ -49,7 +49,8 @@ export default function OrderPage() {
           hour,
           qualification: order.opinion?.qualification || 0,
           dishes: order.dishes.map(dish => (dish)),
-          finalized: order.finalized ? "Completado" : "En curso"
+          finalized: order.finalized ? "Completado" : "En curso",
+          tableName: order.tableName ? order.tableName : "Sin mesa"
         };
       });
       setOrderData(transformedData);
@@ -72,6 +73,7 @@ export default function OrderPage() {
     { field: 'date', headerName: 'FECHA', flex: 1, headerAlign: "center", align: "center" },
     { field: 'hour', headerName: 'HORA', flex: 1, headerAlign: "center", align: "center" },
     { field: 'waiter', headerName: 'MESERO', flex: 2, headerAlign: "center", align: "center" },
+    { field: 'tableName', headerName: 'MESA', flex: 1, headerAlign: "center", align: "center" },
     {
       field: "actions",
       headerName: "PLATILLOS",
