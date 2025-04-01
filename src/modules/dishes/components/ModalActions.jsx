@@ -52,9 +52,9 @@ export default function ModalActions({
     left: "50%",
     transform: "translate(-50%, -50%)",
     width: {
-      xs: 300,
-      sm: disable || enable ? 300 : 400,
-      md: disable || enable ? 350 : 500,
+      xs: 250,
+      sm: disable || enable ? 300 : 350,
+      md: disable || enable ? 350 : 450,
     },
     bgcolor: "background.paper",
     borderRadius: "16px",
@@ -114,11 +114,18 @@ export default function ModalActions({
   };
 
   const validationSchema = Yup.object({
-    name: Yup.string().required("El nombre es obligatorio"),
-    description: Yup.string().required("La descripción es obligatoria"),
+    name: Yup.string().required("El nombre es obligatorio").max(26, "El nombre no puede tener mas de 25 caracteres").matches(
+      /^(?!.*(<script|javascript:|onerror|alert|<iframe|<img|<body|<head|<html|find|db|delete|insert|aggregate|data)).*$/,
+      "El nombre no puede contener palabras reservadas o códigos, travieso."
+    ),
+    description: Yup.string().required("La descripción es obligatoria").max(121, "La descripción no puede tener mas de 120 caracteres").matches(
+      /^(?!.*(<script|javascript:|onerror|alert|<iframe|<img|<body|<head|<html|find|db|delete|insert|aggregate|data)).*$/,
+      "La descripción no puede contener palabras reservadas o códigos.travieso."
+    ),
     price: Yup.number()
       .typeError("Ingrese el precio en números")
       .moreThan(0, "El precio debe de ser mayor que 0")
+      .lessThan(100000, "El precio no puede ser tan alto")
       .required("El precio es obligatorio"),
     category: Yup.string().required("La categoría es obligatoria"),
     imageBase64: Yup.mixed()
@@ -318,6 +325,7 @@ export default function ModalActions({
                         fullWidth
                         error={Boolean(touched.name && errors.name)}
                         helperText={touched.name && errors.name}
+                        inputProps={{ maxLength: 25 }}
                       />
                       <Field
                         as={TextField}
@@ -332,7 +340,8 @@ export default function ModalActions({
                         helperText={touched.description && errors.description}
                         multiline
                         minRows={1}
-                        maxRows={3}
+                        maxRows={2}
+                        inputProps={{ maxLength: 121 }}
                         sx={{ marginTop: 3 }}
                       />
                       <Box
@@ -349,9 +358,10 @@ export default function ModalActions({
                           variant="outlined"
                           error={Boolean(touched.price && errors.price)}
                           helperText={touched.price && errors.price}
-                          sx={{ width: "55%" }}
+                          sx={{ width: "50%" }}
+                          inputProps={{ maxLength: 6 }}
                         />
-                        <FormControl sx={{ width: "43%" }}>
+                        <FormControl sx={{ width: "45%" }}>
                           <InputLabel id="category-label">Categoría</InputLabel>
                           <Field
                             as={Select}
@@ -379,6 +389,7 @@ export default function ModalActions({
                         display="flex"
                         flexDirection="column"
                         justifyContent="center"
+                        alignItems="center"
                       >
                         <img
                           src={dishImage ? dishImage : placeHolderImg}
@@ -386,9 +397,11 @@ export default function ModalActions({
                           onClick={handleClick}
                           style={{
                             cursor: "pointer",
-                            width: "auto",
-                            height: "300px",
+                            maxWidth: "100%",
+                            marginBottom: "10px",
+                            maxHeight: "150px",
                             marginTop: 25,
+                            objectFit: "contain"
                           }}
                         />
                         <input
@@ -448,7 +461,7 @@ export default function ModalActions({
                         sx={{ width: "40%" }}
                         onClick={handleClose}
                       >
-                        CANCELAR
+                        Cancelar
                       </Button>
                       <Button
                         variant="contained"

@@ -1,11 +1,13 @@
-import React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
+import React from "react";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import DownloadIcon from "@mui/icons-material/Download";
+import { CircularProgress, IconButton } from "@mui/material";
 import { useTheme } from '@emotion/react';
 
-function HeaderPublic({ section }) {
+function HeaderPublic({ section, download, downloadPDF, loadingButton }) {
   const theme = useTheme();
   return (
     <AppBar position="static" sx={{ backgroundColor: theme.palette.sidebar.bg }}>
@@ -16,9 +18,12 @@ function HeaderPublic({ section }) {
             Cereza bar
           </Typography> */}
         </Box>
-        <Typography variant="body1" sx={{  color: theme.palette.sidebar.text}}>
-          {section}
-        </Typography>
+        <Box display="flex" flexDirection="row" alignItems="center">
+          {loadingButton ? (<CircularProgress  sx={{color: theme.palette.sidebar.text, marginRight:2}} size={20}/>) : download ? <IconButton onClick={downloadPDF} sx={{color: theme.palette.sidebar.text, marginRight:1}}><DownloadIcon /></IconButton> : ""}
+          <Typography variant="body1"  sx={{  color: theme.palette.sidebar.text}}>
+            {section}
+          </Typography>
+        </Box>
       </Toolbar>
     </AppBar>
   );
