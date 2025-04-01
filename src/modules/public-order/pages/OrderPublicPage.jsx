@@ -6,21 +6,22 @@ import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import LoaderAmbigu from '../../../kernel/LoaderAmbigu.jsx';
 import HeaderPublic from '../../../kernel/HeaderPublic.jsx';
+import { PublicThemeProvider } from '../../../context/PublicThemeContext.jsx';
 
 export default function OrderPublicPage() {
   const navigate = useNavigate();
-  const { orderNumber } = useParams();
+  const { token } = useParams();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
-    console.log("num", orderNumber);
-    axios.get(`${API_URL}/order/public/${orderNumber}`)
+    console.log("num", token);
+    axios.get(`${API_URL}/order/public/${token}`)
       .then(response => setOrder(response.data))
       .catch(() => navigate("/"))
       .finally(() => setLoading(false));
-  }, [orderNumber, navigate, API_URL]);
+  }, [token, navigate, API_URL]);
 
   if (loading) return <LoaderAmbigu />;
 //   if (!order) return null;
@@ -28,7 +29,7 @@ export default function OrderPublicPage() {
   console.log("datos de orden: ", order);
   
   return (
-    <>
+    <PublicThemeProvider>
     <HeaderPublic section="Cuenta" />
     <Box sx={{ p: 3 }}>
       <Grid container spacing={3}>
@@ -41,7 +42,7 @@ export default function OrderPublicPage() {
 
           <Typography 
             fontSize={15} 
-            onClick={() => navigate(`/score-service/${order.orderNumber}`)} 
+            onClick={() => navigate(`/score-service/${order.token}`)} 
             sx={{ cursor: 'pointer', textDecoration: 'underline' }}
             >
             Calificar servicio
@@ -92,6 +93,6 @@ export default function OrderPublicPage() {
 
       </Grid>
     </Box>
-    </>
+    </PublicThemeProvider>
   );
 }
