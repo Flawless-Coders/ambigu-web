@@ -42,12 +42,18 @@ const ColorsSection = ({ draftColors, setDraftColor, loading }) => {
   };
 
   const handleColorChange = (color) => {
-    setPopoverState((prev) => ({ ...prev, currentColor: color.hex }));
+    // Usa rgba para mantener la opacidad
+    const newColor = color.rgb;
+    setPopoverState(prev => ({
+      ...prev,
+      currentColor: newColor,
+    }));
+    setDraftColor(popoverState.colorType, `rgba(${newColor.r}, ${newColor.g}, ${newColor.b}, ${newColor.a})`);
   };
 
   const handleColorChangeComplete = (color) => {
-    setDraftColor(popoverState.colorType, color.hex);
-    handleClose();
+    const newColor = color.rgb;
+    setDraftColor(popoverState.colorType, `rgba(${newColor.r}, ${newColor.g}, ${newColor.b}, ${newColor.a})`);
   };
 
   if (loading) return <LoaderAmbigu />;
@@ -91,7 +97,10 @@ const ColorsSection = ({ draftColors, setDraftColor, loading }) => {
             overflow: "visible",
           },
         }}
+        disableRestoreFocus
+        disablePortal
       >
+        <div onClick={(e) => e.stopPropagation()} >
         {popoverState.colorType === "backgroundColor" ? (
           <SwatchesPicker
             color={popoverState.currentColor}
@@ -109,6 +118,7 @@ const ColorsSection = ({ draftColors, setDraftColor, loading }) => {
             width={300}
           />
         )}
+        </div>
       </Popover>
     </Grid2>
   );

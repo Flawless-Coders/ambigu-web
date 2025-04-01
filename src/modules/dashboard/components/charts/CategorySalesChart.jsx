@@ -7,36 +7,68 @@ import {
   Legend,
   Title,
 } from 'chart.js';
-
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
+import Skeleton from '@mui/material/Skeleton'; 
+import api from '../../../auth/services/api';
 
 ChartJS.register(ArcElement, Tooltip, Legend, Title);
-
-const data = {
-  labels: ['Comida', 'Bebida', 'Postres', 'Snacks', 'Otros'],
-  datasets: [
-    {
-      label: 'Ventas por categoría',
-      data: [300, 150, 100, 80, 70],
-      backgroundColor: ['#2196f3', '#4caf50', '#ff9800', '#9c27b0', '#607d8b'],
-    },
-  ],
-};
 
 export default function VentasPorCategoriaChart() {
   const containerRef = useRef(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+  const [chartData, setChartData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const theme = useTheme();
-  const isSmall = useMediaQuery(theme.breakpoints.down('sm')); // xs o sm
-  const isMedium = useMediaQuery(theme.breakpoints.down('md')); // xs o sm
+  const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMedium = useMediaQuery(theme.breakpoints.down('md'));
 
-  // Detectar tamaño real del contenedor
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        const response = await api.get('/dashboard/most-popular-categories');
+        const { topCategories, othersCount } = response.data;
+
+        const labels = topCategories.map(item => item.name);
+        const dataValues = topCategories.map(item => item.count);
+
+        if (othersCount > 0) {
+          labels.push('Otros');
+          dataValues.push(othersCount);
+        }
+
+        setChartData({
+          labels,
+          datasets: [{
+            label: 'Ventas por categoría',
+            data: dataValues,
+            backgroundColor: [
+              '#2196f3', '#4caf50', '#ff9800', '#9c27b0', '#607d8b', '#e91e63'
+            ].slice(0, labels.length),
+          }],
+        });
+
+      } catch (err) {
+        console.error('Error fetching data:', err);
+        setError('No se pudieron cargar los datos de ventas');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // Observador de tamaño (se mantiene igual)
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries) => {
       for (let entry of entries) {
@@ -56,7 +88,6 @@ export default function VentasPorCategoriaChart() {
     };
   }, []);
 
-  // Cambiar dinámicamente la posición de la leyenda
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -87,19 +118,37 @@ export default function VentasPorCategoriaChart() {
           sx={{
             flex: 1,
             display: 'flex',
-            flexDirection: isSmall ? 'column' : 'row', // ✅ cambio responsivo
+            flexDirection: isSmall ? 'column' : 'row',
             position: 'relative',
             minHeight: 0,
           }}
         >
-          {dimensions.width > 0 && dimensions.height > 0 && (
+          {loading ? (
+            <Skeleton 
+              variant="rectangular" 
+              width="100%" 
+              height="100%"
+              animation="wave"
+            />
+          ) : error ? (
+            <Box sx={{ 
+              display: 'flex', 
+              justifyContent: 'center', 
+              alignItems: 'center', 
+              width: '100%', 
+              height: '100%',
+              color: theme.palette.error.main
+            }}>
+              <Typography variant="body2">{error}</Typography>
+            </Box>
+          ) : dimensions.width > 0 && dimensions.height > 0 && chartData ? (
             <Pie
-              data={data}
+              data={chartData}
               options={chartOptions}
               width={dimensions.width}
               height={dimensions.height}
             />
-          )}
+          ) : null}
         </Box>
       </CardContent>
     </Card>

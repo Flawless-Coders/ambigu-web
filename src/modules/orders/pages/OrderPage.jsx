@@ -106,7 +106,7 @@ export default function OrderPage() {
   return (
     <>
       <Box sx={{ marginY: 3, display: "flex", justifyContent: { md: "space-between" }, alignItems: 'center' }}>
-        <Typography variant='h4'>
+        <Typography variant='h1'>
           Historial de pedidos
         </Typography>
 

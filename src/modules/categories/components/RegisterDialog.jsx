@@ -23,8 +23,27 @@ const RegisterDialog = ({ open, handleClose, category, onSuccess }) => {
   }, [category]);
 
   const validationSchema = Yup.object({
-    name: Yup.string().required("El nombre de la categoría es obligatorio"),
-    image: Yup.mixed().required("La imagen es obligatoria"),
+    name: Yup.string()
+      .required("El nombre de la categoría es obligatorio")
+      .min(3, "El nombre debe tener al menos 3 caracteres")
+      .max(30, "El nombre no puede exceder los 30 caracteres")
+      .trim()
+      .test("no-only-spaces", "El nombre no puede contener solo espacios", (value) => {
+        return value && value.trim().length > 0;
+      }),
+    image: category 
+      ? Yup.mixed()
+          .nullable()
+          .test("fileType", "Solo se permiten archivos de imagen (jpg, jpeg, png)", (value) => {
+            if (!value) return true;
+            return ["image/jpeg", "image/jpg", "image/png"].includes(value.type);
+          })
+      : Yup.mixed()
+          .required("La imagen es obligatoria")
+          .test("fileType", "Solo se permiten archivos de imagen (jpg, jpeg, png)", (value) => {
+            if (!value) return false;
+            return ["image/jpeg", "image/jpg", "image/png"].includes(value.type);
+          }),
   });
 
   return (
@@ -64,6 +83,7 @@ const RegisterDialog = ({ open, handleClose, category, onSuccess }) => {
             name: category?.name || "",
             imageBase64: category?.imageBase64 || "",
             status: category?.status ?? true,
+            image: category ? null : undefined,
           }}
           validationSchema={validationSchema}
           onSubmit={async (values, { setSubmitting, resetForm }) => {
@@ -87,19 +107,21 @@ const RegisterDialog = ({ open, handleClose, category, onSuccess }) => {
               setImageFile(null);
               setPreviewImage(null);
           
+              await onSuccess();
+              
               setTimeout(() => {
                 handleClose();
               }, 300);
             } catch (error) {
               console.error("Error en la operación:", error);
+              setError(error.message || "Error al procesar la operación");
             } finally {
               setButtonLoading(false);
               setSubmitting(false);
             }
           }}
-          
         >
-          {({ setFieldValue, errors, touched }) => (
+          {({ setFieldValue, errors, touched, values }) => (
             <Form>
               <Field
                 as={TextField}
@@ -110,6 +132,7 @@ const RegisterDialog = ({ open, handleClose, category, onSuccess }) => {
                 margin="normal"
                 error={Boolean(errors.name && touched.name)}
                 helperText={touched.name && errors.name}
+                disabled={buttonLoading}
               />
 
               <Box
@@ -122,10 +145,22 @@ const RegisterDialog = ({ open, handleClose, category, onSuccess }) => {
                   justifyContent: "center",
                   borderRadius: 2,
                   mb: 2,
+                  position: "relative",
+                  overflow: "hidden",
                 }}
               >
-                {previewImage ? (
-                  <img src={previewImage} alt="Preview" style={{ maxWidth: "100%", maxHeight: "100%" }} />
+                {buttonLoading ? (
+                  <CircularProgress />
+                ) : previewImage ? (
+                  <img 
+                    src={previewImage} 
+                    alt="Preview" 
+                    style={{ 
+                      maxWidth: "100%", 
+                      maxHeight: "100%",
+                      objectFit: "contain" 
+                    }} 
+                  />
                 ) : (
                   <CloudUploadIcon sx={{ fontSize: 48, color: "gray" }} />
                 )}
@@ -135,19 +170,31 @@ const RegisterDialog = ({ open, handleClose, category, onSuccess }) => {
                 variant="contained"
                 component="label"
                 fullWidth
-                sx={{ backgroundColor: "green", color: "white", mb: 2 }}
+                sx={{ 
+                  backgroundColor: "green", 
+                  color: "white", 
+                  mb: 2,
+                  "&:hover": {
+                    backgroundColor: "darkgreen",
+                  }
+                }}
                 disabled={buttonLoading}
               >
-                SUBIR IMAGEN
+                {buttonLoading ? "CARGANDO..." : "SUBIR IMAGEN"}
                 <input
                   type="file"
                   hidden
+                  accept="image/jpeg,image/jpg,image/png"
                   onChange={(event) => {
                     const file = event.target.files[0];
                     if (file) {
-                      setImageFile(file);
-                      setPreviewImage(URL.createObjectURL(file));
-                      setFieldValue("image", file);
+                      if (["image/jpeg", "image/jpg", "image/png"].includes(file.type)) {
+                        setImageFile(file);
+                        setPreviewImage(URL.createObjectURL(file));
+                        setFieldValue("image", file);
+                      } else {
+                        setError("Solo se permiten archivos de imagen (jpg, jpeg, png)");
+                      }
                     }
                   }}
                 />
@@ -175,7 +222,13 @@ const RegisterDialog = ({ open, handleClose, category, onSuccess }) => {
                   }}
                   disabled={buttonLoading}
                 >
-                  {buttonLoading ? <CircularProgress size={24} color="inherit" /> : category ? "ACTUALIZAR" : "AGREGAR"}
+                  {buttonLoading ? (
+                    <CircularProgress size={24} color="inherit" />
+                  ) : category ? (
+                    "ACTUALIZAR"
+                  ) : (
+                    "AGREGAR"
+                  )}
                 </Button>
               </Grid>
             </Form>

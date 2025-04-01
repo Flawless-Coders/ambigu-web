@@ -88,8 +88,8 @@ export default function WaitersPage() {
 
   return (
     <>
-      <Box sx={{ p: 1 }}>
-        <Typography variant="h4">Meseros</Typography>
+      <Box sx={{ p: 3 }}>
+        <Typography variant="h1">Meseros</Typography>
         <Box sx={{ display: "flex", justifyContent: "space-between"}}>
           <Tabs value={tabIndex} onChange={handleTabChange} sx={{mb: 1}}>
             <Tab label="Habilitados" />

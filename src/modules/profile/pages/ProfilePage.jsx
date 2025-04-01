@@ -30,8 +30,8 @@ export default function ProfilePage() {
     }, [error, setGlobalError]);
 
     return (
-        <Box>
-            <Typography variant="h4">Perfil</Typography>
+        <Box sx={{ padding: 3 }}>
+            <Typography variant="h1">Perfil</Typography>
             {loading && <LoaderAmbigu />}
             {error && <Alert severity="error">{error}</Alert>}
             {profileData && <ProfileCard user={profileData} onUpdate={fetchUserData} setSuccess={setSuccess} setError={setGlobalError} />}

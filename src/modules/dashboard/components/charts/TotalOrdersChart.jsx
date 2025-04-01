@@ -4,7 +4,6 @@ import {
   CardContent,
   Stack,
   Typography,
-  Chip,
   Select,
   MenuItem,
   CircularProgress,
@@ -13,7 +12,8 @@ import { LineChart } from '@mui/x-charts/LineChart';
 import api from '../../../auth/services/api';
 
 export default function TotalOrdersChart() {
-  const [timeFrame, setTimeFrame] = useState('month');
+  // Cambiamos el estado inicial a 'today' en lugar de 'month'
+  const [timeFrame, setTimeFrame] = useState('today');
   const [chartData, setChartData] = useState([]);
   const [categories, setCategories] = useState([]);
   const [currentInterval, setCurrentInterval] = useState('');
@@ -49,11 +49,21 @@ export default function TotalOrdersChart() {
           setCategories(labels);
         } else {
           const chartValues = data.dailyOrders.map((d) => d.count);
+          // Mejoramos el formato de las fechas para la visualización semanal
           const labels = data.dailyOrders.map((d) => {
             const date = new Date(d.date);
-            return timeFrame === 'week'
-              ? date.toLocaleDateString('es-MX', { weekday: 'short' })
-              : date.toLocaleDateString('es-MX', { day: '2-digit', month: 'short' });
+            if (timeFrame === 'week') {
+              // Agregar día del mes para mejor claridad en vista semanal
+              return date.toLocaleDateString('es-MX', { 
+                weekday: 'short', 
+                day: 'numeric' 
+              });
+            } else {
+              return date.toLocaleDateString('es-MX', { 
+                day: '2-digit', 
+                month: 'short' 
+              });
+            }
           });
           setChartData(chartValues);
           setCategories(labels);
@@ -120,10 +130,24 @@ export default function TotalOrdersChart() {
           <CircularProgress size={24} sx={{ mt: 2 }} />
         ) : (
           <LineChart
-            xAxis={[{ scaleType: 'band', data: categories }]}
+            xAxis={[{ 
+              scaleType: 'band', 
+              data: categories,
+              // Ajustar la rotación de las etiquetas para mejor visualización
+              tickLabelStyle: timeFrame === 'week' ? {
+                angle: 0,
+                textAnchor: 'start',
+                fontSize: 10
+              } : undefined
+            }]}
             series={[{ id: 'trend', data: chartData, showMark: false, area: true }]}
             height={80}
-            margin={{ top: 5, bottom: 5, left: 5, right: 5 }}
+            margin={{ 
+              top: 5, 
+              bottom: timeFrame === 'week' ? 20 : 5, 
+              left: 5, 
+              right: 5 
+            }}
             slotProps={{ legend: { hidden: true } }}
             grid={{ horizontal: false, vertical: false }}
           />

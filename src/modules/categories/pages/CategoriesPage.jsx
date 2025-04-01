@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Tabs, Tab, Typography, Box } from "@mui/material";
+import { Tabs, Tab, Typography, Box, Grid } from "@mui/material";
 import { CheckCircle, RemoveCircle } from "@mui/icons-material";
 import CategoriesCard from "../components/CategoriesCard";
 import { handleGetCategories } from "../controllers/categoriesController";
@@ -16,8 +16,7 @@ const CategoriesPage = () => {
   const [openModal, setOpenModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [openChangeStatusDialog, setOpenChangeStatusDialog] = useState(false);
-
-  const { setSuccess, setError } = useOutletContext();
+  const { setSuccess, setError, searchTerm } = useOutletContext();
 
   useEffect(() => {
     handleGetCategories(setCategories, setLoading, setError);
@@ -43,51 +42,57 @@ const CategoriesPage = () => {
     setOpenModal(true);
   };
 
-  const filteredCategories = categories.filter((category) =>
-    tabIndex === 0 ? category.status === true : category.status === false
-  );
+  const filteredCategories = categories.filter((category) => {
+    const matchesStatus = tabIndex === 0 ? category.status === true : category.status === false;
+    const matchesSearch = category.name.toLowerCase().includes(searchTerm?.toLowerCase() || "");
+    return matchesStatus && matchesSearch;
+  });
 
   return (
-    <Box sx={{ position: "relative", minHeight: "100vh", paddingBottom: "80px" }}>
-      <Typography variant="h4">Categorías</Typography>
+    <Box sx={{ position: "relative", minHeight: "100vh", paddingBottom: "80px", p: 3 }}>
+      <Typography variant="h1">Categorías</Typography>
 
       {/* Tabs Habilitados/Deshabilitados */}
-      <Tabs value={tabIndex} onChange={(event, newValue) => setTabIndex(newValue)} sx={{ mb: 1 }}>
+      <Tabs value={tabIndex} onChange={(event, newValue) => setTabIndex(newValue)} sx={{ mb: 3 }}>
         <Tab
-          icon={<CheckCircle sx={{ color: tabIndex === 0 ? "green" : "gray" }} />}
-          iconPosition="start"
-          label="Habilitados"
+          label="HABILITADOS"
           value={0}
-          sx={{ color: tabIndex === 0 ? "green" : "gray", fontWeight: "bold", textTransform: "none" }}
+          sx={{ color: tabIndex === 0 ? "green" : "gray", textTransform: "none" }}
         />
         <Tab
-          icon={<RemoveCircle sx={{ color: tabIndex === 1 ? "green" : "gray" }} />}
-          iconPosition="start"
-          label="Deshabilitados"
+          label="DESHABILITADOS"
           value={1}
-          sx={{ color: tabIndex === 1 ? "green" : "gray", fontWeight: "bold", textTransform: "none" }}
+          sx={{ color: tabIndex === 1 ? "green" : "gray", textTransform: "none" }}
         />
       </Tabs>
 
       {loading ? (
         <LoaderAmbigu />
       ) : (
-        <Box display="flex" flexWrap="wrap" gap={2} mt={3}>
-          {filteredCategories.map((category) => (
-            <CategoriesCard
-              key={category.id}
-              category={category}
-              onChangeStatus={handleOpenChangeStatusDialog}
-              onEdit={handleOpenEditDialog}
-            />
-          ))}
-        </Box>
+        <>
+          <Grid container columnSpacing={{ xs: 1, sm: 2, md: 3 }} rowSpacing={3} sx={{ p: 1 }}>
+            {filteredCategories.map((category) => (
+              <CategoriesCard
+                key={category.id}
+                category={category}
+                onChangeStatus={handleOpenChangeStatusDialog}
+                onEdit={handleOpenEditDialog}
+              />
+            ))}
+          </Grid>
+          <FloatingAddButton 
+            setLoading={setLoading}
+            onSuccess={() => handleGetCategories(setCategories, setLoading, setError)}
+          />
+        </>
       )}
 
-      <FloatingAddButton onClick={() => setOpenModal(true)} />
       <RegisterDialog 
         open={openModal} 
-        handleClose={() => setOpenModal(false)} 
+        handleClose={() => {
+          setOpenModal(false);
+          setSelectedCategory(null);
+        }} 
         onSuccess={() => handleGetCategories(setCategories, setLoading, setError)} 
         category={selectedCategory} 
       />

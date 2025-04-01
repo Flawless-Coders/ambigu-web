@@ -1,5 +1,18 @@
-import { Card, CardContent, Chip, Typography, Stack } from '@mui/material';
+import {
+  Card,
+  CardContent,
+  Chip,
+  Typography,
+  Stack,
+  Skeleton,
+} from '@mui/material';
+import {
+  ArrowUpward,
+  ArrowDownward,
+} from '@mui/icons-material';
 import { LineChart } from '@mui/x-charts/LineChart';
+import { useEffect, useState } from 'react';
+import api from '../../../auth/services/api';
 
 function AreaGradient({ color, id }) {
   return (
@@ -12,85 +25,111 @@ function AreaGradient({ color, id }) {
   );
 }
 
-function getDaysInMonth(month, year) {
-  const date = new Date(year, month, 0);
-  const monthName = date.toLocaleDateString('en-US', { month: 'short' });
-  const days = Array.from({ length: date.getDate() }, (_, i) => `${monthName} ${i + 1}`);
-  return days;
-}
-
 export default function OrdersChart() {
-  const data = getDaysInMonth(4, 2024);
+  const [loading, setLoading] = useState(true);
+  const [ordersData, setOrdersData] = useState({
+    total: 0,
+    average: 0,
+    previousAverage: 0,
+    growth: 0,
+    labels: [],
+    dailyOrders: [],
+  });
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const response = await api.get('/dashboard/orders-chart');
+      const data = response.data;
+      setOrdersData(data);
+    } catch (error) {
+      console.error('Error al obtener los datos de pedidos:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const maxOrders = Math.max(...ordersData.dailyOrders);
+  const maxDay = ordersData.labels[ordersData.dailyOrders.indexOf(maxOrders)];
 
   return (
-    <Card variant="outlined" sx={{ width: '100%' }}>
+    <Card variant="outlined" sx={{ width: '100%', height: '100%' }}>
       <CardContent>
         <Typography component="h2" variant="subtitle2" gutterBottom>
-          Pedidos diarios
+          Promedio de pedidos diarios
         </Typography>
-        <Stack sx={{ justifyContent: 'space-between' }}>
-          <Stack direction="row" sx={{ alignItems: 'center', gap: 1 }}>
-            <Typography variant="h4" component="p">13,277</Typography>
-            <Chip size="small" color="success" label="+35%" />
-          </Stack>
-          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-            Pedidos por día en los últimos 30 días
-          </Typography>
-        </Stack>
 
-        <LineChart
-          colors={['#6ec6ff', '#2196f3', '#1565c0']}
-          xAxis={[{
-            scaleType: 'point',
-            data,
-            tickInterval: (index, i) => (i + 1) % 5 === 0,
-          }]}
-          series={[
-            {
-              id: 'local',
-              label: 'Pedidos en local',
-              data: [...Array(30)].map(() => Math.floor(Math.random() * 3000)),
-              area: true,
-              stack: 'total',
-              stackOrder: 'ascending',
-              curve: 'linear',
-              showMark: false,
-            },
-            {
-              id: 'domicilio',
-              label: 'Pedidos a domicilio',
-              data: [...Array(30)].map(() => Math.floor(Math.random() * 3000)),
-              area: true,
-              stack: 'total',
-              stackOrder: 'ascending',
-              curve: 'linear',
-              showMark: false,
-            },
-            {
-              id: 'pickup',
-              label: 'Pedidos para recoger',
-              data: [...Array(30)].map(() => Math.floor(Math.random() * 3000)),
-              area: true,
-              stack: 'total',
-              stackOrder: 'ascending',
-              curve: 'linear',
-              showMark: false,
-            },
-          ]}
-          height={250}
-          margin={{ left: 50, right: 20, top: 20, bottom: 20 }}
-          grid={{ horizontal: true }}
-          sx={{
-            '& .MuiAreaElement-series-local': { fill: "url('#local')" },
-            '& .MuiAreaElement-series-domicilio': { fill: "url('#domicilio')" },
-            '& .MuiAreaElement-series-pickup': { fill: "url('#pickup')" },
-          }}
-          slotProps={{ legend: { hidden: true } }}
-        >
-          <AreaGradient color="#1565c0" id="local" />
-          <AreaGradient color="#2196f3" id="domicilio" />
-          <AreaGradient color="#6ec6ff" id="pickup" />
-        </LineChart>
+        {loading ? (
+          <>
+            <Skeleton variant="text" width={100} height={30} />
+            <Skeleton variant="text" width={150} height={20} />
+            <Skeleton variant="rectangular" height={250} sx={{ mt: 2 }} />
+          </>
+        ) : (
+          <>
+            <Stack sx={{ justifyContent: 'space-between', mb: 1 }}>
+              <Stack direction="row" alignItems="center" gap={1}>
+                <Typography variant="h4" component="p">
+                  {ordersData.average.toLocaleString()}
+                </Typography>
+                <Stack direction="row" alignItems="center" gap={0.5}>
+                  <Chip
+                    size="small"
+                    color={ordersData.growth >= 0 ? 'success' : 'error'}
+                    label={`${ordersData.growth >= 0 ? '+' : ''}${ordersData.growth.toFixed(1)}%`}
+                  />
+                  {ordersData.growth >= 0 ? (
+                    <ArrowUpward fontSize="small" color="success" />
+                  ) : (
+                    <ArrowDownward fontSize="small" color="error" />
+                  )}
+                </Stack>
+              </Stack>
+
+              <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                Últimos 30 días ({ordersData.labels[0]} – {ordersData.labels.at(-1)})
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Cantidad de pedidos: {ordersData.total.toLocaleString()} pedidos
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Pico: {maxOrders} pedidos el {maxDay}
+              </Typography>
+            </Stack>
+
+            <LineChart
+              colors={['#2196f3']}
+              xAxis={[{
+                scaleType: 'point',
+                data: ordersData.labels,
+                tickInterval: (index, i) => (i + 1) % 5 === 0,
+              }]}
+              series={[
+                {
+                  id: 'total',
+                  label: 'Pedidos',
+                  data: ordersData.dailyOrders,
+                  area: true,
+                  curve: 'linear',
+                  showMark: false,
+                },
+              ]}
+              height={250}
+              margin={{ left: 50, right: 20, top: 20, bottom: 20 }}
+              grid={{ horizontal: true }}
+              sx={{
+                '& .MuiAreaElement-series-total': { fill: "url('#total')" },
+              }}
+              slotProps={{ legend: { hidden: true } }}
+            >
+              <AreaGradient color="#2196f3" id="total" />
+            </LineChart>
+          </>
+        )}
       </CardContent>
     </Card>
   );

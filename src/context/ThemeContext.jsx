@@ -59,9 +59,11 @@ const normalizeTheme = (themeData) => {
       fontFamily: themeData?.bodyFont || baseTheme.typography.fontFamily,
       h1: {
         fontFamily: themeData?.headerFont || baseTheme.typography.h1.fontFamily,
+        fontSize: "30px"
       },
       h2: {
         fontFamily: themeData?.headerFont || baseTheme.typography.h2.fontFamily,
+        fontSize: "24px"
       },
       h3: {
         fontFamily: themeData?.headerFont || baseTheme.typography.h3.fontFamily,
