@@ -7,6 +7,7 @@ import { handleGetWaiterDetails, handleGetWaiters, handleRegisterWaiter, handleU
 import { RegisterDialog } from "../components/RegisterDialog";
 import { ChangeStatusDialog } from "../components/ChangeStatusDialog";
 import { ChangeLeaderStatusDialog } from "../components/ChangeLeaderStatusDialog";
+import FloatingAddButton from "../../../kernel/FloatingAddButton";
 
 export default function WaitersPage() {
   const [rows, setRows] = useState([]);
@@ -20,7 +21,6 @@ export default function WaitersPage() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [dialogLoading, setDialogLoading] = useState(false); // Carga solo para el modal
   const [loading, setLoading] = useState(false);
-  const [tabIndex, setTabIndex] = useState(0);
 
   // Abrir modal para registrar un nuevo mesero
   const handleOpenRegisterDialog = () => {
@@ -80,43 +80,24 @@ export default function WaitersPage() {
     handleGetWaiters(setRows, setError, setTableLoading);
   };
 
-  const handleTabChange = (event, newValue) => {
-    setTabIndex(newValue);
-  }
-
-  const filteredRows = rows.filter(row => tabIndex === 0 ? row.status : !row.status);
-
   return (
     <>
       <Box sx={{ p: 3 }}>
         <Typography variant="h1">Meseros</Typography>
-        <Box sx={{ display: "flex", justifyContent: "space-between"}}>
-          <Tabs value={tabIndex} onChange={handleTabChange} sx={{mb: 1}}>
-            <Tab label="Habilitados" />
-            <Tab label="Deshabilitados" />
-          </Tabs>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleOpenRegisterDialog}
-            sx={{mb: 1}}
-          >
-            + AGREGAR MESERO
-          </Button>
-        </Box>
-
         {tableLoading ? (
           <LoaderAmbigu />
         ) : (
           rows.length > 0 && (
             <WaitersTable
-              rows={filteredRows}
+              rows={rows}
               onEdit={handleOpenUpdateDialog}
               onCStatus={handleOpenChangeStatusDialog}
               onCLeader={handleOpenChangeLeaderDialog}
             />
           )
         )}
+
+        <FloatingAddButton action={handleOpenRegisterDialog} />
       </Box>
 
       {/* Modal de registro/actualización */}

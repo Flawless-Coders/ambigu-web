@@ -1,11 +1,16 @@
 import { DataGrid } from "@mui/x-data-grid";
-import { Button, Box, Chip } from "@mui/material";
+import { Button, Box, Chip, ToggleButtonGroup, ToggleButton } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import GroupIcon from "@mui/icons-material/Group";
 import CheckIcon from "@mui/icons-material/Check";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
+import CancelIcon from "@mui/icons-material/Cancel";
+import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import { useOutletContext } from "react-router-dom";
+import { useState } from "react";
 
 const useStyles = makeStyles({
   leaderRow: {
@@ -55,14 +60,49 @@ export default function WaitersTable({ rows, onEdit, onCStatus, onCLeader }) {
   const classes = useStyles();
   const columnsConfig = columns(onEdit, onCStatus, onCLeader, classes);
   const { searchTerm } = useOutletContext();
+  const [alignment, setAlignment] = useState("active");
 
-  const filteredRows = rows.filter(row => 
-    row.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    row.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    row.phone.includes(searchTerm)
-  );
+  const handleChange = (event, newAlignment) => {
+    if (newAlignment !== null) {
+      setAlignment(newAlignment);
+    }
+  };
+
+  const iconStyle = { marginLeft: 1};
+
+  const filteredRows = rows.filter(row => {
+    // First filter by active/inactive status
+    const matchesStatus = alignment === "active" ? row.status : !row.status;
+    
+    // If no search term, just return the status filter
+    if (!searchTerm) return matchesStatus;
+    
+    // If there is a search term, apply it only to rows that match the status
+    return matchesStatus && (
+      row.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      row.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (row.phone && row.phone.includes(searchTerm))
+    );
+  });
 
   return (
+    <>
+    <Box sx={{ mb: 2, display: 'flex', justifyContent: 'end' }}>
+    <ToggleButtonGroup
+      color={alignment === "active" ? "primary" : "error"}
+      value={alignment}
+      exclusive
+      onChange={handleChange}
+      aria-label="active-inactive waiters"
+    >
+      <ToggleButton value="active">
+        Activos{alignment === "active" ? <CheckCircleIcon sx={iconStyle}/> : <CheckCircleOutlinedIcon sx={iconStyle}/>}
+      </ToggleButton>
+      <ToggleButton value="inactive">
+        Inactivos{alignment === "inactive" ? <CancelIcon sx={iconStyle}/> : <CancelOutlinedIcon sx={iconStyle}/>}
+      </ToggleButton>
+    </ToggleButtonGroup>
+    </Box>
     <DataGrid
       rows={filteredRows}
       columns={columnsConfig}
@@ -85,5 +125,6 @@ export default function WaitersTable({ rows, onEdit, onCStatus, onCLeader }) {
       }}
       getRowClassName={(params) => (params.row.leader ? classes.leaderRow : '')}
     />
+    </>
   );
 }
