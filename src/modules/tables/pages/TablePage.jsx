@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
-import { Typography, Box, Tabs, Tab, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
+import { Typography, Box, Tabs, Tab, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, ToggleButton, ToggleButtonGroup } from "@mui/material";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
+import CancelIcon from "@mui/icons-material/Cancel";
+import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import { Formik, Form, Field } from "formik";
 import Backdrop from "@mui/material/Backdrop";
 import * as Yup from "yup";
@@ -17,6 +21,15 @@ export default function TablePage() {
     const [loading, setLoading] = useState(false);
     const [dataTable, setDataTable] = useState(null);
     const [open, setOpen] = useState(false);
+    const [alignment, setAlignment] = useState("active");
+
+    const handleChange = (event, newAlignment) => {
+        if (newAlignment !== null) {
+            setAlignment(newAlignment);
+        }
+    };
+
+    const iconStyle = { marginLeft: 1 };
 
     useEffect(() => {
         if (error) {
@@ -24,12 +37,10 @@ export default function TablePage() {
         }
     }, [error, setGlobalError]);
 
-        const filteredTables = dataTable
-    ? dataTable.filter((mesa) =>
-        mesa.tableIdentifier.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-    : [];
-
+    const filteredTables = dataTable
+        ? dataTable.filter((mesa) =>
+            mesa.tableIdentifier.toLowerCase().includes(searchTerm?.toLowerCase() || ""))
+        : [];
 
     const fetchTables = () => {
         if (tabIndex === 0) {
@@ -70,24 +81,37 @@ export default function TablePage() {
 
     return (
         <Box sx={{ p: 3 }}>
+
+            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
             <Typography variant="h1">Mesas</Typography>
-            <Box sx={{ justifyContent: "flex-start" }}>
-                <Tabs value={tabIndex} onChange={(event, newIndex) => setTabIndex(newIndex)} sx={{ mb: 1 }}>
-                    <Tab label="Habilitados" />
-                    <Tab label="Deshabilitados" />
-                </Tabs>
+                <ToggleButtonGroup
+                    color={alignment === "active" ? "primary" : "error"}
+                    value={alignment}
+                    exclusive
+                    onChange={handleChange}
+                    aria-label="active-inactive tables"
+                >
+                    <ToggleButton value="active">
+                        Habilitadas{alignment === "active" ? <CheckCircleIcon sx={iconStyle}/> : <CheckCircleOutlinedIcon sx={iconStyle}/>}
+                    </ToggleButton>
+                    <ToggleButton value="inactive">
+                        Deshabilitadas{alignment === "inactive" ? <CancelIcon sx={iconStyle}/> : <CancelOutlinedIcon sx={iconStyle}/>}
+                    </ToggleButton>
+                </ToggleButtonGroup>
             </Box>
 
             {loading ? (
                 <LoaderAmbigu />
             ) : (
                 <>
-                    {tabIndex === 0 ? (
-                        <TableCard status="habilitados" data={filteredTables} loading={loading} fetchTables={fetchTables} setSuccess={setSuccess} />
-                    ) : (
-                        <TableCard status="deshabilitados" data={filteredTables} loading={loading} fetchTables={fetchTables} setSuccess={setSuccess} />
-                    )}
-                    {tabIndex === 0 && <FloatingAddButton action={handleOpen} />}
+                {/* Use alignment instead of tabIndex */}
+                {alignment === "active" ? (
+                    <TableCard status="habilitados" data={filteredTables} loading={loading} fetchTables={fetchTables} setSuccess={setSuccess} />
+                ) : (
+                    <TableCard status="deshabilitados" data={filteredTables} loading={loading} fetchTables={fetchTables} setSuccess={setSuccess} />
+                )}
+                {/* Show FloatingAddButton only for active tables */}
+                {alignment === "active" && <FloatingAddButton action={handleOpen} />}
                 </>
             )}
 

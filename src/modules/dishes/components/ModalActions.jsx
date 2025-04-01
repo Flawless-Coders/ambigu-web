@@ -120,7 +120,7 @@ export default function ModalActions({
     ),
     description: Yup.string().required("La descripción es obligatoria").max(121, "La descripción no puede tener mas de 120 caracteres").matches(
       /^(?!.*(<script|javascript:|onerror|alert|<iframe|<img|<body|<head|<html|find|db|delete|insert|aggregate|data)).*$/,
-      "La descripción no puede contener palabras reservadas o códigos.travieso."
+      "La descripción no puede contener palabras reservadas o códigos, travieso."
     ),
     price: Yup.number()
       .typeError("Ingrese el precio en números")

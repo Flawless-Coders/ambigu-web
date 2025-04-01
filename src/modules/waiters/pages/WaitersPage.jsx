@@ -1,18 +1,25 @@
 import { useState, useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
-import { Button, Typography, Box, Tabs, Tab } from "@mui/material";
+import { Button, Typography, Box, ToggleButtonGroup, ToggleButton } from "@mui/material";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
+import CancelIcon from "@mui/icons-material/Cancel";
+import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import LoaderAmbigu from "../../../kernel/LoaderAmbigu";
 import WaitersTable from "../components/WaitersTable";
 import { handleGetWaiterDetails, handleGetWaiters, handleRegisterWaiter, handleUpdateWaiter } from "../controllers/waitersController";
 import { RegisterDialog } from "../components/RegisterDialog";
 import { ChangeStatusDialog } from "../components/ChangeStatusDialog";
 import { ChangeLeaderStatusDialog } from "../components/ChangeLeaderStatusDialog";
+import FloatingAddButton from "../../../kernel/FloatingAddButton";
 
 export default function WaitersPage() {
   const [rows, setRows] = useState([]);
   const [tableLoading, setTableLoading] = useState(false); // Carga solo para la tabla
   const [error, setError] = useState(null);
   const { setSuccess, setError: setGlobalError } = useOutletContext();
+  const [activeFilter, setActiveFilter] = useState(true);
+  const [alignment, setAlignment] = useState("active");
 
   const [openRegisterDialog, setOpenRegisterDialog] = useState(false);
   const [openChangeStatusDialog, setOpenChangeStatusDialog] = useState(false);
@@ -20,8 +27,15 @@ export default function WaitersPage() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [dialogLoading, setDialogLoading] = useState(false); // Carga solo para el modal
   const [loading, setLoading] = useState(false);
-  const [tabIndex, setTabIndex] = useState(0);
 
+  const handleChange = (event, newAlignment) => {
+    if (newAlignment !== null) {
+      setAlignment(newAlignment);
+      setActiveFilter(newAlignment === "active");
+    }
+  }
+
+  const iconStyle = { marginLeft: 1 };
   // Abrir modal para registrar un nuevo mesero
   const handleOpenRegisterDialog = () => {
     setOpenRegisterDialog(true);
@@ -80,43 +94,42 @@ export default function WaitersPage() {
     handleGetWaiters(setRows, setError, setTableLoading);
   };
 
-  const handleTabChange = (event, newValue) => {
-    setTabIndex(newValue);
-  }
-
-  const filteredRows = rows.filter(row => tabIndex === 0 ? row.status : !row.status);
-
   return (
     <>
       <Box sx={{ p: 3 }}>
-        <Typography variant="h1">Meseros</Typography>
-        <Box sx={{ display: "flex", justifyContent: "space-between"}}>
-          <Tabs value={tabIndex} onChange={handleTabChange} sx={{mb: 1}}>
-            <Tab label="Habilitados" />
-            <Tab label="Deshabilitados" />
-          </Tabs>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleOpenRegisterDialog}
-            sx={{mb: 1}}
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+          <Typography variant="h1">Meseros</Typography>
+          <ToggleButtonGroup
+            color={alignment === "active" ? "primary" : "error"}
+            value={alignment}
+            exclusive
+            onChange={handleChange}
+            aria-label="active-inactive waiters"
           >
-            + AGREGAR MESERO
-          </Button>
+            <ToggleButton value="active">
+              Activos{alignment === "active" ? <CheckCircleIcon sx={iconStyle}/> : <CheckCircleOutlinedIcon sx={iconStyle}/>}
+            </ToggleButton>
+            <ToggleButton value="inactive">
+              Inactivos{alignment === "inactive" ? <CancelIcon sx={iconStyle}/> : <CancelOutlinedIcon sx={iconStyle}/>}
+            </ToggleButton>
+          </ToggleButtonGroup>
         </Box>
-
+        
         {tableLoading ? (
           <LoaderAmbigu />
         ) : (
           rows.length > 0 && (
             <WaitersTable
-              rows={filteredRows}
+              rows={rows}
               onEdit={handleOpenUpdateDialog}
               onCStatus={handleOpenChangeStatusDialog}
               onCLeader={handleOpenChangeLeaderDialog}
+              activeFilter={activeFilter}
             />
           )
         )}
+
+        <FloatingAddButton action={handleOpenRegisterDialog} />
       </Box>
 
       {/* Modal de registro/actualización */}
