@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
-import { getUserDetails, validateToken, fetchTheme } from "../modules/auth/services/AuthService";
+import { getUserDetails, validateToken, fetchTheme } from "../modules/auth/services/authService";
 import baseTheme from "../config/theme";
 
 export const AuthContext = createContext();
