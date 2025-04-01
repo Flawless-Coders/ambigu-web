@@ -6,11 +6,13 @@ import HeaderPublic from '../../../kernel/HeaderPublic';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import MailIcon from '@mui/icons-material/Mail';
+import { Public } from '@mui/icons-material';
+import { PublicThemeProvider } from '../../../context/PublicThemeContext';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function ScoreServicePage() {
-  const { orderNumber } = useParams();
+  const { token } = useParams();
   const [order, setOrder] = useState(null);
   const [waiterAvatar, setWaiterAvatar] = useState(null);
   const [rating, setRating] = useState(1);
@@ -19,7 +21,7 @@ export default function ScoreServicePage() {
   const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
-    axios.get(`${API_URL}/order/public/${orderNumber}`)
+    axios.get(`${API_URL}/order/public/${token}`)
       .then(res => {
         const orderData = res.data;
         setOrder(orderData);
@@ -36,7 +38,7 @@ export default function ScoreServicePage() {
             }
           });
       });
-  }, [orderNumber]);
+  }, [token]);
 
   const handleSubmit = () => {
     if (!rating || comment.trim() === "") {
@@ -58,7 +60,7 @@ export default function ScoreServicePage() {
   if (!order) return null;
 
   return (
-    <>
+    <PublicThemeProvider>
       <HeaderPublic section="Califica tu servicio" />
       <Box sx={{ maxWidth: 420, mx: 'auto', mt: 5, p: 3 }}>
         <Typography variant="h6" mb={1} textAlign="center">¡Califica tu servicio!</Typography>
@@ -144,6 +146,6 @@ export default function ScoreServicePage() {
           <Typography fontWeight="medium">Gracias por tu visita</Typography>
         </DialogContent>
       </Dialog>
-    </>
+      </PublicThemeProvider>
   );
 }

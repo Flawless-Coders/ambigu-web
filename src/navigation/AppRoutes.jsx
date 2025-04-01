@@ -40,7 +40,7 @@ const AppRoutes = () => {
       "/": "Inicio",
       "/password-recovery": "Recuperar Contraseña",
       "/forgot-password": "Olvidé mi Contraseña",
-      "/order-client/:orderNumber": "Cuenta",
+      "/order-client/:token": "Cuenta",
       "/dashboard": "Dashboard",
       "/waiters": "Meseros",
       "/categories": "Categorías",
@@ -67,8 +67,8 @@ const AppRoutes = () => {
       <Route path="/" element={!user ? <LoginPage /> : <Navigate to="/dashboard" />} />
       <Route path="/password-recovery" element={<PasswordRecoveryPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-      <Route path="/order-client/:orderNumber" element={<OrderPublicPage />} />
-      <Route path="/score-service/:orderNumber" element={<ScoreServicePage />} />
+      <Route path="/order-client/:token" element={<OrderPublicPage />} />
+      <Route path="/score-service/:token" element={<ScoreServicePage />} />
       <Route path="/public-menu" element={<PublicMenu />} />
       
       {/* Rutas protegidas bajo Layout */}

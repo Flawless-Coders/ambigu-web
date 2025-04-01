@@ -30,7 +30,7 @@ export default function OrdersCard({ order }) {
                       height: { xs: 100, sm: 150 }, 
                       objectFit: 'cover'
                     }}
-                    image="https://placehold.co/250x200.png"
+                    image={dish.imageBase64 != null ? dish.imageBase64 : "https://placehold.co/250x200.png"} 
                     title={dish.dishName}
                   />
                 </Grid>
