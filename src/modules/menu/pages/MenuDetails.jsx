@@ -49,7 +49,7 @@ export default function MenuDetails() {
   const [loading, setLoading] = React.useState(false);
   const [dialogLoading, setDialogLoading] = React.useState(false);
   const [error, setError] = React.useState(null);
-  const { setSuccess, setError: setGlobalError } = useOutletContext();
+  const { setSuccess, setError: setGlobalError, searchTerm } = useOutletContext();
   const [value, setValue] = React.useState(0);
   const { id, name } = location.state || {};
   const [dishes, setDishes] = React.useState([]);
@@ -59,6 +59,12 @@ export default function MenuDetails() {
   const [selectedDish, setSelectedDish] = React.useState(null);
   const [loadingCategories, setLoadingCategories] = React.useState(false);
   const [loadingDishes, setLoadingDishes] = React.useState(false);
+
+  const filteredDishes = dishes
+  ? dishes.filter((dish) =>
+    dish.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+  : [];
 
   const handleCloseRegisterDialog = () => setOpenRegisterDialog(false); //Método para cerrar el modal
 
@@ -131,8 +137,8 @@ export default function MenuDetails() {
   }, [error, setGlobalError]);
 
   return (
-    <Box>
-      <Typography variant="h4">{name}</Typography>
+   <Box sx={{ p:3 }}>
+      <Typography variant="h1">{name}</Typography>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         {loadingCategories ? <LoaderAmbigu /> : (
           <Tabs value={value} onChange={handleChange} aria-label="menu tabs" variant="scrollable">
@@ -151,7 +157,7 @@ export default function MenuDetails() {
       {loadingDishes ? <Box sx={{ justifyContent:'center', alignItems:'center', display:'flex', height:"80vh"}}><CircularProgress sx={{ fontSize: 50}} color="primary" /></Box> : (
         <CustomTabPanel value={value} index={value}>
           <Grid container columnSpacing={{ xs: 1, sm: 2, md: 3 }} rowSpacing={3}>
-            {dishes.map((dish) => (
+            {filteredDishes.map((dish) => (
               <CustomCard
                 key={dish.id}
                 title={dish.name}

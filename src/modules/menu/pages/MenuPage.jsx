@@ -19,7 +19,7 @@ export default function MenuPage() {
     const [photos, setPhotos] = useState({});
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const { setSuccess, setError: setGlobalError } = useOutletContext();
+    const { setSuccess, setError: setGlobalError,searchTerm  } = useOutletContext();
     const [openRegisterDialog, setOpenRegisterDialog] = useState(false);
     const [openQRdialog, setOpenQRdialog] = useState(false);
     const [selectedMenu, setSelectedMenu] = useState(null);
@@ -27,6 +27,12 @@ export default function MenuPage() {
     const [openAssignAsCurrentDialog, setOpenAssignAsCurrentDialog] = useState(false);
     const [openInactivateMenuDialog, setOpenInactivateMenuDialog] = useState(false);
     const [isCurrentMenu, setIsCurrentMenu] = useState(false);
+
+    const filteredMenu = menuData
+    ? menuData.filter((menu) =>
+        menu.name.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+    : [];
 
     const handleGetMenuDetails = (menu) => {
         navigate('/menu-details', {
@@ -181,14 +187,15 @@ export default function MenuPage() {
         <>
             <Box sx={{ pt: 0, pb: 3, px: 3 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginY: 3 }}>
-                    <Typography variant="h1">Menús</Typography>
+                <Typography variant="h1">Menús</Typography>
                     <Button variant="contained" color='primary' onClick={() => { setOpenQRdialog(true) }}>GENERAR QR</Button>
-                </Box>
+                    </Box>
+       
 
                 {menuData && Object.keys(photos).length === menuData.length ? (
                     <>
                         <Grid container columnSpacing={{ xs: 1, sm: 2, md: 3 }} rowSpacing={3} sx={{ p: 1 }}>
-                            {menuData.map((menu) => (
+                            {filteredMenu.map((menu) => (
                                 <CustomCard
                                     key={menu.id}
                                     image={photos[menu.photoId]}
@@ -265,7 +272,7 @@ export default function MenuPage() {
                             id="qr-code"
                             size={256}
                             style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-                            value={"http://localhost:5173"}
+                            value={"http://localhost:5173/public-menu"}
                             viewBox={`0 0 256 256`}
                         />
 

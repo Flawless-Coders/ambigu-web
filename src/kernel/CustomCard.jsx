@@ -25,6 +25,7 @@ export default function CustomCard(props) {
                                       transform: "translateY(-5px)",
                                       boxShadow: 6,
                                   },
+                    maxHeight:250
                 }}
                 onMouseEnter={() => setShowFab(true)}
                 onMouseLeave={() => setShowFab(false)}
@@ -83,13 +84,13 @@ export default function CustomCard(props) {
                 </Box>
                 <CardContent>
                     <Grid container width="100%">
-                        <Grid item xs={6}>
+                        <Grid item xs={price? 8 : 12}>
                             <Typography gutterBottom component="div" sx={{ fontWeight: "bold", fontSize: 15 }}>
                                 {title}
                             </Typography>
                         </Grid>
                         {price && (
-                            <Grid item xs={6} sx={{ display: "flex", justifyContent: "flex-end" }}>
+                            <Grid item xs={4} sx={{ display: "flex", justifyContent: "flex-end" }}>
                                 <Typography gutterBottom component="div" sx={{ fontWeight: "bold", fontSize: 15 }}>
                                     {price}
                                 </Typography>
@@ -98,7 +99,7 @@ export default function CustomCard(props) {
                     </Grid>
 
                     <Typography variant="body2" sx={{ color: "text.#3f51b5", display: { xs: "none", sm: "block" } }}>
-                        {description}
+                        {description.length > 65 ? description.slice(0, 65) + "..." : description}
                     </Typography>
 
                     {buttonTitle && (
