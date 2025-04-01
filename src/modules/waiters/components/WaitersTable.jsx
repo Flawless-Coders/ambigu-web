@@ -56,23 +56,14 @@ const columns = (onEdit, onCStatus, onCLeader, classes) => [
   },
 ];
 
-export default function WaitersTable({ rows, onEdit, onCStatus, onCLeader }) {
+export default function WaitersTable({ rows, onEdit, onCStatus, onCLeader, activeFilter }) {
   const classes = useStyles();
   const columnsConfig = columns(onEdit, onCStatus, onCLeader, classes);
   const { searchTerm } = useOutletContext();
-  const [alignment, setAlignment] = useState("active");
-
-  const handleChange = (event, newAlignment) => {
-    if (newAlignment !== null) {
-      setAlignment(newAlignment);
-    }
-  };
-
-  const iconStyle = { marginLeft: 1};
 
   const filteredRows = rows.filter(row => {
     // First filter by active/inactive status
-    const matchesStatus = alignment === "active" ? row.status : !row.status;
+    const matchesStatus = activeFilter ? row.status : !row.status;
     
     // If no search term, just return the status filter
     if (!searchTerm) return matchesStatus;
@@ -87,22 +78,6 @@ export default function WaitersTable({ rows, onEdit, onCStatus, onCLeader }) {
 
   return (
     <>
-    <Box sx={{ mb: 2, display: 'flex', justifyContent: 'end' }}>
-    <ToggleButtonGroup
-      color={alignment === "active" ? "primary" : "error"}
-      value={alignment}
-      exclusive
-      onChange={handleChange}
-      aria-label="active-inactive waiters"
-    >
-      <ToggleButton value="active">
-        Activos{alignment === "active" ? <CheckCircleIcon sx={iconStyle}/> : <CheckCircleOutlinedIcon sx={iconStyle}/>}
-      </ToggleButton>
-      <ToggleButton value="inactive">
-        Inactivos{alignment === "inactive" ? <CancelIcon sx={iconStyle}/> : <CancelOutlinedIcon sx={iconStyle}/>}
-      </ToggleButton>
-    </ToggleButtonGroup>
-    </Box>
     <DataGrid
       rows={filteredRows}
       columns={columnsConfig}

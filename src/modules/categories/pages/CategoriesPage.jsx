@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
-import { Tabs, Tab, Typography, Box, Grid } from "@mui/material";
-import { CheckCircle, RemoveCircle } from "@mui/icons-material";
+import { Tabs, Tab, Typography, Box, Grid, ToggleButton, ToggleButtonGroup } from "@mui/material";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
+import CancelIcon from "@mui/icons-material/Cancel";
+import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import CategoriesCard from "../components/CategoriesCard";
 import { handleGetCategories } from "../controllers/categoriesController";
 import FloatingAddButton from "../components/FloatingAddButton";
@@ -17,6 +20,15 @@ const CategoriesPage = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [openChangeStatusDialog, setOpenChangeStatusDialog] = useState(false);
   const { setSuccess, setError, searchTerm } = useOutletContext();
+  const [alignment, setAlignment] = useState("active");
+
+  const handleChange = (event, newAlignment) => {
+    if (newAlignment !== null) {
+      setAlignment(newAlignment);
+    }
+  };
+
+  const iconStyle = { marginLeft: 1 };
 
   useEffect(() => {
     handleGetCategories(setCategories, setLoading, setError);
@@ -43,28 +55,36 @@ const CategoriesPage = () => {
   };
 
   const filteredCategories = categories.filter((category) => {
-    const matchesStatus = tabIndex === 0 ? category.status === true : category.status === false;
-    const matchesSearch = category.name.toLowerCase().includes(searchTerm?.toLowerCase() || "");
+    // Filter by active/inactive status
+    const matchesStatus = alignment === "active" ? category.status === true : category.status === false;
+    
+    // Filter by search term
+    const matchesSearch = !searchTerm || category.name.toLowerCase().includes(searchTerm?.toLowerCase() || "");
+    
     return matchesStatus && matchesSearch;
   });
 
   return (
     <Box sx={{ position: "relative", minHeight: "100vh", paddingBottom: "80px", p: 3 }}>
-      <Typography variant="h1">Categorías</Typography>
+      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
+        <Typography variant="h1">Categorías</Typography>
 
-      {/* Tabs Habilitados/Deshabilitados */}
-      <Tabs value={tabIndex} onChange={(event, newValue) => setTabIndex(newValue)} sx={{ mb: 3 }}>
-        <Tab
-          label="HABILITADOS"
-          value={0}
-          sx={{ color: tabIndex === 0 ? "green" : "gray", textTransform: "none" }}
-        />
-        <Tab
-          label="DESHABILITADOS"
-          value={1}
-          sx={{ color: tabIndex === 1 ? "green" : "gray", textTransform: "none" }}
-        />
-      </Tabs>
+        {/* Toggle Button Group for Active/Inactive */}
+        <ToggleButtonGroup
+          color={alignment === "active" ? "primary" : "error"}
+          value={alignment}
+          exclusive
+          onChange={handleChange}
+          aria-label="active-inactive categories"
+        >
+          <ToggleButton value="active">
+            ACTIVAS{alignment === "active" ? <CheckCircleIcon sx={iconStyle}/> : <CheckCircleOutlinedIcon sx={iconStyle}/>}
+          </ToggleButton>
+          <ToggleButton value="inactive">
+            INACTIVAS{alignment === "inactive" ? <CancelIcon sx={iconStyle}/> : <CancelOutlinedIcon sx={iconStyle}/>}
+          </ToggleButton>
+        </ToggleButtonGroup>
+      </Box>
 
       {loading ? (
         <LoaderAmbigu />
