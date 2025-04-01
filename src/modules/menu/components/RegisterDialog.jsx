@@ -20,8 +20,16 @@ export const RegisterDialog = ({ open, onClose, menu, photo, onSubmit, loading, 
 
     // Esquema de validación
     const validationSchema = Yup.object({
-        name: Yup.string().required("El nombre es obligatorio"),
-        description: Yup.string().required("La descripción es obligatoria"),
+        name: Yup.string().required("El nombre es obligatorio").max(15, "El menú no debe tener más de 15 carácteres").min(5, "El menú debe tener al menos 5 carácteres")
+        .matches(
+            /^(?!.*(<script|javascript:|onerror|alert|<iframe|<img|<body|<head|<html|find|db|delete|insert|aggregate|data)).*$/,
+            "El nombre no puede contener palabras reservadas o códigos."
+          ),
+        description: Yup.string().required("La descripción es obligatoria").min(5, "La descripción debe tener al menos 5 carácteres")
+        .max(25, "La descripción no debe tener más de 25 carácteres").matches(
+            /^(?!.*(<script|javascript:|onerror|alert|<iframe|<img|<body|<head|<html|find|db|delete|insert|aggregate|data)).*$/,
+            "El nombre no puede contener palabras reservadas o códigos, travieso."
+          ),
         photo: Yup.mixed()
             .test("fileType", "Formato de archivo no soportado. Usa JPEG o PNG.", (value) => {
                 if (!value) return true; // Si no hay archivo, no se valida
@@ -70,6 +78,7 @@ export const RegisterDialog = ({ open, onClose, menu, photo, onSubmit, loading, 
                                     fullWidth
                                     error={Boolean(touched.name && errors.name)}
                                     helperText={touched.name && errors.name}
+                                    inputProps={{ maxLength: 15 }}
                                 />
 
                                 {/* Campo para la descripción del menú */}
@@ -81,6 +90,7 @@ export const RegisterDialog = ({ open, onClose, menu, photo, onSubmit, loading, 
                                     margin="normal"
                                     error={Boolean(touched.description && errors.description)}
                                     helperText={touched.description && errors.description}
+                                    inputProps={{ maxLength: 25 }}
                                 />
 
                                 {/* Vista previa de la imagen */}

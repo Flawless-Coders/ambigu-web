@@ -10,11 +10,23 @@ import LoaderAmbigu from "../../../kernel/LoaderAmbigu";
 export default function OrderPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const { setError: setGlobalError } = useOutletContext();
+  const { setError: setGlobalError, searchTerm } = useOutletContext();
   const [orderData, setOrderData] = useState(null);
   const [open, setOpen] = React.useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [selectedDate, setSelectedDate] = useState("");
+
+  const filteredOrder = orderData
+  ? orderData.filter((order) =>
+      (order.waiter.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.orderNumber.toString().includes(searchTerm) || // Convertir a string si es numérico
+      order.tableName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.finalized.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.qualification.toString().includes(searchTerm)) && // Convertir a string si es numérico
+      (selectedDate ? order.originalDate === selectedDate : true) // Filtrado por fecha
+    )
+  : [];
+
 
   const handleDateChange = (event) => {
     setSelectedDate(event.target.value);
@@ -50,7 +62,7 @@ export default function OrderPage() {
           qualification: order.opinion?.qualification || 0,
           dishes: order.dishes.map(dish => (dish)),
           finalized: order.finalized ? "Completado" : "En curso",
-          tableName: order.tableName ? order.tableName : "Sin mesa"
+          tableName: order.tableName || "Sin mesa"
         };
       });
       setOrderData(transformedData);
@@ -100,11 +112,6 @@ export default function OrderPage() {
 
   const paginationModel = { page: 0, pageSize: 10 };
 
-  const filteredRows = orderData?.filter((order) => {
-    return selectedDate ? order.originalDate === selectedDate : true;
-  });
-
-
   return (
     <>
       <Box sx={{ marginY: 3, display: "flex", justifyContent: { md: "space-between" }, alignItems: 'center' }}>
@@ -130,7 +137,7 @@ export default function OrderPage() {
         <Box sx={{ width: '100%', overflowX: 'auto' }}>
           <div style={{ minWidth: '600px' }}>
             <DataGrid
-              rows={filteredRows}
+              rows={filteredOrder}
               columns={columns}
               initialState={{ pagination: { paginationModel } }}
               pageSizeOptions={[5, 10, 15, 20]}

@@ -63,9 +63,15 @@ export default function DishesCategoryTabs(props) {
   const [modalLoading, setModalLoading] = React.useState(false);
   const [categoryDish, setCategoryDish] = React.useState({});
   const [updatedDish, setUpdatedDish] = React.useState(false);
-  const { setSuccess, setError: setGlobalError } = useOutletContext();
+  const { setSuccess, setError: setGlobalError,searchTerm } = useOutletContext();
   const [disableModal, setDisableModal] = React.useState(false);
   const [enableModal, setEnableModal] = React.useState(false);
+
+  const filteredDishes = dishes
+  ? dishes.filter((dish) =>
+    dish.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+  : [];
 
   const fetchDishesByCategory = () => {
     handleGetDishesByCategoryAndStatus(
@@ -182,7 +188,7 @@ export default function DishesCategoryTabs(props) {
                   columnSpacing={{ xs: 1, sm: 2, md: 3 }}
                   rowSpacing={3}
                 >
-                  {dishes.map((dish, index) => (
+                  {filteredDishes.map((dish, index) => (
                     <CustomCard
                       key={dish.id}
                       image={
