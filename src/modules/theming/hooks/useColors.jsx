@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../../auth/services/api";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const useColors = () => {
   const [savedColors, setSavedColors] = useState({
@@ -30,7 +31,7 @@ const useColors = () => {
   useEffect(() => {
     const fetchColors = async () => {
       try {
-        const response = await api.get("http://localhost:8080/api/theming/colors");
+        const response = await api.get(`${API_URL}/theming/colors`);
         const fetched = {
           primaryColor: response.data.primaryColor || "#000000",
           secondaryColor: response.data.secondaryColor || "#000000",

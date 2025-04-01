@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../../auth/services/api";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const useLogos = () => {
   const [logos, setLogos] = useState({
@@ -19,7 +20,7 @@ const useLogos = () => {
   useEffect(() => {
     const fetchLogos = async () => {
       try {
-        const response = await api.get("http://localhost:8080/api/theming/logos");
+        const response = await api.get(`${API_URL}/theming/logos`);
         setLogos({
           logo: response.data.logo || "",
           logoSmall: response.data.logoSmall || "",
@@ -47,7 +48,7 @@ const useLogos = () => {
       if (logoDraft.logo) formData.append("logo", logoDraft.logo);
       if (logoDraft.logoSmall) formData.append("logoSmall", logoDraft.logoSmall);
 
-      const response = await api.patch("http://localhost:8080/api/theming/logos", formData, {
+      const response = await api.patch(`${API_URL}/theming/logos`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

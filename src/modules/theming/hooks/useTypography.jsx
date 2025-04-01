@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../../auth/services/api";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const useTypography = () => {
   const [fonts, setFonts] = useState([]);
@@ -30,7 +31,7 @@ const useTypography = () => {
   const fetchFonts = async (page = 1) => {
     try {
       setIsLoading(true);
-      const response = await api.get(`http://localhost:8080/api/theming/getfonts?page=${page}&pageSize=20`);
+      const response = await api.get(`${API_URL}/theming/getfonts?page=${page}&pageSize=20`);
       const { fonts: newFonts, totalFonts: total } = response.data;
       setFonts((prev) => [...prev, ...newFonts]);
       setTotalFonts(total);
@@ -71,7 +72,7 @@ const useTypography = () => {
 
   const saveChanges = async () => {
     try {
-      await api.patch("http://localhost:8080/api/theming/fonts", draftFonts);
+      await api.patch(`${API_URL}/theming/fonts`, draftFonts);
       setSavedFonts(draftFonts);
     } catch (error) {
       console.error("Error al guardar fuentes:", error);
