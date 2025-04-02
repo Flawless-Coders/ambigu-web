@@ -15,7 +15,6 @@ import LoaderAmbigu from "../../../kernel/LoaderAmbigu";
 
 export default function TablePage() {
     const [error, setError] = useState(null);
-    const [tabIndex, setTabIndex] = useState(0);
     const { setSuccess, setError: setGlobalError, searchTerm } = useOutletContext();
     const [selectedTableName, setSelectedTableName] = useState("");
     const [loading, setLoading] = useState(false);
@@ -43,7 +42,7 @@ export default function TablePage() {
         : [];
 
     const fetchTables = () => {
-        if (tabIndex === 0) {
+        if (alignment === "active") {
             handleGetEnabledTables(setError, setLoading, setDataTable);
         } else {
             handleGetDisabledTables(setError, setLoading, setDataTable);
@@ -52,7 +51,7 @@ export default function TablePage() {
 
     useEffect(() => {
         fetchTables();
-    }, [tabIndex]);
+    }, [alignment]);
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => {
