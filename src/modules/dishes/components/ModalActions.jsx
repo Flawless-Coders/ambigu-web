@@ -6,7 +6,7 @@ import Fade from "@mui/material/Fade";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
@@ -16,6 +16,8 @@ import { Formik, Form, Field } from "formik";
 import { col, img, input } from "framer-motion/client";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import { Warning } from '@mui/icons-material'
+import { motion } from 'framer-motion'
 
 import {
   handleChangeStatusDish,
@@ -57,7 +59,7 @@ export default function ModalActions({
       md: disable || enable ? 350 : 450,
     },
     bgcolor: "background.paper",
-    borderRadius: "16px",
+    borderRadius: "5px",
     boxShadow: 24,
     p: 3,
   };
@@ -237,11 +239,22 @@ export default function ModalActions({
             </Box>
           ) : disable || enable ? (
             <Box flexDirection="column" display="flex" alignItems="center">
-              {disable ? (
-                <ErrorOutlineIcon sx={iconStyle} color="error" />
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ rotate: 360, scale: 1 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 260,
+                  damping: 20
+                }}
+              >
+                 {disable ? (
+                <Warning sx={iconStyle} color="error" />
               ) : (
                 <HelpOutlineIcon sx={iconStyle} color="success" />
               )}
+              </motion.div>
+             
               <Typography
                 variant="subtitle1"
                 color="gray"
@@ -295,7 +308,6 @@ export default function ModalActions({
               <Typography
                 id="transition-modal-title"
                 variant="h6"
-                sx={{ fontWeight: "bold" }}
                 component="h2"
               >
                 {update ? "Modificar platillo" : "Agregar platillo"}
@@ -315,7 +327,7 @@ export default function ModalActions({
               >
                 {({ errors, touched, setFieldValue }) => (
                   <Form>
-                    <Box flexDirection="column" marginTop={4}>
+                    <Box flexDirection="column" marginTop={3}>
                       <Field
                         as={TextField}
                         id="name"
@@ -342,13 +354,13 @@ export default function ModalActions({
                         minRows={1}
                         maxRows={2}
                         inputProps={{ maxLength: 121 }}
-                        sx={{ marginTop: 3 }}
+                        sx={{ marginTop: 2 }}
                       />
                       <Box
                         flexDirection="row"
                         display="flex"
                         justifyContent="space-between"
-                        marginTop={3}
+                        marginTop={2}
                       >
                         <Field
                           as={TextField}
@@ -436,13 +448,15 @@ export default function ModalActions({
                     >
                       <Button
                         variant="contained"
-                        color={update ? "secondary" : "success"}
+                        style={{
+                          backgroundColor: update ? "#7B1FA2" : "primary", 
+                          color: update && "white" , 
+                      }}
                         onClick={handleClick}
                       >
-                        <CloudUploadIcon />
+                        <CloudUploadOutlinedIcon />
                         <Typography
                           variant="body1"
-                          fontWeight="bold"
                           sx={{ marginLeft: 1 }}
                         >
                           SUBIR IMAGEN
@@ -456,7 +470,10 @@ export default function ModalActions({
                     >
                       <Button
                         variant="outlined"
-                        color={update ? "secondary" : "primary"}
+                        style={{
+                          borderColor: update ? "#7B1FA2" : "primary", 
+                          color: update ? "#7B1FA2" : "primary", 
+                      }}
                         size="large"
                         sx={{ width: "40%" }}
                         onClick={handleClose}
@@ -465,7 +482,10 @@ export default function ModalActions({
                       </Button>
                       <Button
                         variant="contained"
-                        color={update ? "secondary" : "primary"}
+                        style={{
+                          backgroundColor: update ? "#7B1FA2" : "primary", 
+                          color: update && "white", 
+                      }}
                         size="large"
                         sx={{ width: "40%" }}
                         type="submit"
