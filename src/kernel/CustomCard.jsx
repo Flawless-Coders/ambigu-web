@@ -92,14 +92,14 @@ export default function CustomCard(props) {
                         {price && (
                             <Grid item xs={4} sx={{ display: "flex", justifyContent: "flex-end" }}>
                                 <Typography gutterBottom component="div" sx={{ fontWeight: "bold", fontSize: 15 }}>
-                                    {price}
+                                    ${price}
                                 </Typography>
                             </Grid>
                         )}
                     </Grid>
 
                     <Typography variant="body2" sx={{ color: "text.#3f51b5", display: { xs: "none", sm: "block" } }}>
-                        {description.length > 65 ? description.slice(0, 65) + "..." : description}
+                        {description.length > 30 ? description.slice(0, 30) + "..." : description}
                     </Typography>
 
                     {buttonTitle && (

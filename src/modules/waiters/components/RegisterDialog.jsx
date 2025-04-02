@@ -31,15 +31,15 @@ export const RegisterDialog = ({ open, onClose, user, onSubmit, loading, buttonL
   });
   return (
     <Dialog open={open} onClose={onClose} aria-labelledby="register-dialog-title" slots={{ backdrop: Backdrop }}
-    slotProps={{
-      backdrop: {
-        timeout: 500,
-        sx: {
-          backdropFilter: 'blur(8px)', // Desenfoque del fondo
-          backgroundColor: 'rgba(0, 0, 0, 0.4)', // Color semitransparente
+      slotProps={{
+        backdrop: {
+          timeout: 500,
+          sx: {
+            backdropFilter: 'blur(8px)', // Desenfoque del fondo
+            backgroundColor: 'rgba(0, 0, 0, 0.4)', // Color semitransparente
+          },
         },
-      },
-    }}>
+      }}>
       <DialogTitle>{user ? "Modificar mesero" : "Registrar mesero"}</DialogTitle>
       {loading ? (
         <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px" minWidth="400px">
@@ -88,8 +88,16 @@ export const RegisterDialog = ({ open, onClose, user, onSubmit, loading, buttonL
                   error={Boolean(touched.email && errors.email)} helperText={touched.email && errors.email} />
               </DialogContent>
               <DialogActions>
-                <Button onClick={onClose} variant="outlined" color="secondary" disabled={buttonLoading}>Cancelar</Button>
-                <Button type="submit" variant="contained" color="primary" disabled={buttonLoading}>
+                <Button onClick={onClose} variant="outlined"
+                  style={{
+                    borderColor: user ? "#7B1FA2" : "primary",
+                    color: user ? "#7B1FA2" : "primary",
+                  }}
+                  disabled={buttonLoading}>Cancelar</Button>
+                <Button type="submit" variant="contained" style={{
+                  backgroundColor: user ? "#7B1FA2" : "primary",
+                  color: user && "white",
+                }} disabled={buttonLoading}>
                   {buttonLoading ? <CircularProgress size={24} /> : user ? "Actualizar" : "Registrar"}
                 </Button>
               </DialogActions>

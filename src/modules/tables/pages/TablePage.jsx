@@ -153,7 +153,7 @@ export default function TablePage() {
                                     helperText={touched.tableIdentifier && errors.tableIdentifier}
                                 />
                                 <DialogActions>
-                                    <Button onClick={handleClose} color="secondary" variant="outlined">Cancelar</Button>
+                                    <Button onClick={handleClose} color="primary" variant="outlined">Cancelar</Button>
                                     <Button 
                                         type="submit" 
                                         color="primary" 
