@@ -4,7 +4,7 @@ import { HelpOutline } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import { handleChangeLeaderStatus } from '../controllers/waitersController';
 
-export const ChangeLeaderStatusDialog = ({ open, onClose, waiterId, waiterName, setSuccess, setError, onStatusChange }) => {
+export const ChangeLeaderStatusDialog = ({ open, onClose, waiterId, waiterName, oldWaiterName, setSuccess, setError, onStatusChange }) => {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
@@ -29,8 +29,8 @@ export const ChangeLeaderStatusDialog = ({ open, onClose, waiterId, waiterName, 
         </motion.div>
       </DialogTitle>
       <DialogContent sx={{ textAlign: "center" }}>
-        <Typography variant="body1">¿Estás seguro de asignar un nuevo líder de meseros?</Typography>
-        <Typography variant="h6" sx={{ marginTop: 2, fontWeight: 'bold' }}>{waiterName}</Typography>
+        <Typography variant="body1">¿Estás seguro de asignar a <strong>{waiterName}</strong> como nuevo líder de meseros?</Typography>
+        <Typography variant="body1" sx={{ marginTop: 2}}>Se reemplazará a <strong>{oldWaiterName}</strong></Typography>
       </DialogContent>
       <DialogActions sx={{ justifyContent: "center" }}>
         <Button onClick={onClose} color="error" variant="outlined" sx={{ marginRight: 2 }}>

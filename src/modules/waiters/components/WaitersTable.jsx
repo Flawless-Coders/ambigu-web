@@ -1,16 +1,12 @@
 import { DataGrid } from "@mui/x-data-grid";
-import { Button, Box, Chip, ToggleButtonGroup, ToggleButton } from "@mui/material";
+import { Button, Box, Chip } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import GroupIcon from "@mui/icons-material/Group";
 import CheckIcon from "@mui/icons-material/Check";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
-import CancelIcon from "@mui/icons-material/Cancel";
-import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import { useOutletContext } from "react-router-dom";
-import { useState } from "react";
+import { esES } from "@mui/material/locale";
 
 const useStyles = makeStyles({
   leaderRow: {
