@@ -94,6 +94,9 @@ export default function WaitersPage() {
     handleGetWaiters(setRows, setError, setTableLoading);
   };
 
+
+  const currentLeader = rows.find(row => row.leader)?.name || "N/A";
+
   return (
     <>
       <Box sx={{ p: 3 }}>
@@ -162,6 +165,7 @@ export default function WaitersPage() {
         onClose={handleCloseChangeLeaderDialog}
         waiterId={selectedUser?.id}
         waiterName={`${selectedUser?.name}`}
+        oldWaiterName={currentLeader}
         setSuccess={setSuccess}
         setError={setError}
         onStatusChange={fetchData}

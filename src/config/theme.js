@@ -1,6 +1,7 @@
 import { createTheme } from "@mui/material/styles";
 import "@fontsource/italianno"
 import "typeface-barlow"
+import { esES } from "@mui/x-data-grid/locales";
 
 const baseTheme = createTheme({
     palette: {
@@ -49,7 +50,9 @@ const baseTheme = createTheme({
           color: '#969BA0'
         }
       }
-    }
-  });
+    },
+  },
+  esES
+);
   
   export default baseTheme;
