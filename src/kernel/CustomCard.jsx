@@ -42,6 +42,7 @@ export default function CustomCard(props) {
                     <CardMedia
                         component="img"
                         image={image}
+                        loading="lazy"
                         alt={title}
                         sx={{ height: 150 }}
                     />

@@ -91,8 +91,20 @@ export default function ModalActions({
 
   React.useEffect(() => {
     setCategory(dishCategory?.id || "");
-    setDishImage(image);
   }, [dishCategory]);
+
+  React.useEffect(() => {
+    if (dishCategory != null && image != null) {
+      const isBase64 = image.startsWith("data:image");
+  
+      setDishImage(
+        isBase64 ? image : `${import.meta.env.VITE_API_URL}/file/${image}`
+      );
+  
+      setDishLoading(false);
+    }
+  }, [dish, dishCategory, image]);
+  
 
   const fileInputRef = React.useRef(null);
 

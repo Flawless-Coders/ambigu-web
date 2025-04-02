@@ -12,16 +12,8 @@ export const getMenu = async ()=>{
     }
 }
 
-export const getMenuPhoto = async (photoId) => {
-    try {
-        const response = await api.get(`${API_URL}/menu/photo/${photoId}`, {
-            responseType: 'blob', // Indica que la respuesta es un blob
-        });
-        return URL.createObjectURL(response.data); // Convierte el blob en una URL
-    } catch (error) {
-        console.error("Error obteniendo la imagen: ", error);
-        throw error;
-    }
+export const getMenuPhoto = (photoId) => {
+    return `${API_URL}/menu/photo/${photoId}`;
 };
 
 
