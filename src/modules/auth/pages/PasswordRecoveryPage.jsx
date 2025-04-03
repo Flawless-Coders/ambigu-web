@@ -1,27 +1,37 @@
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { Container, Box, TextField, Button, Typography, Grid, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@mui/material";
-import { Formik, Form, Field } from "formik";
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { Container, Box, TextField, Button, Typography, Grid, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, CircularProgress } from "@mui/material";
+import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
-import LoadingScreen from "../../../kernel/LoadingScreen";
+import LoaderAmbigu from "../../../kernel/LoaderAmbigu";
 
 const PasswordRecoveryPage = () => {
-  const { token } = useParams(); // Obtiene el token de la URL
+  const [searchParams] = useSearchParams(); // Obtiene el token de la URL
+  const token = searchParams.get("token");
   const navigate = useNavigate();
   const [openErrorDialog, setOpenErrorDialog] = useState(false);
   const [openSuccessDialog, setOpenSuccessDialog] = useState(false);
+  const [openExpiredTokenDialog, setOpenExpiredTokenDialog] = useState(false);
   const [serverError, setServerError] = useState("");
   const [validToken, setValidToken] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const API_URL = import.meta.env.VITE_API_URL;
   useEffect(() => {
+    console.log("Token:", token);
     axios.post(`${API_URL}/auth/validate-reset`, { token })
       .then(response => setValidToken(true))
-      .catch(() => navigate("/"))
+      .catch(() => {
+        setOpenExpiredTokenDialog(true);
+      })
       .finally(() => setLoading(false));
   }, [token, navigate]);
+
+  const handleCloseExpiredTokenDialog = () => {
+    setOpenExpiredTokenDialog(false);
+    navigate("/");
+  };
 
   const validationSchema = Yup.object({
     newPassword: Yup.string()
@@ -46,10 +56,7 @@ const PasswordRecoveryPage = () => {
     setSubmitting(false);
   };
 
-  if(loading) return <LoadingScreen open={true}/>
-
-
-  if (!validToken) return null;
+  if(loading) return <LoaderAmbigu/>
 
   return (
     <Container maxWidth="sm"
@@ -60,6 +67,7 @@ const PasswordRecoveryPage = () => {
         height: "100vh",
       }}
     > 
+    {validToken && (
       <Box
         sx={{
           mt: 8,
@@ -71,6 +79,14 @@ const PasswordRecoveryPage = () => {
           margin: "auto",
         }}
       >
+        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+          <img 
+            src="src/assets/ambigu-icon.png" 
+            alt="Ambigu Logo" 
+            style={{ maxWidth: '150px', height: 'auto' }}
+          />
+        </Box>
+
         <Typography variant="h4" align="center" gutterBottom>
           Recuperar Contraseña
         </Typography>
@@ -83,7 +99,7 @@ const PasswordRecoveryPage = () => {
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          {({ errors, touched, handleChange, handleBlur }) => (
+          {({ errors, touched, handleChange, handleBlur, isSubmitting }) => (
             <Form>
               <Grid container spacing={2}>
                 <Grid item xs={12}>
@@ -113,14 +129,26 @@ const PasswordRecoveryPage = () => {
                   />
                 </Grid>
               </Grid>
-              <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 3, py: 1.5, fontSize: "1rem" }}>
-                Continuar
+              <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 3, py: 1.5, fontSize: "1rem" }} disabled={isSubmitting}>
+              {isSubmitting ? '' : 'Continuar'}
+                {isSubmitting && (
+                  <CircularProgress
+                    size={24}
+                    sx={{
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      marginTop: '-12px',
+                      marginLeft: '-12px',
+                    }}
+                    />
+                )}
               </Button>
             </Form>
           )}
         </Formik>
       </Box>
-
+      )}
       {/* Dialogo de Error del Servidor */}
       <Dialog open={openErrorDialog} onClose={() => setOpenErrorDialog(false)}>
         <DialogTitle>Error</DialogTitle>
@@ -140,6 +168,19 @@ const PasswordRecoveryPage = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => navigate("/")} color="primary">Aceptar</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={openExpiredTokenDialog} onClose={handleCloseExpiredTokenDialog}>
+        <DialogTitle>Token Inválido</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            El enlace de recuperación de contraseña ha expirado o no es válido. 
+            Por favor, solicita un nuevo enlace de recuperación de contraseña.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseExpiredTokenDialog} color="primary">Aceptar</Button>
         </DialogActions>
       </Dialog>
     </Container>

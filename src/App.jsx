@@ -1,17 +1,21 @@
-import { ThemeProvider, CssBaseline } from "@mui/material"
-import theme from "./config/theme"
+import { CssBaseline } from "@mui/material"
 import { BrowserRouter } from "react-router-dom";
 import AppRoutes from "./navigation/AppRoutes";
+import { AuthProvider } from "./context/AuthContext";
+import { ThemeProviderComponent } from "./context/ThemeContext";
 
 function App() {
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <BrowserRouter>
-        <AppRoutes />
-      </BrowserRouter>
-    </ThemeProvider>
+    <AuthProvider>
+      <ThemeProviderComponent>
+        <CssBaseline />
+          <BrowserRouter>
+            <AppRoutes />
+          </BrowserRouter>
+        <CssBaseline />
+      </ThemeProviderComponent>
+    </AuthProvider>
   );
 }
 

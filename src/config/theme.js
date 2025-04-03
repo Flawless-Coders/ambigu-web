@@ -1,6 +1,9 @@
 import { createTheme } from "@mui/material/styles";
+import "@fontsource/italianno"
+import "typeface-barlow"
+import { esES } from "@mui/x-data-grid/locales";
 
-const theme = createTheme({
+const baseTheme = createTheme({
     palette: {
       primary: {
         main: "#15A752",
@@ -13,6 +16,12 @@ const theme = createTheme({
         light: "#A09CFF",
         dark: "#4842B7",
         contrastText: "#FFFFFF",
+      },
+      sidebar: {
+        bg: '#1E1E2D',       
+        text: '#ffffff',      
+        hover: 'rgba(255, 255, 255, 0.08)', 
+        selected: 'rgba(255, 255, 255, 0.16)', 
       },
       background: {
         default: "#F4F4F4", 
@@ -29,7 +38,21 @@ const theme = createTheme({
       h2: { fontSize: "2rem", fontWeight: 500 },
       h3: { fontSize: "1.75rem", fontWeight: 500 },
       button: { textTransform: "none", fontWeight: 600 },
+      logo: {
+        fontFamily: "'Italianno', cursive",
+        fontSize: "2.5rem",
+        color: "#15A752"
+      },
+      footer: {
+        fontFamily: "'Barlow', sans-serif",
+        fontSize: "0.8rem",
+        allVariants: {
+          color: '#969BA0'
+        }
+      }
     },
-  });
+  },
+  esES
+);
   
-  export default theme;
+  export default baseTheme;
