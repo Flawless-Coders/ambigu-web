@@ -33,13 +33,13 @@ export const handleCreateCategory = async (name, imageFile, setSuccess, setError
     }
   };
 
-export const handleUpdateCategory = async (id, name, imageBase64, status, imageFile, setSuccess, setError, setLoading, onSuccess) => {
+export const handleUpdateCategory = async (id, name, status, imageFile, setSuccess, setError, setLoading, onSuccess) => {
   setLoading(true);
   setError(null);
   setSuccess(null);
 
   try {
-    await updateCategory(id, name, imageBase64, status);
+    await updateCategory(id, name, status);
     if (imageFile) {
       await updateCategoryImage(id, imageFile);
     }
