@@ -75,7 +75,7 @@ export default function HoverActions({ isEnabled, showFab, fetchTables, id, tabl
                     {isEnabled && (
                         <Fab
                             size="small"
-                            sx={{backgroundColor: "#673ab7", color: "white", "&:hover": { backgroundColor: "#651fff" },}}
+                            sx={{ backgroundColor: "#673ab7", color: "white", "&:hover": { backgroundColor: "#651fff" }, }}
                             aria-label="update"
                             onClick={() => handleOpenDialog('editar')}
                         >
@@ -98,9 +98,9 @@ export default function HoverActions({ isEnabled, showFab, fetchTables, id, tabl
                 </Box>
             )}
 
-            <Dialog 
-                open={openDialog} 
-                onClose={!loading ? handleCloseDialog : null} 
+            <Dialog
+                open={openDialog}
+                onClose={!loading ? handleCloseDialog : null}
                 slots={{ backdrop: Backdrop }}
                 slotProps={{
                     backdrop: {
@@ -130,13 +130,13 @@ export default function HoverActions({ isEnabled, showFab, fetchTables, id, tabl
                 <DialogContent sx={{ textAlign: "center" }}>
                     ¿Estás seguro de que quieres {
                         actionType === 'deshabilitar' ? "deshabilitar" :
-                        actionType === 'habilitar' ? "habilitar" :
-                        actionType === 'editar' ? "actualizar" : ""
+                            actionType === 'habilitar' ? "habilitar" :
+                                actionType === 'editar' ? "actualizar" : ""
                     } esta mesa?
-                    {actionType === 'deshabilitar' || actionType === 'habilitar' ? 
+                    {actionType === 'deshabilitar' || actionType === 'habilitar' ?
                         (<Typography variant="h6" sx={{ marginTop: 2, fontWeight: "bold" }}>{tableIdentifier}</Typography>)
-                    : ("")}
-                    
+                        : ("")}
+
                     {actionType === 'editar' && (
                         <Formik
                             initialValues={{ updatedTableIdentifier: tableIdentifier }}
@@ -155,10 +155,18 @@ export default function HoverActions({ isEnabled, showFab, fetchTables, id, tabl
                                         helperText={touched.updatedTableIdentifier && errors.updatedTableIdentifier}
                                     />
                                     <DialogActions>
-                                        <Button onClick={handleCloseDialog} color="secondary" variant="outlined">Cancelar</Button>
+                                        <Button onClick={handleCloseDialog}
+                                            style={{
+                                                borderColor: "#7B1FA2",
+                                                color: "#7B1FA2"
+                                            }}
+                                            variant="outlined">Cancelar</Button>
                                         <Button
                                             type="submit"
-                                            color="primary"
+                                            style={{
+                                                backgroundColor: "#7B1FA2",
+                                                color: "white"
+                                            }}
                                             autoFocus
                                             variant="contained"
                                             disabled={loading}
@@ -173,11 +181,11 @@ export default function HoverActions({ isEnabled, showFab, fetchTables, id, tabl
                 </DialogContent>
                 {actionType !== 'editar' && (
                     <DialogActions sx={{ justifyContent: "center" }}>
-                        <Button 
-                            onClick={handleCloseDialog} 
-                            color="error" 
-                            variant="outlined" 
-                            sx={{ marginRight: 2 }} 
+                        <Button
+                            onClick={handleCloseDialog}
+                            color="error"
+                            variant="outlined"
+                            sx={{ marginRight: 2 }}
                             disabled={loading}
                         >
                             Cancelar

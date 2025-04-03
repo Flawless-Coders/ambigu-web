@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { DataGrid } from '@mui/x-data-grid';
-import { Box, Typography, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Divider } from '@mui/material';
+import { Box, Typography, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Divider, IconButton } from '@mui/material';
 import { number } from 'yup';
 import { handleGetOrder } from '../controllers/orderController';
 import { useOutletContext } from "react-router-dom";
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
+import SmsOutlinedIcon from '@mui/icons-material/SmsOutlined';
 import LoaderAmbigu from "../../../kernel/LoaderAmbigu";
+import Backdrop from "@mui/material/Backdrop";
+import Rating from '@mui/material/Rating';
+import Stack from '@mui/material/Stack';
 
 export default function OrderPage() {
   const [loading, setLoading] = useState(false);
@@ -15,17 +19,18 @@ export default function OrderPage() {
   const [open, setOpen] = React.useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [selectedDate, setSelectedDate] = useState("");
+  const [isComment, setIsComment] = useState(false);
 
   const filteredOrder = orderData
-  ? orderData.filter((order) =>
+    ? orderData.filter((order) =>
       (order.waiter.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.orderNumber.toString().includes(searchTerm) || // Convertir a string si es numérico
-      order.tableName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.finalized.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.qualification.toString().includes(searchTerm)) && // Convertir a string si es numérico
+        order.orderNumber.toString().includes(searchTerm) || // Convertir a string si es numérico
+        order.tableName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        order.finalized.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        order.qualification.toString().includes(searchTerm)) && // Convertir a string si es numérico
       (selectedDate ? order.originalDate === selectedDate : true) // Filtrado por fecha
     )
-  : [];
+    : [];
 
 
   const handleDateChange = (event) => {
@@ -69,10 +74,9 @@ export default function OrderPage() {
     });
   }, []);
 
-  const handleClickOpen = (order) => {
+  const handleClickOpen = (order, comment) => {
     setSelectedOrder(order);
-    console.log(order);
-
+    setIsComment(comment);
     setOpen(true);
   };
 
@@ -88,21 +92,27 @@ export default function OrderPage() {
     { field: 'tableName', headerName: 'MESA', flex: 1, headerAlign: "center", align: "center" },
     {
       field: "actions",
-      headerName: "PLATILLOS",
+      headerName: "ACCIONES",
       flex: 1.5,
       headerAlign: "center",
-      align: "center",
+      alignItems: "center",
       justifyContent: "center",
+      display: 'flex',
       renderCell: (params) => (
         <Box display="flex" justifyContent="center" width="100%">
-          <Button size="small" color="warning" variant="contained" onClick={() => handleClickOpen(params.row)}>
+
+          <IconButton color="warning" onClick={() => handleClickOpen(params.row, false)}>
             <RemoveRedEyeOutlinedIcon />
-          </Button>
+          </IconButton>
+
+          <IconButton sx={{ color: '#3d5afe' }} onClick={() => handleClickOpen(params.row, true)}>
+            <SmsOutlinedIcon />
+          </IconButton>
+
         </Box>
       ),
     },
     { field: 'finalized', headerName: 'ESTADO', flex: 1, headerAlign: "center", align: "center" },
-    { field: 'qualification', headerName: 'CALIFICACIÓN', flex: 1, headerAlign: "center", align: "center", type: number },
   ];
 
   // Obtener la fecha de hoy en formato YYYY-MM-DD (sin hora)
@@ -149,13 +159,21 @@ export default function OrderPage() {
 
       <React.Fragment>
         <Dialog
+          slots={{ backdrop: Backdrop }}
+          slotProps={{
+            backdrop: {
+              timeout: 500,
+              sx: {
+                backdropFilter: 'blur(8px)', // Desenfoque del fondo
+                backgroundColor: 'rgba(0, 0, 0, 0.4)', // Color semitransparente
+              },
+            },
+          }}
           sx={{
             "& .MuiDialog-paper": {
               width: "450px",
               borderRadius: 2,
-              padding: "20px",
-              backgroundColor: "#f9f9f9",
-              boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)"
+              padding: "20px"
             }
           }}
           open={open}
@@ -163,55 +181,76 @@ export default function OrderPage() {
           aria-labelledby="dish-dialog-title"
         >
           <DialogTitle id="dish-dialog-title" sx={{ textAlign: 'center' }}>
-            Platillos del Pedido
+            {isComment ? "Comentario del Pedido" : "Platillos del Pedido"}
           </DialogTitle>
           <DialogContent>
             <Box>
-              <Box sx={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Typography variant="body2" sx={{ fontWeight: 'bold', flex: 1, textAlign: 'center' }}>
-                  Cantidad
-                </Typography>
-                <Typography variant="body2" sx={{ fontWeight: 'bold', flex: 3, textAlign: 'center' }}>
-                  Platillo
-                </Typography>
-                <Typography variant="body2" sx={{ fontWeight: 'bold', flex: 1, textAlign: 'center' }}>
-                  Precio
-                </Typography>
-              </Box>
-
-              {selectedOrder && selectedOrder.dishes.length > 0 ? (
-                selectedOrder.dishes.map((dish, index) => (
-                  <Box key={index} sx={{ marginBottom: '10px', justifyContent: 'space-between', display: 'flex' }}>
-                    <Typography variant="body2">
-                      {dish.quantity}
+              {!isComment ? (
+                <>
+                  <Box sx={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Typography variant="body2" sx={{ fontWeight: 'bold', flex: 1, textAlign: 'center' }}>
+                      Cantidad
                     </Typography>
-                    <Typography variant="body2">
-                      {dish.dishName}
+                    <Typography variant="body2" sx={{ fontWeight: 'bold', flex: 3, textAlign: 'center' }}>
+                      Platillo
                     </Typography>
-                    <Typography variant="body2">
-                      {`$${dish.unitPrice}`}
+                    <Typography variant="body2" sx={{ fontWeight: 'bold', flex: 1, textAlign: 'center' }}>
+                      Precio
                     </Typography>
                   </Box>
-                ))
-              ) : (
-                <Typography variant="body2" color="textSecondary">
-                  No hay platillos disponibles para este pedido.
-                </Typography>
-              )}
 
-            <Divider/>
-              {selectedOrder && (
-                <Box sx={{ marginTop: '20px', display: 'flex', justifyContent: 'space-between', fontWeight: 'bold' }}>
-                  <Typography variant="h6">Total:</Typography>
-                  <Typography variant="h6">${selectedOrder.total}</Typography>
-                </Box>
-              )}
+                  {selectedOrder && selectedOrder.dishes.length > 0 ? (
+                    selectedOrder.dishes.map((dish, index) => (
+                      <Box key={index} sx={{ marginBottom: '10px', justifyContent: 'space-between', display: 'flex' }}>
+                        <Typography variant="body2">
+                          {dish.quantity}
+                        </Typography>
+                        <Typography variant="body2">
+                          {dish.dishName}
+                        </Typography>
+                        <Typography variant="body2">
+                          {`$${dish.unitPrice}`}
+                        </Typography>
+                      </Box>
+                    ))
+                  ) : (
+                    <Typography variant="body2" color="textSecondary">
+                      No hay platillos disponibles para este pedido.
+                    </Typography>
+                  )}
+
+                  <Divider />
+                  {selectedOrder && (
+                    <Box sx={{ marginTop: '20px', display: 'flex', justifyContent: 'space-between', fontWeight: 'bold' }}>
+                      <Typography variant="h6">Total:</Typography>
+                      <Typography variant="h6">${selectedOrder.total}</Typography>
+                    </Box>
+                  )}
+                </>
+              ) :
+                (
+                  <>
+                    <Typography sx={{ textAlign: 'center', marginBottom: 2 }}>Orden #{selectedOrder?.orderNumber}</Typography>
+                    <Typography variant="body2" sx={{ marginBottom: 2, textAlign: 'center' }}><b>Mesero:</b> {selectedOrder?.waiter}</Typography>
+                    <Typography variant="body2" sx={{ marginBottom: 2, textAlign: 'center' }}><b>Comentario:</b> {selectedOrder?.opinion?.comment}</Typography>
+                    <Typography variant="body2" sx={{  textAlign: 'center' }}><b>Calificación:</b></Typography>
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                      <Stack spacing={1}>
+                        <Rating name="size-large" defaultValue={selectedOrder?.opinion?.qualification} size="large" readOnly />
+                      </Stack>
+                    </Box>
+                  </>
+                )}
+
             </Box>
           </DialogContent>
           <DialogActions>
+
             <Button onClick={handleClose} variant="contained" color="primary" sx={{ width: '100%' }}>
               Cerrar
             </Button>
+
+
           </DialogActions>
         </Dialog>
 

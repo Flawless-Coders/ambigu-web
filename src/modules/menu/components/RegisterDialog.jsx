@@ -130,10 +130,13 @@ export const RegisterDialog = ({ open, onClose, menu, photo, onSubmit, loading, 
                                         variant="contained"
                                         component="span"
                                         onClick={handleClick}
-                                        color="success"
+                                        style={{
+                                            backgroundColor: menu ? "#7B1FA2" : "primary", 
+                                            color: menu && "white"
+                                        }}
                                         startIcon={<CloudUploadOutlinedIcon />}
                                     >
-                                        {menu ? ("Actualizar imagen") : ("Subir imagen")}
+                                        {menu ? "Actualizar imagen" : "Subir imagen"}
                                     </Button>
                                     
                                     {touched.photo && errors.photo && (
@@ -147,15 +150,21 @@ export const RegisterDialog = ({ open, onClose, menu, photo, onSubmit, loading, 
                                 <Button
                                     onClick={onClose}
                                     variant="outlined"
-                                    color="secondary"
                                     disabled={buttonLoading}
+                                    style={{
+                                        borderColor: menu ? "#7B1FA2" : "primary", 
+                                        color: menu ? "#7B1FA2" : "primary", 
+                                    }}
                                 >
                                     Cancelar
                                 </Button>
                                 <Button
                                     type="submit"
                                     variant="contained"
-                                    color="success"
+                                    style={{
+                                        backgroundColor: menu ? "#7B1FA2" : "primary", 
+                                        color: menu && "white"
+                                    }}
                                     disabled={buttonLoading}
                                 >
                                     {buttonLoading ? (
