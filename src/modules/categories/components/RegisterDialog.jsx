@@ -108,10 +108,8 @@ const RegisterDialog = ({ open, handleClose, category, onSuccess }) => {
               setPreviewImage(null);
           
               await onSuccess();
-              
-              setTimeout(() => {
+
                 handleClose();
-              }, 300);
             } catch (error) {
               console.error("Error en la operación:", error);
               setError(error.message || "Error al procesar la operación");
