@@ -13,7 +13,6 @@ import FormControl from "@mui/material/FormControl";
 import { CircularProgress, MenuItem } from "@mui/material";
 import * as Yup from "yup";
 import { Formik, Form, Field } from "formik";
-import { col, img, input } from "framer-motion/client";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { Warning } from '@mui/icons-material'
@@ -24,6 +23,7 @@ import {
   handleCreateDish,
   handleUpdateDish,
 } from "../controllers/DishesController";
+import { updateDishImage } from "../services/dishesService";
 
 export default function ModalActions({
   openModal,
@@ -47,6 +47,7 @@ export default function ModalActions({
   const [dishImage, setDishImage] = React.useState(null);
   const [category, setCategory] = React.useState(dishCategory?.id || "");
   const [loading, setLoading] = React.useState(false);
+  const [imageFile, setImageFile] = React.useState(null);
 
   const container = {
     position: "absolute",
@@ -93,8 +94,20 @@ export default function ModalActions({
 
   React.useEffect(() => {
     setCategory(dishCategory?.id || "");
-    setDishImage(image);
   }, [dishCategory]);
+
+  React.useEffect(() => {
+    if (dishCategory != null && image != null) {
+      const isBase64 = image.startsWith("data:image");
+  
+      setDishImage(
+        isBase64 ? image : `${import.meta.env.VITE_API_URL}/file/${image}`
+      );
+  
+      setDishLoading(false);
+    }
+  }, [dish, dishCategory, image]);
+  
 
   const fileInputRef = React.useRef(null);
 
@@ -110,6 +123,7 @@ export default function ModalActions({
         const base64String = reader.result;
         setDishImage(base64String);
         setFieldValue("imageBase64", base64String);
+        setImageFile(file);
       };
       reader.readAsDataURL(file);
     }
@@ -142,14 +156,32 @@ export default function ModalActions({
   const createDish = async (values) => {
     setError(null);
     setSuccess(null);
-    await handleCreateDish(
-      values,
-      setSuccess,
-      setLoading,
-      setCreatedDish,
-      setError
-    );
-    handleClose();
+    try {
+      const { imageBase64, ...dishData } = values;
+  
+      // 1. Crear platillo sin imagen
+      const createdDish = await handleCreateDish(
+        dishData,
+        setSuccess,
+        setLoading,
+        setCreatedDish,
+        setError
+      );
+  
+      // 2. Si hay imagen válida, subirla con FormData
+      if (imageBase64 && imageBase64 !== placeHolderImg && createdDish?.id) {
+        const blob = await (await fetch(imageBase64)).blob();
+        const formData = new FormData();
+        formData.append("image", blob, `${createdDish.name}.jpg`);
+        await updateDishImage(createdDish.id, formData);
+      }
+  
+      handleClose();
+    } catch (e) {
+      console.error("Error al crear el platillo:", e);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const updateDish = async (values) => {
@@ -161,7 +193,8 @@ export default function ModalActions({
       setSuccess,
       setLoading,
       setUpdatedDish,
-      setError
+      setError, 
+      imageFile
     );
     handleClose();
   };
