@@ -27,7 +27,7 @@ export default function OrdersCard({ order }) {
                   <CardMedia
                     sx={{
                       width: '100%', 
-                      height: { xs: 100, sm: 150 }, 
+                      height: { xs: 75, sm: 150 }, 
                       objectFit: 'cover'
                     }}
                     image={dish.imageBase64 != null ? dish.imageBase64 : "https://placehold.co/250x200.png"} 

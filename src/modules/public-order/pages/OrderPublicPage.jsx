@@ -29,6 +29,12 @@ export default function OrderPublicPage() {
   console.log("datos de orden: ", order);
   
   return (
+    <>
+    {!order && !loading ? (
+    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <img src='../../../assets/error-404.png' alt="No hay orden activa" style={{ width: 150 }} />
+    </Box>
+  ) : (
     <PublicThemeProvider>
     <HeaderPublic section="Cuenta" />
     <Box sx={{ p: 3 }}>
@@ -59,7 +65,7 @@ export default function OrderPublicPage() {
             bottom: 20,
             right: 20,
             width: '100%',
-            maxWidth: { xs: 280, sm: 420, md: 400, lg: 450 },
+            maxWidth: { xs: 280, sm: 380, md: 400, lg: 450 },
             zIndex: 900
           }}
         >
@@ -94,5 +100,8 @@ export default function OrderPublicPage() {
       </Grid>
     </Box>
     </PublicThemeProvider>
+    )}
+    </>
+    
   );
 }
