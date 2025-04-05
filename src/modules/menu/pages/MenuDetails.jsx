@@ -117,7 +117,11 @@ export default function MenuDetails() {
     handleGetCategories(setError, setLoadingCategories, setCategories, id);
   };
 
-  const resetTab = () => setValue(0);
+  const resetTab = React.useCallback(() => {
+    if (categories.length > 0 && value !== 0) {
+      setValue(0);
+    }
+  }, [categories.length, value]);
 
   React.useEffect(() => {
     if (categories.length > 0) {
@@ -139,16 +143,16 @@ export default function MenuDetails() {
   return (
    <Box sx={{ p:3 }}>
       <Typography variant="h1">{name}</Typography>
+      {loadingCategories ? <LoaderAmbigu /> : (
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-        {loadingCategories ? <LoaderAmbigu /> : (
           <Tabs value={value} onChange={handleChange} aria-label="menu tabs" variant="scrollable">
             {categories.map((category) => (
               <Tab key={category.id} label={category.name} {...a11yProps(category.id)} />
             ))}
           </Tabs>
-        )}
       </Box>
-      {categories.length === 0 && (
+      )}
+      {!loadingCategories && categories.length === 0 && (
         <Box sx={{ justifyContent:'center', alignItems:'center', display:'flex', height:"70vh"}}>
         <Typography variant="h6">Aún no hay platillos en el menú</Typography>
         </Box>
@@ -162,7 +166,7 @@ export default function MenuDetails() {
                 key={dish.id}
                 title={dish.name}
                 image={dish.imageBase64 || "https://placehold.co/300x200"}
-                price={`$${dish.price}`}
+                price={`${dish.price}`}
                 isMenu={true}
                 remove={() => handleOpenRemoveDialog(dish)}
               />

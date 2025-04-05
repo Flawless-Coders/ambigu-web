@@ -173,12 +173,15 @@ export const handleAddDish = async (menuId, dishId, setError, setSuccess, setLoa
     }
 };
 
-export const handleGetDishesByCategory = async(setDialogDishes, categoryId) =>{
+export const handleGetDishesByCategory = async(setDialogDishes, categoryId, setLoading) =>{
+    setLoading(true);
     try{
         const response = await getDishByCategory(categoryId);
         setDialogDishes(response);
     }catch{
         console.log ("Error al obtener los menus");
+    }finally{
+        setLoading(false);
     }
 }
 

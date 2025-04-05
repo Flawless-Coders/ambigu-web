@@ -20,12 +20,12 @@ export default function CustomCard(props) {
                     height: '100%',
                     position: 'relative',
                     transition: "transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
-                   "&:hover": {
-                                        filter: "brightness(0.95)",
-                                      transform: "translateY(-5px)",
-                                      boxShadow: 6,
-                                  },
-                    maxHeight:250
+                    "&:hover": {
+                        filter: "brightness(0.95)",
+                        transform: "translateY(-5px)",
+                        boxShadow: 6,
+                    },
+                    maxHeight: 250
                 }}
                 onMouseEnter={() => setShowFab(true)}
                 onMouseLeave={() => setShowFab(false)}
@@ -50,7 +50,7 @@ export default function CustomCard(props) {
                         <Box
                             sx={styles.buttonContainer}
                         >
-                            <Fab size="small" sx={{backgroundColor: "#673ab7", color: "white", "&:hover": { backgroundColor: "#651fff" },}} aria-label="update" onClick={update}>
+                            <Fab size="small" sx={{ backgroundColor: "#673ab7", color: "white", "&:hover": { backgroundColor: "#651fff" }, }} aria-label="update" onClick={update}>
                                 <ModeEditIcon />
                             </Fab>
 
@@ -74,17 +74,17 @@ export default function CustomCard(props) {
                         </Box>
                     )}
 
-                    {remove && showFab &&(
+                    {remove && showFab && (
                         <Box sx={styles.buttonContainer}>
                             <Fab size="small" color="error" aria-label="disable" onClick={remove}>
-                                    <DeleteIcon />
-                                </Fab>
+                                <DeleteIcon />
+                            </Fab>
                         </Box>
                     )}
                 </Box>
                 <CardContent>
                     <Grid container width="100%">
-                        <Grid item xs={price? 8 : 12}>
+                        <Grid item xs={price ? 8 : 12}>
                             <Typography gutterBottom component="div" sx={{ fontWeight: "bold", fontSize: 15 }}>
                                 {title}
                             </Typography>
@@ -98,9 +98,12 @@ export default function CustomCard(props) {
                         )}
                     </Grid>
 
-                    <Typography variant="body2" sx={{ color: "text.#3f51b5", display: { xs: "none", sm: "block" } }}>
-                        {description.length > 30 ? description.slice(0, 30) + "..." : description}
-                    </Typography>
+                    {description && (
+                        <Typography variant="body2" sx={{ color: "text.#3f51b5", display: { xs: "none", sm: "block" } }}>
+                            {description.length > 30 ? description.slice(0, 30) + "..." : description}
+                        </Typography>
+                    )}
+
 
                     {buttonTitle && (
                         <Button variant="contained" sx={{ marginTop: 2 }}>
