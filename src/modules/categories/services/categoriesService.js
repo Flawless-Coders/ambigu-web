@@ -44,12 +44,11 @@ export const changeCategoryStatus = async (id) => {
   }
 };
 
-export const updateCategory = async (id, name, imageBase64, status) => {
+export const updateCategory = async (id, name, status) => {
   try {
     const response = await api.put(`${API_URL}/categories/${id}`, {
       id,
       name,
-      imageBase64,
       status
     });
 

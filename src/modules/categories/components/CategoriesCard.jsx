@@ -5,9 +5,9 @@ import { RemoveCircle, Edit, CheckCircle } from "@mui/icons-material";
 const CategoriesCard = ({ category, onChangeStatus, onEdit }) => {
   const [hover, setHover] = useState(false);
 
-  const imageUrl = category.imageBase64
-    ? `data:image/png;base64,${category.imageBase64}`
-    : "https://via.placeholder.com/250";
+  const imageUrl = category.imageId
+    ? `${import.meta.env.VITE_API_URL}/file/${category.imageId}`
+    : "https://placehold.co/600x400"; 
 
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>

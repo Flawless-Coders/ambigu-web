@@ -1,4 +1,4 @@
-import { createDish, disableDish, getCategories, getCategoryById, getDishById, updateDish, getDishesByCategoryAndStatus } from "../services/dishesService";
+import { createDish, disableDish, getCategories, getCategoryById, getDishById, updateDish, getDishesByCategoryAndStatus, updateDishImage } from "../services/dishesService";
 
 export const handleGetCategories = async (setCategories, setError, setLoading) => {
     setLoading(true);
@@ -28,11 +28,13 @@ export const handleGetDishesByCategoryAndStatus = async (categoryId, available, 
 export const handleCreateDish = async (data, setSuccess, setLoading, setCreatedDish, setError) => {
     setLoading(true);
     try {
-        await createDish(data);
+        const response = await createDish(data);
         setSuccess("Platillo registrado correctamente");
         setCreatedDish(true);
+        return response;
     } catch {
         setError("Error al registrar el platillo");
+        throw new Error("Error al registrar el platillo");
     } finally {
         setLoading(false);
     }
@@ -70,10 +72,18 @@ export const handleGetCategoryById = async (id, setDishCategory, setModalLoading
 }
 
 
-export const handleUpdateDish = async (id, data, setSuccess, setLoading, setUpdatedDish, setError) => {
+export const handleUpdateDish = async (id, data, setSuccess, setLoading, setUpdatedDish, setError, imageFile) => {
     setLoading(true);
     try {
-        await updateDish(id, data);
+        const { imageBase64, ...dishData} = data;
+
+        await updateDish(id, dishData);
+
+        if(imageFile){
+            const formData = new FormData();
+            formData.append("image", imageFile);
+            await updateDishImage(id, formData);
+        }
         setSuccess("Platillo modificado correctamente");
         setUpdatedDish(true);
     } catch {
