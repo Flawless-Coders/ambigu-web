@@ -55,13 +55,13 @@ export default function CustomCard(props) {
                                 <ModeEditIcon />
                             </Fab>
 
-                            {!isMenu || menuStatus ? (
+                            {!isMenu && (
                                 <Fab size="small" color="error" aria-label="disable" onClick={disable}>
                                     <RemoveCircleOutlineIcon />
                                 </Fab>
-                            ) : null}
+                            )}
 
-                            {isMenu && !menuStatus && !isCurrentMenu && (
+                            {isMenu && !menuStatus && (
                                 <Fab size="small" color="success" aria-label="enable" onClick={enable}>
                                     <TaskAltOutlinedIcon />
                                 </Fab>
