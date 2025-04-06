@@ -16,7 +16,7 @@ export default function ForgotPasswordPage() {
   const navigate = useNavigate();
 
   return (
-    <AuthLayout imageSrc="src/assets/forgot-password.svg" imageStyle={{ width: '75%' }}>
+    <AuthLayout imageSrc="/assets/forgot-password.svg" imageStyle={{ width: '75%' }}>
       <Typography variant="h5" fontWeight="bold" sx={{ mt: 2, mb: 3 }} align="center">
         Recuperar Cuenta
       </Typography>

@@ -49,7 +49,7 @@ const AuthLayout = ({ children, imageSrc, imageStyle }) => {
           <Box sx={{ maxWidth: "360px", width: "100%", mx: "auto" }}>
             {/* Logo */}
             <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
-              <img src="src/assets/ambigu-icon.png" alt="Ambigú Logo" width="150" />
+              <img src="/assets/ambigu-icon.png" alt="Ambigú Logo" width="150" />
             </Box>
 
             <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
