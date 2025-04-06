@@ -21,6 +21,7 @@ import {
 import { useTheme } from "@emotion/react";
 import "@fontsource/inter";
 import "@fontsource/rubik";
+import { PublicThemeProvider } from "../../../context/PublicThemeContext";
 
 export default function PublicMenu() {
   const [currentMenu, setCurrentMenu] = useState({});
@@ -29,6 +30,7 @@ export default function PublicMenu() {
   const [categoriesLoading, setCategoriesLoading] = useState(false);
   const [dishesByCategory, setDishesByCategory] = useState([]);
   const [dishesByCategoryLoading, setDishesByCategoryLoading] = useState(false);
+  const [menuAvailable, setMenuAvailable] = useState(false);
   const theme = useTheme();
 
   const logo = theme.logo;
@@ -53,6 +55,13 @@ export default function PublicMenu() {
     fetchMenu();
     fetchCategories();
   }, []);
+
+  useEffect(() => {
+    if (Object.keys(currentMenu).length != 0) {
+      console.log(currentMenu);
+      setMenuAvailable(true);
+    }
+  }, [currentMenu]);
 
   const downloadPDF = async () => {
     console.log(dishesByCategory);
@@ -81,33 +90,53 @@ export default function PublicMenu() {
     URL.revokeObjectURL(url);
   };
 
-  return loading ? (
-    <Box
-      height="100vh"
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-    >
-      <CircularProgress />
-    </Box>
-  ) : (
-    <>
+  if (loading) {
+    return (
+      <Box
+        height="100vh"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  return (
+    <PublicThemeProvider>
       <HeaderPublic
         section="Menú"
-        download={true}
-        downloadPDF={downloadPDF}
-        loadingButton={dishesByCategoryLoading}
+        download={menuAvailable}
+        downloadPDF={menuAvailable && downloadPDF}
+        loadingButton={menuAvailable && dishesByCategoryLoading}
       />
-      <Box
-        m={2}
-        marginBottom={0}
-        display={"flex"}
-        justifyContent={{ xs: "center", sm: "flex-start" }}
-      >
-        <Typography variant="h3">{currentMenu.name}</Typography>
-      </Box>
-      <PublicMenuTabs categories={categories} loading={categoriesLoading} />
-    </>
+      {Object.keys(currentMenu).length != 0 ? (
+        <>
+          <Box
+            m={2}
+            marginBottom={0}
+            display={"flex"}
+            justifyContent={{ xs: "center", sm: "flex-start" }}
+          >
+            <Typography variant="h3">{currentMenu.name}</Typography>
+          </Box>
+          <PublicMenuTabs categories={categories} loading={categoriesLoading} />
+        </>
+      ) : (
+        <Box
+          height="90vh"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          padding={2}
+        >
+          <Typography variant="h4" sx={{ color: "gray", textAlign: "center" }}>
+            Aún no hay un menú activo
+          </Typography>
+        </Box>
+      )}
+    </PublicThemeProvider>
   );
 }
 
@@ -180,19 +209,21 @@ const MyDocument = ({
             <View>
               <Image
                 source={
-                  item.category?.imageBase64.startsWith("data:image")
-                    ? item.category.imageBase64
-                    : {
-                        uri: `data:image/${
-                          item.category.imageBase64.startsWith("/9j/")
-                            ? "jpeg"
-                            : item.category.imageBase64.startsWith("iVBORw")
-                            ? "png"
-                            : item.category.imageBase64.startsWith("UklGR ")
-                            ? "webp"
-                            : "jpg"
-                        };base64,${item.category.imageBase64}`,
-                      }
+                  item.category?.imageBase64 != null
+                    ? item.category?.imageBase64.startsWith("data:image")
+                      ? item.category.imageBase64
+                      : {
+                          uri: `data:image/${
+                            item.category.imageBase64.startsWith("/9j/")
+                              ? "jpeg"
+                              : item.category.imageBase64.startsWith("iVBORw")
+                              ? "png"
+                              : item.category.imageBase64.startsWith("UklGR ")
+                              ? "webp"
+                              : "jpg"
+                          };base64,${item.category.imageBase64}`,
+                        }
+                    : {uri: "https://www.shutterstock.com/image-vector/vector-isolated-one-round-plate-600nw-2217476735.jpg"}
                 }
                 style={{
                   width: 75,
@@ -226,7 +257,7 @@ const MyDocument = ({
                         dish.imageBase64?.length > 0
                           ? dish.imageBase64
                           : {
-                              uri: "src/modules/public-menu/components/PublicMenuTabs.jsx",
+                              uri: "https://www.shutterstock.com/image-vector/vector-isolated-one-round-plate-600nw-2217476735.jpg",
                             }
                       }
                       style={{
