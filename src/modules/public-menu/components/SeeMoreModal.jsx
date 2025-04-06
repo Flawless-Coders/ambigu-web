@@ -24,6 +24,7 @@ const style = {
 
 export default function SeeMoreModal({ openModal, setOpenModal, dish }) {
   const handleClose = () => setOpenModal(false);
+  const API_URL = import.meta.env.VITE_API_URL;
 
   return (
     <div>
@@ -48,8 +49,7 @@ export default function SeeMoreModal({ openModal, setOpenModal, dish }) {
           <Box sx={style}>
             <Box flex={1} flexDirection="column">
               <Box display="flex" justifyContent="center">
-                <img
-                  src={dish?.image ? dish.image : "https://www.shutterstock.com/image-vector/vector-isolated-one-round-plate-600nw-2217476735.jpg"}
+                <img src={ dish?.image ? `${API_URL}/file/${dish.image}`: "https://www.shutterstock.com/image-vector/vector-isolated-one-round-plate-600nw-2217476735.jpg"}
                   style={{ borderRadius: 10, maxWidth: "100%", maxHeight:250 }}
                 />
               </Box>
