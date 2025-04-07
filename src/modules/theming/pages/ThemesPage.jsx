@@ -9,6 +9,7 @@ import useTypography from '../hooks/useTypography';
 import useLogos from '../hooks/useLogos';
 import { useOutletContext } from 'react-router-dom';
 import api from '../../auth/services/api';
+import Backdrop from "@mui/material/Backdrop";
 
 export const ThemesPage = () => {
   const [tabValue, setTabValue] = useState(0);
@@ -161,6 +162,16 @@ export const ThemesPage = () => {
   onClose={isApplying ? () => {} : handleCloseConfirmDialog}
   disableEscapeKeyDown={isApplying}
   disableBackdropClick={isApplying}
+  slots={{ backdrop: Backdrop }}
+      slotProps={{
+        backdrop: {
+          timeout: 500,
+          sx: {
+            backdropFilter: "blur(8px)", // Desenfoque del fondo
+            backgroundColor: "rgba(0, 0, 0, 0.4)", // Color semitransparente
+          },
+        },
+      }}
 >
   {isApplying ? (
     <>
