@@ -185,8 +185,8 @@ export default function PublicMenuTabs(props) {
                     height: "50vh",
                   }}
                 >
-                  <Typography variant="h3" color="gray">
-                    No hay mas platillos de esta categoría
+                  <Typography variant="h3" color="gray" textAlign="center">
+                    Pronto habrá más platillos de esta categoría.
                   </Typography>
                 </Box>
               )}
