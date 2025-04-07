@@ -4,6 +4,7 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { Grid } from '@mui/material';
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function OrdersCard({ order }) {
     if (!order) return null;
@@ -27,10 +28,12 @@ export default function OrdersCard({ order }) {
                   <CardMedia
                     sx={{
                       width: '100%', 
-                      height: { xs: 100, sm: 150 }, 
+                      height: { xs: 75, sm: 150 }, 
                       objectFit: 'cover'
                     }}
-                    image={dish.imageBase64 != null ? dish.imageBase64 : "https://placehold.co/250x200.png"} 
+                    image={dish?.imageBase64
+                      ? `${API_URL}/file/${dish.imageBase64}`
+                      : "https://www.shutterstock.com/image-vector/vector-isolated-one-round-plate-600nw-2217476735.jpg"} 
                     title={dish.dishName}
                   />
                 </Grid>
