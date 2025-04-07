@@ -18,10 +18,10 @@ import {
   Image,
   Font,
 } from "@react-pdf/renderer";
-import { useTheme } from "@emotion/react";
 import "@fontsource/inter";
 import "@fontsource/rubik";
 import { PublicThemeProvider } from "../../../context/PublicThemeContext";
+import { useTheme } from "@emotion/react";
 
 export default function PublicMenu() {
   const [currentMenu, setCurrentMenu] = useState({});
@@ -32,9 +32,8 @@ export default function PublicMenu() {
   const [dishesByCategoryLoading, setDishesByCategoryLoading] = useState(false);
   const [menuAvailable, setMenuAvailable] = useState(false);
   const API_URL = import.meta.env.VITE_API_URL;
+  const [logo, setLogo] = useState("");
   const theme = useTheme();
-
-  const logo = theme.logo;
 
   const fetchMenu = () => {
     setLoading(true);
@@ -48,7 +47,7 @@ export default function PublicMenu() {
 
   const fetchDishesByCategory = () => {
     setDishesByCategoryLoading(true);
-    handleGetDishesByCategory(setDishesByCategory, setDishesByCategoryLoading);
+    handleGetDishesByCategory(setDishesByCategory, setDishesByCategoryLoading, setLogo);
   };
 
   useEffect(() => {
@@ -59,13 +58,11 @@ export default function PublicMenu() {
 
   useEffect(() => {
     if (Object.keys(currentMenu).length != 0) {
-      console.log(currentMenu);
       setMenuAvailable(true);
     }
   }, [currentMenu]);
 
   const downloadPDF = async () => {
-    console.log(dishesByCategory);
     const today = new Date();
     const formattedDate = `${today.getDate().toString().padStart(2, "0")}/${(
       today.getMonth() + 1
@@ -169,7 +166,7 @@ const MyDocument = ({
   primaryColor,
   currentMenu,
   date,
-  API_URL
+  API_URL,
 }) => (
   <Document>
     <Page size="A4" style={styles.page}>
@@ -177,7 +174,9 @@ const MyDocument = ({
         {logo != null ? (
           <Image src={logo} style={{ width: 500, marginTop: 10 }} />
         ) : (
-          <Text style={{ fontSize: 40, fontWeight: "bold" }}>
+          <Text
+            style={{ fontSize: 50, fontWeight: "bold", fontStyle: "italic" }}
+          >
             {currentMenu.name}
           </Text>
         )}
@@ -213,171 +212,180 @@ const MyDocument = ({
               <Image
                 source={
                   item.category?.imageId
-                            ? `${API_URL}/file/${item.category.imageId}`
-                            : "https://www.shutterstock.com/image-vector/vector-isolated-one-round-plate-600nw-2217476735.jpg"
+                    ? `${API_URL}/file/${item.category.imageId}`
+                    : "https://theme-assets.getbento.com/sensei/4f4ca77.sensei/assets/images/catering-item-placeholder-704x520.png"
                 }
                 style={{
                   width: 75,
                   height: 75,
                   borderRadius: 50,
-                  borderWidth: 5,
-                  borderColor: "black",
-                  borderStyle: "dashed",
                 }}
               />
             </View>
           </View>
-          
-          {item.dishes.length<0? <Text>Ya no hay platillos disponibles</Text> :item.dishes.map((dish) => (
+
+          {item.dishes.length <= 0 ? (
             <View
               style={{
-                flexDirection: "row",
-                marginVertical: 20,
                 display: "flex",
+                justifyContent: "center",
                 alignItems: "center",
-                justifyContent: "space-around",
-                height: 110,
-                borderTop: "2 dotted gray",
-                borderBottom: "2 dotted gray",
+                height: 650,
               }}
             >
-              {(index + 1) % 2 === 0 ? (
-                <>
-                  <View style={{ width: "30%" }}>
-                    <Image
-                     source={
-                      dish.imageId
-                                ? `${API_URL}/file/${dish.imageId}`
-                                : "https://www.shutterstock.com/image-vector/vector-isolated-one-round-plate-600nw-2217476735.jpg"
-                    }
-                      style={{
-                        borderRadius: 100,
-                        width: 145,
-                        borderWidth: 3,
-                        borderColor: "black",
-                        borderStyle: "solid",
-                      }}
-                    />
-                  </View>
-                  <View style={{ width: "70%" }}>
-                    <View style={{ flexDirection: "column", marginLeft: 65 }}>
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <View
-                          style={{
-                            width: 75,
-                            borderRadius: 50,
-                            backgroundColor: primaryColor,
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                          }}
-                        >
-                          <Text
-                            style={{
-                              fontSize: 20,
-                              color: "white",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            ${dish.price}
-                          </Text>
-                        </View>
-                        <View>
-                          <Text style={{ fontSize: 20, fontWeight: "bold" }}>
-                            {dish.name}
-                          </Text>
-                        </View>
-                      </View>
-                      <View
-                        style={{
-                          width: "100%",
-                          display: "flex",
-                          alignItems: "flex-end",
-                        }}
-                      >
-                        <Text
-                          style={{
-                            fontSize: 12,
-                            textAlign: "right",
-                            width: "100%",
-                            marginTop: 5,
-                          }}
-                        >
-                          {dish.description}
-                        </Text>
-                      </View>
-                    </View>
-                  </View>
-                </>
-              ) : (
-                <>
-                  <View style={{ width: "70%" }}>
-                    <View style={{ flexDirection: "column" }}>
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <View>
-                          <Text style={{ fontSize: 20, fontWeight: "bold" }}>
-                            {dish.name}
-                          </Text>
-                        </View>
-                        <View
-                          style={{
-                            width: 75,
-                            borderRadius: 50,
-                            backgroundColor: primaryColor,
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            marginRight: 70,
-                          }}
-                        >
-                          <Text
-                            style={{
-                              fontSize: 20,
-                              color: "white",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            ${dish.price}
-                          </Text>
-                        </View>
-                      </View>
-                      <View style={{ maxWidth: "80%" }}>
-                        <Text style={{ fontSize: 12, marginTop: 5 }}>
-                          {dish.description}
-                        </Text>
-                      </View>
-                    </View>
-                  </View>
-                  <View style={{ width: "30%" }}>
-                    <Image
-                      source={
-                        dish.imageId
-                                  ? `${API_URL}/file/${dish.imageId}`
-                                  : "https://www.shutterstock.com/image-vector/vector-isolated-one-round-plate-600nw-2217476735.jpg"
-                      }
-                      style={{
-                        borderRadius: 100,
-                        width: 145,
-                        borderWidth: 3,
-                        borderColor: "black",
-                        borderStyle: "solid",
-                      }}
-                    />
-                  </View>
-                </>
-              )}
+              <Text color="gray">
+                En este momento no hay platillos disponibles de esta categoría.
+              </Text>
             </View>
-          ))}
+          ) : (
+            item.dishes.map((dish) => (
+              <View
+                style={{
+                  flexDirection: "row",
+                  marginVertical: 20,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-around",
+                  height: 110,
+                  borderTop: "2 dotted gray",
+                  borderBottom: "2 dotted gray",
+                }}
+              >
+                {(index + 1) % 2 === 0 ? (
+                  <>
+                    <View style={{ width: "30%" }}>
+                      <Image
+                        source={
+                          dish.imageId
+                            ? `${API_URL}/file/${dish.imageId}`
+                            : "https://theme-assets.getbento.com/sensei/4f4ca77.sensei/assets/images/catering-item-placeholder-704x520.png"
+                        }
+                        style={{
+                          borderRadius: 100,
+                          width: 145,
+                        }}
+                      />
+                    </View>
+                    <View style={{ width: "70%" }}>
+                      <View style={{ flexDirection: "column", marginLeft: 65 }}>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <View
+                            style={{
+                              width: 75,
+                              borderRadius: 50,
+                              backgroundColor: primaryColor,
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}
+                          >
+                            <Text
+                              style={{
+                                fontSize: 20,
+                                color: "white",
+                                fontWeight: "bold",
+                              }}
+                            >
+                              ${dish.price}
+                            </Text>
+                          </View>
+                          <View>
+                            <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+                              {dish.name}
+                            </Text>
+                          </View>
+                        </View>
+                        <View
+                          style={{
+                            width: "100%",
+                            display: "flex",
+                            alignItems: "flex-end",
+                          }}
+                        >
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              textAlign: "right",
+                              width: "100%",
+                              marginTop: 5,
+                            }}
+                          >
+                            {dish.description}
+                          </Text>
+                        </View>
+                      </View>
+                    </View>
+                  </>
+                ) : (
+                  <>
+                    <View style={{ width: "70%" }}>
+                      <View style={{ flexDirection: "column" }}>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <View>
+                            <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+                              {dish.name}
+                            </Text>
+                          </View>
+                          <View
+                            style={{
+                              width: 75,
+                              borderRadius: 50,
+                              backgroundColor: primaryColor,
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              marginRight: 70,
+                            }}
+                          >
+                            <Text
+                              style={{
+                                fontSize: 20,
+                                color: "white",
+                                fontWeight: "bold",
+                              }}
+                            >
+                              ${dish.price}
+                            </Text>
+                          </View>
+                        </View>
+                        <View style={{ maxWidth: "80%" }}>
+                          <Text style={{ fontSize: 12, marginTop: 5 }}>
+                            {dish.description}
+                          </Text>
+                        </View>
+                      </View>
+                    </View>
+                    <View style={{ width: "30%" }}>
+                      <Image
+                        source={
+                          dish.imageId
+                            ? `${API_URL}/file/${dish.imageId}`
+                            : "https://www.shutterstock.com/image-vector/vector-isolated-one-round-plate-600nw-2217476735.jpg"
+                        }
+                        style={{
+                          borderRadius: 100,
+                          width: 145,
+                          borderWidth: 3,
+                          borderColor: "black",
+                          borderStyle: "solid",
+                        }}
+                      />
+                    </View>
+                  </>
+                )}
+              </View>
+            ))
+          )}
         </View>
       </Page>
     ))}

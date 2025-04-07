@@ -1,4 +1,5 @@
 import {
+  getCurrentLogo,
   getCurrentMenu,
   getCurrentMenuCategories,
   getCurrentMenuCategoriesAndDishes,
@@ -56,12 +57,15 @@ export const handleGetCurrentMenuDishesByCategory = async (
 
 export const handleGetDishesByCategory = async (
   setDishesByCategory,
-  setLoading
+  setLoading,
+  setLogo
 ) => {
   setLoading(true);
   try {
     const response = await getCurrentMenuCategoriesAndDishes();
+    const logo = await getCurrentLogo();
     setDishesByCategory(response);
+    setLogo(logo.logo);
   } catch {
     console.error(
       "Ocurrió un error al obtener los platillos del menú, pero no es su culpa."

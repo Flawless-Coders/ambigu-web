@@ -1,29 +1,29 @@
 import React, { useState, useEffect } from "react";
-import { 
-  Dialog, 
-  DialogTitle, 
-  DialogContent, 
-  DialogActions, 
-  TextField, 
-  Button, 
-  CircularProgress, 
-  Box, 
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Button,
+  CircularProgress,
+  Box,
   MenuItem,
-  Alert 
+  Alert,
 } from "@mui/material";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import Backdrop from "@mui/material/Backdrop";
 
-export const AddDishDialog = ({ 
-  open, 
-  onClose, 
-  onSubmit, 
-  loading, 
-  buttonLoading, 
-  menuId, 
-  categories, 
-  handleGetDishesByCategory 
+export const AddDishDialog = ({
+  open,
+  onClose,
+  onSubmit,
+  loading,
+  buttonLoading,
+  menuId,
+  categories,
+  handleGetDishesByCategory,
 }) => {
   const [dishes, setDishes] = useState([]);
   const [loadingDishes, setLoadingDishes] = useState(false);
@@ -41,21 +41,25 @@ export const AddDishDialog = ({
     category: Yup.string().required("La categoría es obligatoria"),
     dishId: Yup.string()
       .required("El platillo es obligatorio")
-      .test('has-dishes', 'No hay platillos disponibles', () => dishes.length > 0)
+      .test(
+        "has-dishes",
+        "No hay platillos disponibles",
+        () => dishes.length > 0
+      ),
   });
 
   const handleCategoryChange = async (categoryId, setFieldValue) => {
     if (!categoryId) return;
-    
+
     try {
       setLoadingDishes(true);
       setError(null);
       setFieldValue("dishId", "");
       setDishes([]); // Limpiar platillos antes de cargar nuevos
-      
+
       // Forzar un nuevo renderizado para mostrar el CircularProgress
-      await new Promise(resolve => setTimeout(resolve, 0));
-      
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
       await handleGetDishesByCategory(
         (newDishes) => setDishes(newDishes || []),
         categoryId,
@@ -70,17 +74,31 @@ export const AddDishDialog = ({
   };
 
   return (
-    <Dialog 
-      open={open} 
+    <Dialog
+      open={open}
       onClose={onClose}
       aria-labelledby="register-dialog-title"
       slots={{ backdrop: Backdrop }}
+      slotProps={{
+        backdrop: {
+          timeout: 500,
+          sx: {
+            backdropFilter: "blur(8px)", // Desenfoque del fondo
+            backgroundColor: "rgba(0, 0, 0, 0.4)", // Color semitransparente
+          },
+        },
+      }}
       sx={{ "& .MuiDialog-paper": { width: "400px" } }}
     >
       <DialogTitle>Agregar platillo</DialogTitle>
-      
+
       {loading ? (
-        <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          minHeight="200px"
+        >
           <CircularProgress />
         </Box>
       ) : (
@@ -92,7 +110,11 @@ export const AddDishDialog = ({
           {({ errors, touched, setFieldValue, values }) => (
             <Form>
               <DialogContent>
-                {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+                {error && (
+                  <Alert severity="error" sx={{ mb: 2 }}>
+                    {error}
+                  </Alert>
+                )}
 
                 <Field
                   as={TextField}
@@ -108,7 +130,9 @@ export const AddDishDialog = ({
                   }}
                 >
                   {categories.length === 0 ? (
-                    <MenuItem value="" disabled>No hay categorías</MenuItem>
+                    <MenuItem value="" disabled>
+                      No hay categorías
+                    </MenuItem>
                   ) : (
                     categories.map((category) => (
                       <MenuItem key={category.id} value={category.id}>
@@ -118,7 +142,7 @@ export const AddDishDialog = ({
                   )}
                 </Field>
 
-                <Box sx={{ position: 'relative', mt: 2 }}>
+                <Box sx={{ position: "relative", mt: 2 }}>
                   <Field
                     as={TextField}
                     select
@@ -128,12 +152,20 @@ export const AddDishDialog = ({
                     disabled={!values.category || loadingDishes}
                     error={Boolean(touched.dishId && errors.dishId)}
                     helperText={touched.dishId && errors.dishId}
-                    placeholder={loadingDishes ? "Cargando platillos..." : "Seleccione un platillo"}
+                    placeholder={
+                      loadingDishes
+                        ? "Cargando platillos..."
+                        : "Seleccione un platillo"
+                    }
                   >
                     {!values.category ? (
-                      <MenuItem value="" disabled>Seleccione una categoría</MenuItem>
+                      <MenuItem value="" disabled>
+                        Seleccione una categoría
+                      </MenuItem>
                     ) : dishes.length === 0 && !loadingDishes ? (
-                      <MenuItem value="" disabled>No hay platillos</MenuItem>
+                      <MenuItem value="" disabled>
+                        No hay platillos
+                      </MenuItem>
                     ) : (
                       dishes.map((dish) => (
                         <MenuItem key={dish.id} value={dish.id}>
@@ -142,15 +174,15 @@ export const AddDishDialog = ({
                       ))
                     )}
                   </Field>
-                  
+
                   {loadingDishes && (
-                    <CircularProgress 
+                    <CircularProgress
                       size={24}
                       sx={{
-                        position: 'absolute',
-                        top: '45%',
-                        right: '35px',
-                        marginTop: '-12px',
+                        position: "absolute",
+                        top: "45%",
+                        right: "35px",
+                        marginTop: "-12px",
                       }}
                     />
                   )}
@@ -158,16 +190,26 @@ export const AddDishDialog = ({
               </DialogContent>
 
               <DialogActions>
-                <Button onClick={onClose} variant="outlined" disabled={buttonLoading}>
+                <Button
+                  onClick={onClose}
+                  variant="outlined"
+                  disabled={buttonLoading}
+                >
                   Cancelar
                 </Button>
-                <Button 
-                  type="submit" 
-                  variant="contained" 
+                <Button
+                  type="submit"
+                  variant="contained"
                   color="success"
-                  disabled={buttonLoading || loadingDishes || dishes.length === 0}
+                  disabled={
+                    buttonLoading || loadingDishes || dishes.length === 0
+                  }
                 >
-                  {buttonLoading ? <CircularProgress size={24} color="inherit" /> : "Agregar"}
+                  {buttonLoading ? (
+                    <CircularProgress size={24} color="inherit" />
+                  ) : (
+                    "Agregar"
+                  )}
                 </Button>
               </DialogActions>
             </Form>
