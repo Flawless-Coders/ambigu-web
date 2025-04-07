@@ -13,7 +13,7 @@ export default function TableCard({ data, loading, status, fetchTables, setSucce
           ) : data && data.length > 0 ? (
               <Grid container spacing={4}>
                   {data.map((table) => (
-                      <Grid item xs={12} sm={4} md={3} lg={3} key={table.id}>
+                      <Grid item xs={12} sm={6} md={4} lg={3} key={table.id}>
                           <Card
                               sx={{
                                   width: "100%",

@@ -28,7 +28,10 @@ const CategoriesPage = () => {
     }
   };
 
-  const iconStyle = { marginLeft: 1 };
+  const iconStyle = {
+    fontSize: "large",
+    margin: 0.5
+  };
 
   useEffect(() => {
     handleGetCategories(setCategories, setLoading, setError);
@@ -66,7 +69,14 @@ const CategoriesPage = () => {
 
   return (
     <Box sx={{ position: "relative", minHeight: "100vh", paddingBottom: "80px", p: 3 }}>
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
+       <Box sx={{ 
+                    display: "flex", 
+                    flexDirection: { xs: "column", sm: "row" },
+                    justifyContent: "space-between",
+                    alignItems: { xs: "flex-start", sm: "center" },
+                    gap: { xs: 2, sm: 0 },
+                    mb: 2
+                  }}>
         <Typography variant="h1">Categorías</Typography>
 
         {/* Toggle Button Group for Active/Inactive */}
@@ -78,10 +88,10 @@ const CategoriesPage = () => {
           aria-label="active-inactive categories"
         >
           <ToggleButton value="active">
-            ACTIVAS{alignment === "active" ? <CheckCircleIcon sx={iconStyle}/> : <CheckCircleOutlinedIcon sx={iconStyle}/>}
+            Activas{alignment === "active" ? <CheckCircleIcon sx={iconStyle}/> : <CheckCircleOutlinedIcon sx={iconStyle}/>}
           </ToggleButton>
           <ToggleButton value="inactive">
-            INACTIVAS{alignment === "inactive" ? <CancelIcon sx={iconStyle}/> : <CancelOutlinedIcon sx={iconStyle}/>}
+            Inactivas{alignment === "inactive" ? <CancelIcon sx={iconStyle}/> : <CancelOutlinedIcon sx={iconStyle}/>}
           </ToggleButton>
         </ToggleButtonGroup>
       </Box>
