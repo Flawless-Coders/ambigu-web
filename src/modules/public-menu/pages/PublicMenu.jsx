@@ -31,6 +31,7 @@ export default function PublicMenu() {
   const [dishesByCategory, setDishesByCategory] = useState([]);
   const [dishesByCategoryLoading, setDishesByCategoryLoading] = useState(false);
   const [menuAvailable, setMenuAvailable] = useState(false);
+  const API_URL = import.meta.env.VITE_API_URL;
   const theme = useTheme();
 
   const logo = theme.logo;
@@ -78,6 +79,7 @@ export default function PublicMenu() {
         primaryColor={theme.palette.sidebar.bg}
         currentMenu={currentMenu}
         date={formattedDate}
+        API_URL={API_URL}
       />
     ).toBlob();
     const url = URL.createObjectURL(blob);
@@ -167,6 +169,7 @@ const MyDocument = ({
   primaryColor,
   currentMenu,
   date,
+  API_URL
 }) => (
   <Document>
     <Page size="A4" style={styles.page}>
@@ -209,21 +212,9 @@ const MyDocument = ({
             <View>
               <Image
                 source={
-                  item.category?.imageBase64 != null
-                    ? item.category?.imageBase64.startsWith("data:image")
-                      ? item.category.imageBase64
-                      : {
-                          uri: `data:image/${
-                            item.category.imageBase64.startsWith("/9j/")
-                              ? "jpeg"
-                              : item.category.imageBase64.startsWith("iVBORw")
-                              ? "png"
-                              : item.category.imageBase64.startsWith("UklGR ")
-                              ? "webp"
-                              : "jpg"
-                          };base64,${item.category.imageBase64}`,
-                        }
-                    : {uri: "https://www.shutterstock.com/image-vector/vector-isolated-one-round-plate-600nw-2217476735.jpg"}
+                  item.category?.imageId
+                            ? `${API_URL}/file/${item.category.imageId}`
+                            : "https://www.shutterstock.com/image-vector/vector-isolated-one-round-plate-600nw-2217476735.jpg"
                 }
                 style={{
                   width: 75,
@@ -236,7 +227,8 @@ const MyDocument = ({
               />
             </View>
           </View>
-          {item.dishes?.map((dish) => (
+          
+          {item.dishes.length<0? <Text>Ya no hay platillos disponibles</Text> :item.dishes.map((dish) => (
             <View
               style={{
                 flexDirection: "row",
@@ -253,13 +245,11 @@ const MyDocument = ({
                 <>
                   <View style={{ width: "30%" }}>
                     <Image
-                      source={
-                        dish.imageBase64?.length > 0
-                          ? dish.imageBase64
-                          : {
-                              uri: "https://www.shutterstock.com/image-vector/vector-isolated-one-round-plate-600nw-2217476735.jpg",
-                            }
-                      }
+                     source={
+                      dish.imageId
+                                ? `${API_URL}/file/${dish.imageId}`
+                                : "https://www.shutterstock.com/image-vector/vector-isolated-one-round-plate-600nw-2217476735.jpg"
+                    }
                       style={{
                         borderRadius: 100,
                         width: 145,
@@ -371,11 +361,9 @@ const MyDocument = ({
                   <View style={{ width: "30%" }}>
                     <Image
                       source={
-                        dish.imageBase64?.length > 0
-                          ? dish.imageBase64
-                          : {
-                              uri: "src/modules/public-menu/components/PublicMenuTabs.jsx",
-                            }
+                        dish.imageId
+                                  ? `${API_URL}/file/${dish.imageId}`
+                                  : "https://www.shutterstock.com/image-vector/vector-isolated-one-round-plate-600nw-2217476735.jpg"
                       }
                       style={{
                         borderRadius: 100,
