@@ -89,7 +89,7 @@ export default function ScoreServicePage() {
           <Typography variant="h6" component="h1" style={{textAlign: 'center', marginBottom: 4}}>
             {order?.qualification ? 'Ya has calificado este servicio' : 'No pudimos acceder a la orden'}
           </Typography>
-          <img src='\src\assets\ambigu-not-found.png' alt="Ambigu orden no encontrada" style={{ width: 'auto', height: 250 }} />
+          <img src='\assets\ambigu-not-found.png' alt="Ambigu orden no encontrada" style={{ width: 'auto', height: 250 }} />
         </Box>
       ) : (
         <PublicThemeProvider>

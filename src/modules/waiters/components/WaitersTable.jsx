@@ -15,7 +15,6 @@ const useStyles = makeStyles({
 });
 
 const columns = (onEdit, onCStatus, onCLeader, classes) => [
-  { field: "id", headerName: "ID", width: 0, flex: 0 },
   { field: "name", headerName: "NOMBRE COMPLETO", flex: 2, headerAlign: "center", align: "center", renderCell: (params) => (
     <Box display="flex" alignItems="center" justifyContent="center">
       {params.row.name}

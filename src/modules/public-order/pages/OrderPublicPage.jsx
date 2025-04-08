@@ -33,7 +33,7 @@ export default function OrderPublicPage() {
     <Box sx={{ display: 'flex',flexDirection:'column', justifyContent: 'center', alignItems: 'center', height: '100vh', padding: 10, }}>
       <Typography variant="h5" component="h1" style={{textAlign:'center', marginBottom:4}}>Lo sentimos...</Typography>
       <Typography variant="h6" component="h1" style={{textAlign:'center', marginBottom:4}}>No pudimos acceder a la orden</Typography>
-      <img src='\src\assets\ambigu-not-found.png' alt="Ambigu orden no encontrada" style={{ width: 'auto', height:250 }} />
+      <img src='\assets\ambigu-not-found.png' alt="Ambigu orden no encontrada" style={{ width: 'auto', height:250 }} />
     </Box>
   ) : (
     <PublicThemeProvider>
