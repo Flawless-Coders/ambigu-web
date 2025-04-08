@@ -46,7 +46,7 @@ const useTypography = () => {
 
   const fetchActualFonts = async () => {
     try {
-      const response = await api.get("http://localhost:8080/api/theming/fonts");
+      const response = await api.get(`${API_URL}/theming/fonts`);
       const actual = response.data;
       setSavedFonts(actual);
       setDraftFonts(actual);
