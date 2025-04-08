@@ -28,7 +28,10 @@ export default function TablePage() {
         }
     };
 
-    const iconStyle = { marginLeft: 1 };
+    const iconStyle = {
+        fontSize: "large",
+        margin: 0.5
+      };
 
     useEffect(() => {
         if (error) {
@@ -73,16 +76,27 @@ export default function TablePage() {
 
     const validationSchema = Yup.object({
         tableIdentifier: Yup.string()
-            .required("El identificador de la mesa es obligatorio")
-            .max(5, "El identificador de la mesa no puede tener más de 5 caracteres")
-            .min(1, "El identificador de la mesa debe tener al menos 1 carácter")
-    });
-
+          .required("El identificador de la mesa es obligatorio")
+          .max(5, "El identificador de la mesa no puede tener más de 5 caracteres")
+          .min(1, "El identificador de la mesa debe tener al menos 1 carácter")
+          .matches(
+            /^(?!.*(<script|javascript:|onerror|alert|<iframe|<img|<body|<head|<html|find|db|delete|insert|aggregate|data)).*$/,
+            "El identificador no puede contener palabras reservadas o códigos, travieso."
+          )
+      });
+      
     return (
-        <Box sx={{ p: 3 }}>
-
-            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
-            <Typography variant="h1">Mesas</Typography>
+        <>
+        <Box sx={{ padding: 3 }}>
+            <Box sx={{ 
+                    display: "flex", 
+                    flexDirection: { xs: "column", sm: "row" },
+                    justifyContent: "space-between",
+                    alignItems: { xs: "flex-start", sm: "center" },
+                    gap: { xs: 2, sm: 0 },
+                    mb: 2
+                  }}>
+            <Typography variant="h1" marginTop={{xs: 2, md: 0}}>Mesas</Typography>
                 <ToggleButtonGroup
                     color={alignment === "active" ? "primary" : "error"}
                     value={alignment}
@@ -91,10 +105,10 @@ export default function TablePage() {
                     aria-label="active-inactive tables"
                 >
                     <ToggleButton value="active">
-                        Habilitadas{alignment === "active" ? <CheckCircleIcon sx={iconStyle}/> : <CheckCircleOutlinedIcon sx={iconStyle}/>}
+                        Activas{alignment === "active" ? <CheckCircleIcon sx={iconStyle}/> : <CheckCircleOutlinedIcon sx={iconStyle}/>}
                     </ToggleButton>
                     <ToggleButton value="inactive">
-                        Deshabilitadas{alignment === "inactive" ? <CancelIcon sx={iconStyle}/> : <CancelOutlinedIcon sx={iconStyle}/>}
+                        Inactivas{alignment === "inactive" ? <CancelIcon sx={iconStyle}/> : <CancelOutlinedIcon sx={iconStyle}/>}
                     </ToggleButton>
                 </ToggleButtonGroup>
             </Box>
@@ -110,7 +124,7 @@ export default function TablePage() {
                     <TableCard status="deshabilitados" data={filteredTables} loading={loading} fetchTables={fetchTables} setSuccess={setSuccess} />
                 )}
                 {/* Show FloatingAddButton only for active tables */}
-                {alignment === "active" && <FloatingAddButton action={handleOpen} />}
+                 <FloatingAddButton action={handleOpen} />
                 </>
             )}
 
@@ -149,6 +163,7 @@ export default function TablePage() {
                                     label="Identificador de mesa"
                                     fullWidth
                                     margin="normal"
+                                    inputProps={{ maxLength: 6 }}
                                     error={touched.tableIdentifier && Boolean(errors.tableIdentifier)}
                                     helperText={touched.tableIdentifier && errors.tableIdentifier}
                                 />
@@ -168,5 +183,6 @@ export default function TablePage() {
                 </DialogContent>
             </Dialog>
         </Box>
+        </>
     );
 }

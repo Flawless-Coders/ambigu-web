@@ -5,10 +5,11 @@ import { handleGetAllCategories, handleGetCategories, handleGetDishes, handleAdd
 import { useOutletContext } from "react-router-dom";
 import LoaderAmbigu from '../../../kernel/LoaderAmbigu';
 import CustomCard from "../../../kernel/CustomCard";
-import { Box, Typography, Grid, Tab, Tabs,CircularProgress } from '@mui/material';
+import { Box, Typography, Grid, Tab, Tabs, CircularProgress } from '@mui/material';
 import FloatingAddButton from "../../../kernel/FloatingAddButton";
 import { AddDishDialog } from "../components/AddDishDialog";
 import { RemoveDishDialog } from "../components/removeDishDialog";
+import { View } from "@react-pdf/renderer";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -59,12 +60,13 @@ export default function MenuDetails() {
   const [selectedDish, setSelectedDish] = React.useState(null);
   const [loadingCategories, setLoadingCategories] = React.useState(false);
   const [loadingDishes, setLoadingDishes] = React.useState(false);
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const filteredDishes = dishes
-  ? dishes.filter((dish) =>
-    dish.name.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-  : [];
+    ? dishes.filter((dish) =>
+      dish.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    : [];
 
   const handleCloseRegisterDialog = () => setOpenRegisterDialog(false); //Método para cerrar el modal
 
@@ -117,14 +119,18 @@ export default function MenuDetails() {
     handleGetCategories(setError, setLoadingCategories, setCategories, id);
   };
 
-  const resetTab = () => setValue(0);
+  const resetTab = React.useCallback(() => {
+    if (categories.length > 0 && value !== 0) {
+      setValue(0);
+    }
+  }, [categories.length, value]);
 
   React.useEffect(() => {
     if (categories.length > 0) {
       fetchDishes();
     }
   }, [id, value, categories.length]);
-  
+
 
   React.useEffect(() => {
     handleGetAllCategories(setError, setDialogLoading, setDialogCategories);
@@ -137,40 +143,99 @@ export default function MenuDetails() {
   }, [error, setGlobalError]);
 
   return (
-   <Box sx={{ p:3 }}>
+    <Box sx={{ p: 3 }}>
       <Typography variant="h1">{name}</Typography>
-      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-        {loadingCategories ? <LoaderAmbigu /> : (
-          <Tabs value={value} onChange={handleChange} aria-label="menu tabs" variant="scrollable">
-            {categories.map((category) => (
-              <Tab key={category.id} label={category.name} {...a11yProps(category.id)} />
-            ))}
-          </Tabs>
-        )}
-      </Box>
-      {categories.length === 0 && (
-        <Box sx={{ justifyContent:'center', alignItems:'center', display:'flex', height:"70vh"}}>
-        <Typography variant="h6">Aún no hay platillos en el menú</Typography>
+
+      {loadingCategories ? (
+        <Box sx={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center", height: "70vh" }}>
+          <LoaderAmbigu />
         </Box>
-        )}
+      ) : (
+        <>
+          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              aria-label="menu tabs"
+              variant="scrollable"
+            >
+              {categories.map((category) => (
+                <Tab
+                  key={category.id}
+                  label={category.name}
+                  {...a11yProps(category.id)}
+                />
+              ))}
+            </Tabs>
+          </Box>
+          {categories.length === 0 ? (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "50vh",
+              }}
+            >
+              <Typography variant="h3" color="gray">
+                Aún no hay platillos en el menú</Typography>
+            </Box>
+          ) : (
+            <CustomTabPanel value={value} index={value}>
+              {loadingDishes ? (
+                <Box sx={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  display: 'flex',
+                  height: "60vh"
+                }}>
+                  <CircularProgress size={50} color="primary" />
+                </Box>
+              ) : (
+                <>
+                  <Grid container columnSpacing={{ xs: 1, sm: 2, md: 3 }} rowSpacing={3}>
+                    {filteredDishes.length > 0 && (
+                      filteredDishes.map((dish) => (
+                        <CustomCard
+                          key={dish.id}
+                          title={dish.name}
+                          image={
+                            dish?.imageId
+                              ? `${API_URL}/file/${dish.imageId}`
+                              : "https://www.shutterstock.com/image-vector/vector-isolated-one-round-plate-600nw-2217476735.jpg"
+                          }
+                          price={`${dish.price}`}
+                          isMenu={true}
+                          remove={() => handleOpenRemoveDialog(dish)}
+                        />
+                      ))
+                    )}
+                  </Grid>
 
-      {loadingDishes ? <Box sx={{ justifyContent:'center', alignItems:'center', display:'flex', height:"80vh"}}><CircularProgress sx={{ fontSize: 50}} color="primary" /></Box> : (
-        <CustomTabPanel value={value} index={value}>
-          <Grid container columnSpacing={{ xs: 1, sm: 2, md: 3 }} rowSpacing={3}>
-            {filteredDishes.map((dish) => (
-              <CustomCard
-                key={dish.id}
-                title={dish.name}
-                image={dish.imageBase64 || "https://placehold.co/300x200"}
-                price={`$${dish.price}`}
-                isMenu={true}
-                remove={() => handleOpenRemoveDialog(dish)}
-              />
-            ))}
-          </Grid>
-        </CustomTabPanel>
+                  {filteredDishes.length == 0 && (
+
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        height: "50vh",
+                      }}
+                    >
+                      <Typography variant="h3" color="gray">
+                        Los platillos de esta categoría están desactivados</Typography>
+                    </Box>
+
+
+                  )}
+
+
+                </>
+              )}
+            </CustomTabPanel>
+          )}
+        </>
       )}
-
       <FloatingAddButton action={handleOpenRegisterDialog} />
 
       <AddDishDialog
@@ -184,7 +249,7 @@ export default function MenuDetails() {
         buttonLoading={loading}
         menuId={id}
         categories={dialogCategories}
-        handleGetDishesByCategory={handleGetDishesByCategory} 
+        handleGetDishesByCategory={handleGetDishesByCategory}
       />
 
       <RemoveDishDialog

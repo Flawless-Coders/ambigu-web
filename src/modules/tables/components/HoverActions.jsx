@@ -20,7 +20,11 @@ export default function HoverActions({ isEnabled, showFab, fetchTables, id, tabl
         updatedTableIdentifier: Yup.string()
             .required("El identificador es obligatorio")
             .max(5, "Máximo 5 caracteres")
-            .min(1, "Mínimo 1 carácter"),
+            .min(1, "Mínimo 1 carácter")
+            .matches(
+                /^(?!.*(<script|javascript:|onerror|alert|<iframe|<img|<body|<head|<html|find|db|delete|insert|aggregate|data)).*$/,
+                "El identificador no puede contener palabras reservadas o códigos, travieso."
+              )
     });
 
     const handleOpenDialog = (action) => {
@@ -151,6 +155,7 @@ export default function HoverActions({ isEnabled, showFab, fetchTables, id, tabl
                                         label="Nuevo identificador"
                                         fullWidth
                                         margin="normal"
+                                        inputProps={{ maxLength: 6 }}
                                         error={Boolean(touched.updatedTableIdentifier && errors.updatedTableIdentifier)}
                                         helperText={touched.updatedTableIdentifier && errors.updatedTableIdentifier}
                                     />
