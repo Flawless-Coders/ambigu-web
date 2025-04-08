@@ -35,7 +35,10 @@ export default function WaitersPage() {
     }
   }
 
-  const iconStyle = { marginLeft: 1 };
+  const iconStyle = {
+    fontSize: "large",
+    margin: 0.5
+  };
   // Abrir modal para registrar un nuevo mesero
   const handleOpenRegisterDialog = () => {
     setOpenRegisterDialog(true);
@@ -100,7 +103,14 @@ export default function WaitersPage() {
   return (
     <>
       <Box sx={{ p: 3 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+      <Box sx={{ 
+                    display: "flex", 
+                    flexDirection: { xs: "column", sm: "row" },
+                    justifyContent: "space-between",
+                    alignItems: { xs: "flex-start", sm: "center" },
+                    gap: { xs: 2, sm: 0 },
+                    mb: 2
+                  }}>
           <Typography variant="h1">Meseros</Typography>
           <ToggleButtonGroup
             color={alignment === "active" ? "primary" : "error"}
