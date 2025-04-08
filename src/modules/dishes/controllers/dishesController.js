@@ -1,116 +1,166 @@
-import { createDish, disableDish, getCategories, getCategoryById, getDishById, updateDish, getDishesByCategoryAndStatus, updateDishImage } from "../services/dishesService";
+import {
+  createDish,
+  disableDish,
+  getCategories,
+  getCategoryById,
+  getDishById,
+  updateDish,
+  getDishesByCategoryAndStatus,
+  updateDishImage,
+} from "../services/dishesService";
 
-export const handleGetCategories = async (setCategories, setError, setLoading) => {
-    setLoading(true);
-    try {
-        const data = await getCategories();
-        setCategories(data);
-    } catch {
-        setError("Error al obtener las categorías");
-    } finally {
-        setLoading(false);
-    }
+export const handleGetCategories = async (
+  setCategories,
+  setError,
+  setLoading
+) => {
+  setLoading(true);
+  try {
+    const data = await getCategories();
+    setCategories(data);
+  } catch {
+    setError("Error al obtener las categorías");
+  } finally {
+    setLoading(false);
+  }
 };
 
-export const handleGetDishesByCategoryAndStatus = async (categoryId, available, setDishes, setError, setLoading) => {
-    setLoading(true);
-    try {
-        const data = await getDishesByCategoryAndStatus(categoryId, available);
-        setDishes(data);
-    } catch {
-        setError("Error al obtener detalles del mesero");
-    } finally {
-        setLoading(false);
-    }
+export const handleGetDishesByCategoryAndStatus = async (
+  categoryId,
+  available,
+  setDishes,
+  setError,
+  setLoading
+) => {
+  setLoading(true);
+  try {
+    const data = await getDishesByCategoryAndStatus(categoryId, available);
+    setDishes(data);
+  } catch {
+    setError("Error al obtener detalles del mesero");
+  } finally {
+    setLoading(false);
+  }
 };
 
+export const handleCreateDish = async (
+  data,
+  setSuccess,
+  setLoading,
+  setCreatedDish,
+  setError
+) => {
+  setLoading(true);
+  try {
+    const response = await createDish(data);
+    setSuccess("Platillo registrado correctamente");
+    setCreatedDish(true);
+    return response;
+  } catch (error) {
+    setError("El nombre ingresado ya existe.");
+    console.log(error);
+    console.log(error);
+  } finally {
+    setLoading(false);
+  }
+};
 
-export const handleCreateDish = async (data, setSuccess, setLoading, setCreatedDish, setError) => {
-    setLoading(true);
-    try {
-        const response = await createDish(data);
-        setSuccess("Platillo registrado correctamente");
-        setCreatedDish(true);
-        return response;
-    } catch {
-        setError("Error al registrar el platillo");
-        throw new Error("Error al registrar el platillo");
-    } finally {
-        setLoading(false);
+export const handleGetDishById = async (
+  id,
+  setSelectedDish,
+  setModalLoading,
+  setCategoryDish
+) => {
+  setModalLoading(true);
+  try {
+    const response = await getDishById(id);
+    const category = await getCategoryById(response.category);
+
+    if (category) {
+      setCategoryDish(category);
+    } else {
+      console.error("Category is undefined or null");
     }
-}
+    setSelectedDish(response);
+  } catch (error) {
+    console.error("Error al encontrar el platillo:", error);
+  } finally {
+    setModalLoading(false);
+  }
+};
 
-export const handleGetDishById = async (id, setSelectedDish, setModalLoading, setCategoryDish) => {
-    setModalLoading(true);
-    try {
-        const response = await getDishById(id);
-        const category = await getCategoryById(response.category);
+export const handleGetCategoryById = async (
+  id,
+  setDishCategory,
+  setModalLoading,
+  setError
+) => {
+  setModalLoading(true);
+  try {
+    const response = await getCategoryById(id);
+    setDishCategory(response);
+  } catch {
+    setError("Error al encontrar la categoría del platillo");
+  } finally {
+    setModalLoading(false);
+  }
+};
 
-        if (category) {
-            setCategoryDish(category);
-        } else {
-            console.error("Category is undefined or null");
-        }
-        setSelectedDish(response);        
-    } catch (error) {
-        console.error("Error al encontrar el platillo:", error);
-    } finally {
-        setModalLoading(false);
+export const handleUpdateDish = async (
+  id,
+  data,
+  setSuccess,
+  setLoading,
+  setUpdatedDish,
+  setError,
+  imageFile
+) => {
+  setLoading(true);
+  try {
+    const { imageBase64, ...dishData } = data;
+
+    await updateDish(id, dishData);
+
+    if (imageFile) {
+      const formData = new FormData();
+      formData.append("image", imageFile);
+      await updateDishImage(id, formData);
     }
-}
+    setSuccess("Platillo modificado correctamente");
+    setUpdatedDish(true);
+  } catch {
+    setError("Error al modificar el platillo");
+  } finally {
+    setLoading(false);
+  }
+};
 
-export const handleGetCategoryById = async (id, setDishCategory, setModalLoading, setError) => {
-    setModalLoading(true);
-    try {
-        const response = await getCategoryById(id);   
-        setDishCategory(response);
-    } catch {
-        setError("Error al encontrar la categoría del platillo");
-    } finally {
-        setModalLoading(false);
+export const handleChangeStatusDish = async (
+  id,
+  setSuccess,
+  setLoading,
+  setError,
+  setUpdatedDish,
+  setOpenModal,
+  disable
+) => {
+  setLoading(true);
+  try {
+    await disableDish(id);
+    setOpenModal(false);
+    if (disable) {
+      setSuccess("Platillo deshabilitado correctamente");
+    } else {
+      setSuccess("Platillo habilitado correctamente");
     }
-}
-
-
-export const handleUpdateDish = async (id, data, setSuccess, setLoading, setUpdatedDish, setError, imageFile) => {
-    setLoading(true);
-    try {
-        const { imageBase64, ...dishData} = data;
-
-        await updateDish(id, dishData);
-
-        if(imageFile){
-            const formData = new FormData();
-            formData.append("image", imageFile);
-            await updateDishImage(id, formData);
-        }
-        setSuccess("Platillo modificado correctamente");
-        setUpdatedDish(true);
-    } catch {
-        setError("Error al modificar el platillo");
-    } finally {
-        setLoading(false);
+    setUpdatedDish(true);
+  } catch {
+    if (disable) {
+      setError("Error al deshabilitar el platillo");
+    } else {
+      setError("Error al habilitar el platillo");
     }
-}
-
-export const handleChangeStatusDish = async (id, setSuccess, setLoading, setError, setUpdatedDish, setOpenModal, disable) => {    
-    setLoading(true);
-    try {
-        await disableDish(id);
-        setOpenModal(false);
-        if(disable){
-            setSuccess("Platillo deshabilitado correctamente");
-        }else{
-            setSuccess("Platillo habilitado correctamente");
-        }
-        setUpdatedDish(true);
-    } catch {
-        if(disable){
-            setError("Error al deshabilitar el platillo");
-        }else{
-            setError("Error al habilitar el platillo");
-        }
-    } finally {
-        setLoading(false);
-    }
-}
+  } finally {
+    setLoading(false);
+  }
+};
