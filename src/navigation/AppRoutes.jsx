@@ -68,6 +68,9 @@ const AppRoutes = () => {
       <Route path="/password-recovery" element={<PasswordRecoveryPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/order-client/:token" element={<OrderPublicPage />} />
+      <Route path="/order-client" element={<div style={{ display: 'flex', justifyContent: 'center',alignItems: 'center',flexDirection: 'column',height: '100vh', fontSize:25}}>
+        <img src="\src\assets\error-404.png" alt="not-found" style={{width:280}}/>
+        Página no encontrada</div>} />
       <Route path="/score-service/:token" element={<ScoreServicePage />} />
       <Route path="/public-menu" element={<PublicMenu />} />
       
