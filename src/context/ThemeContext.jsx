@@ -8,12 +8,14 @@ const loadFontInDOM = (font) => {
   if (!document.getElementById(fontId)) {
     const link = document.createElement("link");
     link.id = fontId;
-    link.href = `https://fonts.googleapis.com/css?family=${font.replace(/ /g, "+")}`;
+    link.href = `https://fonts.googleapis.com/css?family=${font.replace(
+      / /g,
+      "+"
+    )}`;
     link.rel = "stylesheet";
     document.head.appendChild(link);
   }
 };
-
 
 const normalizeTheme = (themeData) => {
   const darkenColor = (color, amount) => {
@@ -24,8 +26,8 @@ const normalizeTheme = (themeData) => {
     }
     const num = parseInt(color, 16);
     let r = (num >> 16) - amount;
-    let b = ((num >> 8) & 0x00FF) - amount;
-    let g = (num & 0x0000FF) - amount;
+    let b = ((num >> 8) & 0x00ff) - amount;
+    let g = (num & 0x0000ff) - amount;
     r = r < 0 ? 0 : r;
     b = b < 0 ? 0 : b;
     g = g < 0 ? 0 : g;
@@ -42,7 +44,8 @@ const normalizeTheme = (themeData) => {
         main: themeData?.secondaryColor || baseTheme.palette.secondary.main,
       },
       background: {
-        default: themeData?.backgroundColor || baseTheme.palette.background.default,
+        default:
+          themeData?.backgroundColor || baseTheme.palette.background.default,
       },
       sidebar: {
         bg: themeData?.secondaryColor || baseTheme.palette.sidebar.bg,
@@ -59,32 +62,35 @@ const normalizeTheme = (themeData) => {
       fontFamily: themeData?.bodyFont || baseTheme.typography.fontFamily,
       h1: {
         fontFamily: themeData?.headerFont || baseTheme.typography.h1.fontFamily,
-        fontSize: "30px"
+        fontSize: "30px",
       },
       h2: {
         fontFamily: themeData?.headerFont || baseTheme.typography.h2.fontFamily,
-        fontSize: "24px"
+        fontSize: "24px",
       },
       h3: {
         fontFamily: themeData?.headerFont || baseTheme.typography.h3.fontFamily,
       },
       body1: {
-        fontFamily: themeData?.bodyFont || baseTheme.typography.body1.fontFamily,
+        fontFamily:
+          themeData?.bodyFont || baseTheme.typography.body1.fontFamily,
       },
       body2: {
-        fontFamily: themeData?.paragraphFont || baseTheme.typography.body2.fontFamily,
+        fontFamily:
+          themeData?.paragraphFont || baseTheme.typography.body2.fontFamily,
       },
       logo: {
         fontFamily: themeData?.logoFont || baseTheme.typography.logo.fontFamily,
         fontSize: baseTheme.typography.logo.fontSize,
       },
       footer: {
-        fontFamily: themeData?.footerFont || baseTheme.typography.footer.fontFamily,
+        fontFamily:
+          themeData?.footerFont || baseTheme.typography.footer.fontFamily,
         fontSize: baseTheme.typography.footer.fontSize,
-      }
+      },
     },
     logo: themeData?.logo,
-    logoSmall: themeData?.logoSmall
+    logoSmall: themeData?.logoSmall,
   });
 };
 
@@ -95,10 +101,20 @@ export const ThemeProviderComponent = ({ children }) => {
 
   // Cargar la fuente dinámica cuando themeData.bodyFont cambie
   useEffect(() => {
-    if (themeData?.bodyFont) {
-      loadFontInDOM(themeData.bodyFont);
-    }
-  }, [themeData?.bodyFont]);
+    if (!themeData) return;
+
+    const fontsToLoad = [
+      themeData.bodyFont,
+      themeData.headerFont,
+      themeData.paragraphFont,
+      themeData.logoFont,
+      themeData.footerFont,
+    ];
+
+    fontsToLoad.forEach((font) => {
+      if (font) loadFontInDOM(font);
+    });
+  }, [themeData]);
 
   // Normalizar y aplicar el tema
   const theme = useMemo(() => normalizeTheme(themeData), [themeData]);
