@@ -95,7 +95,7 @@ const RegisterDialog = ({ open, handleClose, category, onSuccess }) => {
             try {
               if (category) {
                 await handleUpdateCategory(
-                  category.id, values.name, values.imageBase64, values.status, imageFile,
+                  category.id, values.name, values.status, imageFile, 
                   setSuccess, setError, setButtonLoading, onSuccess
                 );
               } else {
@@ -110,9 +110,7 @@ const RegisterDialog = ({ open, handleClose, category, onSuccess }) => {
 
               await onSuccess();
 
-              setTimeout(() => {
-                handleClose();
-              }, 300);
+              handleClose();
             } catch (error) {
               console.error("Error en la operación:", error);
               setError(error.message || "Error al procesar la operación");

@@ -145,6 +145,8 @@ export default function DishesCategoryTabs(props) {
     );
   };
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   return (
     <>
       {loading ? (
@@ -192,8 +194,8 @@ export default function DishesCategoryTabs(props) {
                     <CustomCard
                       key={dish.id}
                       image={
-                        dish.imageBase64
-                          ? dish.imageBase64
+                        dish?.imageId
+                          ? `${API_URL}/file/${dish.imageId}`
                           : "https://www.shutterstock.com/image-vector/vector-isolated-one-round-plate-600nw-2217476735.jpg"
                       }
                       chipTitle={
@@ -250,7 +252,7 @@ export default function DishesCategoryTabs(props) {
         setError={setGlobalError}
         disable={disableModal}
         enable={enableModal}
-        image={selectedDish?.imageBase64}
+        image={selectedDish?.imageId}
       />
     </>
   );

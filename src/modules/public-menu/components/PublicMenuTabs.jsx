@@ -48,6 +48,7 @@ export default function PublicMenuTabs(props) {
   const [categoryId, setCategoryId] = React.useState("");
   const [openModal, setOpenModal] = React.useState(false);
   const [dish, setDish] = React.useState({});
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const fetchDishesByCategory = () => {
     handleGetCurrentMenuDishesByCategory(
@@ -156,8 +157,8 @@ export default function PublicMenuTabs(props) {
                       <DishCard
                         key={dish.id}
                         image={
-                          dish.imageBase64
-                            ? dish.imageBase64
+                          dish?.imageId
+                            ? `${API_URL}/file/${dish.imageId}`
                             : "https://www.shutterstock.com/image-vector/vector-isolated-one-round-plate-600nw-2217476735.jpg"
                         }
                         name={dish.name}
@@ -165,7 +166,7 @@ export default function PublicMenuTabs(props) {
                         price={dish.price}
                         seeMore={() => {
                           handleSeeMoreModal(
-                            dish.imageBase64,
+                            dish.imageId,
                             dish.name,
                             dish.description,
                             dish.price
@@ -184,8 +185,8 @@ export default function PublicMenuTabs(props) {
                     height: "50vh",
                   }}
                 >
-                  <Typography variant="h3" color="gray">
-                    No hay mas platillos de esta categoría
+                  <Typography variant="h3" color="gray" textAlign="center">
+                    Pronto habrá más platillos de esta categoría.
                   </Typography>
                 </Box>
               )}

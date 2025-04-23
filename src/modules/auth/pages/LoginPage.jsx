@@ -31,7 +31,7 @@ if (user) {
 
   return (
     <ThemeProvider theme={theme}>
-    <AuthLayout imageSrc="src/assets/ambigu-login.png">
+    <AuthLayout imageSrc="/assets/ambigu-login.png">
       <Typography variant="h5" fontWeight="bold" align="center">
         Iniciar Sesión
       </Typography>

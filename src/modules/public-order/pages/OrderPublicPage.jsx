@@ -16,7 +16,6 @@ export default function OrderPublicPage() {
   const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
-    console.log("num", token);
     axios.get(`${API_URL}/order/public/${token}`)
       .then(response => setOrder(response.data))
       .catch(() => navigate("/"))
@@ -29,6 +28,14 @@ export default function OrderPublicPage() {
   console.log("datos de orden: ", order);
   
   return (
+    <>
+    {!order && !loading ? (
+    <Box sx={{ display: 'flex',flexDirection:'column', justifyContent: 'center', alignItems: 'center', height: '100vh', padding: 10, }}>
+      <Typography variant="h5" component="h1" style={{textAlign:'center', marginBottom:4}}>Lo sentimos...</Typography>
+      <Typography variant="h6" component="h1" style={{textAlign:'center', marginBottom:4}}>No pudimos acceder a la orden</Typography>
+      <img src='\assets\ambigu-not-found.png' alt="Ambigu orden no encontrada" style={{ width: 'auto', height:250 }} />
+    </Box>
+  ) : (
     <PublicThemeProvider>
     <HeaderPublic section="Cuenta" />
     <Box sx={{ p: 3 }}>
@@ -59,7 +66,7 @@ export default function OrderPublicPage() {
             bottom: 20,
             right: 20,
             width: '100%',
-            maxWidth: { xs: 280, sm: 420, md: 400, lg: 450 },
+            maxWidth: { xs: 280, sm: 380, md: 400, lg: 450 },
             zIndex: 900
           }}
         >
@@ -94,5 +101,8 @@ export default function OrderPublicPage() {
       </Grid>
     </Box>
     </PublicThemeProvider>
+    )}
+    </>
+    
   );
 }

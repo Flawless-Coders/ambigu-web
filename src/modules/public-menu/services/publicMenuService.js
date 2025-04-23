@@ -40,3 +40,13 @@ export const getCurrentMenuCategoriesAndDishes = async () => {
         throw error;
     }
 };
+
+export const getCurrentLogo = async () => {
+    try {
+        const response = await api.get(`${API_URL}/theming/public-theme/default_theme`)
+        return response.data;
+    } catch (error) {
+        console.error("Error al obtener los platillos del menú actual:", error);
+        throw error;
+    }
+};

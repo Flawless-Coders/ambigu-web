@@ -24,33 +24,24 @@ export const handleGetMenuById = async(id,setSelectedMenu,setError, setDialogLoa
     }
 }
 
-export const handleGetMenuPhotos = async (menuData, setPhotos, setLoading) => {
+export const handleGetMenuPhotos = (menuData, setPhotos, setLoading) => {
     if (menuData) {
         setLoading(true);
         const newPhotos = {};
 
-        try {
-            await Promise.all(
-                menuData.map(async (menu) => {
-                    if (menu.photoId) {
-                        try {
-                            const photo = await getMenuPhoto(menu.photoId);
-                            newPhotos[menu.photoId] = photo;
-                        } catch (error) {
-                            console.error(`Error obteniendo la foto para photoId ${menu.photoId}:`, error);
-                            newPhotos[menu.photoId] = "https://placehold.co/300x200"; // Imagen por defecto
-                        }
-                    }
-                })
-            );
-            setPhotos(newPhotos); // Actualiza el estado con las URLs de las fotos
-        } catch (error) {
-            console.error("Error en handleGetMenuPhotos:", error);
-        } finally {
-            setLoading(false);
-        }
+        menuData.forEach((menu) => {
+            if (menu.photoId) {
+                newPhotos[menu.photoId] = getMenuPhoto(menu.photoId);
+            } else {
+                newPhotos[menu.photoId] = "https://placehold.co/300x200"; // Imagen por defecto
+            }
+        });
+
+        setPhotos(newPhotos);
+        setLoading(false);
     }
 };
+
 
 
 export const handleCreateMenu = async (menu, setError, setSuccess, setLoading) => {
@@ -173,12 +164,15 @@ export const handleAddDish = async (menuId, dishId, setError, setSuccess, setLoa
     }
 };
 
-export const handleGetDishesByCategory = async(setDialogDishes, categoryId) =>{
+export const handleGetDishesByCategory = async(setDialogDishes, categoryId, setLoading) =>{
+    setLoading(true);
     try{
         const response = await getDishByCategory(categoryId);
         setDialogDishes(response);
     }catch{
         console.log ("Error al obtener los menus");
+    }finally{
+        setLoading(false);
     }
 }
 

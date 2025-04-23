@@ -63,6 +63,16 @@ export const updateDish = async (id, data) => {
     }
 }
 
+export const updateDishImage = async (id, data) => {
+    try {
+        const response = await api.patch(`${API_URL}/dishes/image/${id}`, data);
+        return response.data;
+    }catch (error){
+        console.error("Error al modificar la imagen del platillo:", error);
+        throw error;
+    }
+}
+
 export const disableDish = async (id) => {
     try {
         const response = await api.put(`${API_URL}/dishes/status/${id}`);
