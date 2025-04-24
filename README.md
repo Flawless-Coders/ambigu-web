@@ -16,7 +16,7 @@ Este es el frontend de Ambigu, una aplicación web de gestión para restaurantes
 
 ## ⚙️ Configuración del entorno
 El archivo .env se utiliza para definir variables de entorno, como la URL base de la API:
-    ⚠️ VITE_API_URL=http://tu-ip/api
+    ⚠️ VITE_API_URL=http://tu-ip:8080/api
 
 ## ▶️ Cómo ejecutar el proyecto
 # 1. clona el repositorio
