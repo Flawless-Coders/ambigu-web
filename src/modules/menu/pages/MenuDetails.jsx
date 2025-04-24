@@ -5,7 +5,7 @@ import { handleGetAllCategories, handleGetCategories, handleGetDishes, handleAdd
 import { useOutletContext } from "react-router-dom";
 import LoaderAmbigu from '../../../kernel/LoaderAmbigu';
 import CustomCard from "../../../kernel/CustomCard";
-import { Box, Typography, Grid, Tab, Tabs,CircularProgress } from '@mui/material';
+import { Box, Typography, Grid, Tab, Tabs, CircularProgress } from '@mui/material';
 import FloatingAddButton from "../../../kernel/FloatingAddButton";
 import { AddDishDialog } from "../components/AddDishDialog";
 import { RemoveDishDialog } from "../components/removeDishDialog";
@@ -63,10 +63,10 @@ export default function MenuDetails() {
   const API_URL = import.meta.env.VITE_API_URL;
 
   const filteredDishes = dishes
-  ? dishes.filter((dish) =>
-    dish.name.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-  : [];
+    ? dishes.filter((dish) =>
+      dish.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    : [];
 
   const handleCloseRegisterDialog = () => setOpenRegisterDialog(false); //Método para cerrar el modal
 
@@ -130,7 +130,7 @@ export default function MenuDetails() {
       fetchDishes();
     }
   }, [id, value, categories.length]);
-  
+
 
   React.useEffect(() => {
     handleGetAllCategories(setError, setDialogLoading, setDialogCategories);
@@ -145,7 +145,7 @@ export default function MenuDetails() {
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h1">{name}</Typography>
-  
+
       {loadingCategories ? (
         <Box sx={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center", height: "70vh" }}>
           <LoaderAmbigu />
@@ -153,72 +153,83 @@ export default function MenuDetails() {
       ) : (
         <>
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-            <Tabs 
-              value={value} 
-              onChange={handleChange} 
-              aria-label="menu tabs" 
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              aria-label="menu tabs"
               variant="scrollable"
             >
               {categories.map((category) => (
-                <Tab 
-                  key={category.id} 
-                  label={category.name} 
-                  {...a11yProps(category.id)} 
+                <Tab
+                  key={category.id}
+                  label={category.name}
+                  {...a11yProps(category.id)}
                 />
               ))}
             </Tabs>
           </Box>
           {categories.length === 0 ? (
-            <Box sx={{ 
-              justifyContent: 'center', 
-              alignItems: 'center', 
-              display: 'flex', 
-              height: "70vh"
-            }}>
-              <Typography variant="h6">Aún no hay platillos en el menú</Typography>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "50vh",
+              }}
+            >
+              <Typography variant="h3" color="gray">
+                Aún no hay platillos en el menú</Typography>
             </Box>
           ) : (
             <CustomTabPanel value={value} index={value}>
               {loadingDishes ? (
-                <Box sx={{ 
-                  justifyContent: 'center', 
-                  alignItems: 'center', 
-                  display: 'flex', 
+                <Box sx={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  display: 'flex',
                   height: "60vh"
                 }}>
                   <CircularProgress size={50} color="primary" />
                 </Box>
               ) : (
                 <>
-                <Grid container columnSpacing={{ xs: 1, sm: 2, md: 3 }} rowSpacing={3}>
-                  {filteredDishes.length > 0 ? (
-                    filteredDishes.map((dish) => (
-                      <CustomCard
-                        key={dish.id}
-                        title={dish.name}
-                        image={
-                          dish?.imageId
-                            ? `${API_URL}/file/${dish.imageId}`
-                            : "https://www.shutterstock.com/image-vector/vector-isolated-one-round-plate-600nw-2217476735.jpg"
-                        }
-                        price={`${dish.price}`}
-                        isMenu={true}
-                        remove={() => handleOpenRemoveDialog(dish)}
-                      />
-                    ))
-                  ) : (
-                    <Box sx={{ 
-                      width: "100%", 
-                      display: "flex", 
-                      justifyContent: "center", 
-                      mt: 4 
-                    }}>
-                      <Typography variant="body1">
-                        Los platillos de esta categoría están desactivados
-                      </Typography>
+                  <Grid container columnSpacing={{ xs: 1, sm: 2, md: 3 }} rowSpacing={3}>
+                    {filteredDishes.length > 0 && (
+                      filteredDishes.map((dish) => (
+                        <CustomCard
+                          key={dish.id}
+                          title={dish.name}
+                          image={
+                            dish?.imageId
+                              ? `${API_URL}/file/${dish.imageId}`
+                              : "https://www.shutterstock.com/image-vector/vector-isolated-one-round-plate-600nw-2217476735.jpg"
+                          }
+                          price={`${dish.price}`}
+                          isMenu={true}
+                          remove={() => handleOpenRemoveDialog(dish)}
+                        />
+                      ))
+                    )}
+                  </Grid>
+
+                  {filteredDishes.length == 0 && (
+
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        height: "50vh",
+                      }}
+                    >
+                      <Typography variant="h3" color="gray">
+                        Los platillos de esta categoría están desactivados</Typography>
                     </Box>
+
+
                   )}
-                </Grid>
+
+
                 </>
               )}
             </CustomTabPanel>
@@ -226,7 +237,7 @@ export default function MenuDetails() {
         </>
       )}
       <FloatingAddButton action={handleOpenRegisterDialog} />
-  
+
       <AddDishDialog
         open={openRegisterDialog}
         onClose={handleCloseRegisterDialog}
@@ -238,9 +249,9 @@ export default function MenuDetails() {
         buttonLoading={loading}
         menuId={id}
         categories={dialogCategories}
-        handleGetDishesByCategory={handleGetDishesByCategory} 
+        handleGetDishesByCategory={handleGetDishesByCategory}
       />
-  
+
       <RemoveDishDialog
         open={openRemoveDialog}
         onClose={handleCloseRemoveDishDialog}

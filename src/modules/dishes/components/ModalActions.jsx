@@ -6,7 +6,7 @@ import Fade from "@mui/material/Fade";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
-import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
+import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
@@ -15,8 +15,8 @@ import * as Yup from "yup";
 import { Formik, Form, Field } from "formik";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import { Warning } from '@mui/icons-material'
-import { motion } from 'framer-motion'
+import { Warning } from "@mui/icons-material";
+import { motion } from "framer-motion";
 
 import {
   handleChangeStatusDish,
@@ -99,15 +99,14 @@ export default function ModalActions({
   React.useEffect(() => {
     if (dishCategory != null && image != null) {
       const isBase64 = image.startsWith("data:image");
-  
+
       setDishImage(
         isBase64 ? image : `${import.meta.env.VITE_API_URL}/file/${image}`
       );
-  
+
       setDishLoading(false);
     }
   }, [dish, dishCategory, image]);
-  
 
   const fileInputRef = React.useRef(null);
 
@@ -130,14 +129,20 @@ export default function ModalActions({
   };
 
   const validationSchema = Yup.object({
-    name: Yup.string().required("El nombre es obligatorio").max(26, "El nombre no puede tener mas de 25 caracteres").matches(
-      /^(?!.*(<script|javascript:|onerror|alert|<iframe|<img|<body|<head|<html|find|db|delete|insert|aggregate|data)).*$/,
-      "El nombre no puede contener palabras reservadas o códigos, travieso."
-    ),
-    description: Yup.string().required("La descripción es obligatoria").max(121, "La descripción no puede tener mas de 120 caracteres").matches(
-      /^(?!.*(<script|javascript:|onerror|alert|<iframe|<img|<body|<head|<html|find|db|delete|insert|aggregate|data)).*$/,
-      "La descripción no puede contener palabras reservadas o códigos, travieso."
-    ),
+    name: Yup.string()
+      .required("El nombre es obligatorio")
+      .max(26, "El nombre no puede tener mas de 25 caracteres")
+      .matches(
+        /^(?!.*(<script|javascript:|onerror|alert|<iframe|<img|<body|<head|<html|find|db|delete|insert|aggregate|data)).*$/,
+        "El nombre no puede contener palabras reservadas o códigos, travieso."
+      ),
+    description: Yup.string()
+      .required("La descripción es obligatoria")
+      .max(121, "La descripción no puede tener mas de 120 caracteres")
+      .matches(
+        /^(?!.*(<script|javascript:|onerror|alert|<iframe|<img|<body|<head|<html|find|db|delete|insert|aggregate|data)).*$/,
+        "La descripción no puede contener palabras reservadas o códigos, travieso."
+      ),
     price: Yup.number()
       .typeError("Ingrese el precio en números")
       .moreThan(0, "El precio debe de ser mayor que 0")
@@ -158,7 +163,7 @@ export default function ModalActions({
     setSuccess(null);
     try {
       const { imageBase64, ...dishData } = values;
-  
+
       // 1. Crear platillo sin imagen
       const createdDish = await handleCreateDish(
         dishData,
@@ -167,7 +172,7 @@ export default function ModalActions({
         setCreatedDish,
         setError
       );
-  
+
       // 2. Si hay imagen válida, subirla con FormData
       if (imageBase64 && imageBase64 !== placeHolderImg && createdDish?.id) {
         const blob = await (await fetch(imageBase64)).blob();
@@ -175,7 +180,7 @@ export default function ModalActions({
         formData.append("image", blob, `${createdDish.name}.jpg`);
         await updateDishImage(createdDish.id, formData);
       }
-  
+
       handleClose();
     } catch (e) {
       console.error("Error al crear el platillo:", e);
@@ -193,7 +198,7 @@ export default function ModalActions({
       setSuccess,
       setLoading,
       setUpdatedDish,
-      setError, 
+      setError,
       imageFile
     );
     handleClose();
@@ -278,16 +283,16 @@ export default function ModalActions({
                 transition={{
                   type: "spring",
                   stiffness: 260,
-                  damping: 20
+                  damping: 20,
                 }}
               >
-                 {disable ? (
-                <Warning sx={iconStyle} color="error" />
-              ) : (
-                <HelpOutlineIcon sx={iconStyle} color="success" />
-              )}
+                {disable ? (
+                  <Warning sx={iconStyle} color="error" />
+                ) : (
+                  <HelpOutlineIcon sx={iconStyle} color="success" />
+                )}
               </motion.div>
-             
+
               <Typography
                 variant="subtitle1"
                 color="gray"
@@ -446,7 +451,7 @@ export default function ModalActions({
                             marginBottom: "10px",
                             maxHeight: "150px",
                             marginTop: 25,
-                            objectFit: "contain"
+                            objectFit: "contain",
                           }}
                         />
                         <input
@@ -482,16 +487,13 @@ export default function ModalActions({
                       <Button
                         variant="contained"
                         style={{
-                          backgroundColor: update ? "#7B1FA2" : "primary", 
-                          color: update && "white" , 
-                      }}
+                          backgroundColor: update ? "#7B1FA2" : "primary",
+                          color: update && "white",
+                        }}
                         onClick={handleClick}
                       >
                         <CloudUploadOutlinedIcon />
-                        <Typography
-                          variant="body1"
-                          sx={{ marginLeft: 1 }}
-                        >
+                        <Typography variant="body1" sx={{ marginLeft: 1 }}>
                           SUBIR IMAGEN
                         </Typography>
                       </Button>
@@ -504,9 +506,9 @@ export default function ModalActions({
                       <Button
                         variant="outlined"
                         style={{
-                          borderColor: update ? "#7B1FA2" : "primary", 
-                          color: update ? "#7B1FA2" : "primary", 
-                      }}
+                          borderColor: update ? "#7B1FA2" : "primary",
+                          color: update ? "#7B1FA2" : "primary",
+                        }}
                         size="large"
                         sx={{ width: "40%" }}
                         onClick={handleClose}
@@ -516,9 +518,9 @@ export default function ModalActions({
                       <Button
                         variant="contained"
                         style={{
-                          backgroundColor: update ? "#7B1FA2" : "primary", 
-                          color: update && "white", 
-                      }}
+                          backgroundColor: update ? "#7B1FA2" : "primary",
+                          color: update && "white",
+                        }}
                         size="large"
                         sx={{ width: "40%" }}
                         type="submit"

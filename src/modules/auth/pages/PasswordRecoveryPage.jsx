@@ -81,7 +81,7 @@ const PasswordRecoveryPage = () => {
       >
         <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
           <img 
-            src="src/assets/ambigu-icon.png" 
+            src="/assets/ambigu-icon.png" 
             alt="Ambigu Logo" 
             style={{ maxWidth: '150px', height: 'auto' }}
           />
